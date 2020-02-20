@@ -78,6 +78,8 @@ async fn run() {
     teloxide::enable_logging!();
     log::info!("Starting simple_commands_bot!");
 
+    log::debug!("Indexed {} files", FILES.len());
+
     let bot = Bot::from_env();
 
     Dispatcher::new(bot)

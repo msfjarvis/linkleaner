@@ -1,3 +1,5 @@
+mod utils;
+
 use teloxide::types::{InputFile, ParseMode};
 use teloxide::{prelude::*, utils::command::BotCommand};
 
@@ -5,6 +7,8 @@ use lazy_static::lazy_static;
 use rand::{thread_rng, Rng};
 use std::env;
 use walkdir::WalkDir;
+
+use utils::escape_markdown_str;
 
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures();
@@ -33,7 +37,7 @@ async fn answer(cx: DispatcherHandlerCx<Message>, command: Command) -> ResponseR
             let file = get_random_file().await;
             let link = format!("{}/{}", *BASE_URL, file);
             cx.answer_photo(InputFile::url(&link))
-            .caption(format!("[{}]({})", &file.replace(".jpg", ""), link))
+            .caption(format!("[{}]({})", &escape_markdown_str(file).replace(".jpg", ""), link))
             .parse_mode(ParseMode::MarkdownV2)
             .reply_to_message_id(cx.update.id)
             .send()

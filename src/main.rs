@@ -27,7 +27,10 @@ enum Command {
 }
 
 async fn get_random_file() -> String {
-    FILES.get(thread_rng().gen_range(0, *FILE_COUNT)).unwrap().clone()
+    FILES
+        .get(thread_rng().gen_range(0, *FILE_COUNT))
+        .unwrap()
+        .clone()
 }
 
 async fn answer(cx: DispatcherHandlerCx<Message>, command: Command) -> ResponseResult<()> {
@@ -37,11 +40,15 @@ async fn answer(cx: DispatcherHandlerCx<Message>, command: Command) -> ResponseR
             let file = get_random_file().await;
             let link = format!("{}/{}", *BASE_URL, file);
             cx.answer_photo(InputFile::url(&link))
-            .caption(format!("[{}]({})", &escape_markdown_str(file).replace(".jpg", ""), link))
-            .parse_mode(ParseMode::MarkdownV2)
-            .reply_to_message_id(cx.update.id)
-            .send()
-            .await?
+                .caption(format!(
+                    "[{}]({})",
+                    &escape_markdown_str(file).replace(".jpg", ""),
+                    link
+                ))
+                .parse_mode(ParseMode::MarkdownV2)
+                .reply_to_message_id(cx.update.id)
+                .send()
+                .await?
         }
     };
 

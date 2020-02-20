@@ -1,4 +1,4 @@
-use teloxide::types::InputFile;
+use teloxide::types::{InputFile, ParseMode};
 use teloxide::{prelude::*, utils::command::BotCommand};
 
 use lazy_static::lazy_static;
@@ -19,23 +19,23 @@ enum Command {
     #[command(description = "display this text.")]
     Help,
     #[command(description = "Return a random picture")]
-    Pic,
+    Random,
 }
 
 async fn get_random_file() -> String {
-    let num = thread_rng().gen_range(0, *FILE_COUNT);
-    FILES.get(num).unwrap().clone()
+    FILES.get(thread_rng().gen_range(0, *FILE_COUNT)).unwrap().clone()
 }
 
 async fn answer(cx: DispatcherHandlerCx<Message>, command: Command) -> ResponseResult<()> {
     match command {
         Command::Help => cx.answer(Command::descriptions()).send().await?,
-        Command::Pic => {
-            cx.answer_photo(InputFile::url(format!(
-                "{}/{}",
-                *BASE_URL,
-                get_random_file().await
-            )))
+        Command::Random => {
+            let file = get_random_file().await;
+            let link = format!("{}/{}", *BASE_URL, file);
+            cx.answer_photo(InputFile::url(&link))
+            .caption(format!("[{}]({})", &file.replace(".jpg", ""), link))
+            .parse_mode(ParseMode::MarkdownV2)
+            .reply_to_message_id(cx.update.id)
             .send()
             .await?
         }

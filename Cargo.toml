@@ -3,6 +3,12 @@ name = "walls-bot-rs"
 version = "0.1.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2018"
+license = "MIT/Apache-2.0"
+description = "Telegram bot that scans a local filesystem for images and sends them to Telegram when commands are issued."
+keywords = ["telegram", "bot"]
+repository = "https://github.com/msfjarvis/walls-bot-rs"
+homepage = "https://github.com/msfjarvis/walls-bot-rs"
+readme = "README.md"
 
 [dependencies]
 teloxide = "0.1.0"

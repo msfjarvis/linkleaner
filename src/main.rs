@@ -14,8 +14,8 @@ use utils::join_results_to_string;
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures();
     static ref FILE_COUNT: usize = FILES.len();
-    static ref BASE_URL: String = env::var("BASE_URL").unwrap();
-    static ref BASE_DIR: String = env::var("BASE_DIR").unwrap();
+    static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
+    static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
 }
 
 #[derive(BotCommand)]

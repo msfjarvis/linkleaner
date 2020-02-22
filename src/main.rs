@@ -9,6 +9,7 @@ use std::env;
 use walkdir::WalkDir;
 
 use utils::escape_markdown_str;
+use utils::join_results_to_string;
 
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures();
@@ -22,8 +23,10 @@ lazy_static! {
 enum Command {
     #[command(description = "display this text.")]
     Help,
-    #[command(description = "Return a random picture")]
+    #[command(description = "return a random picture")]
     Random,
+    #[command(description = "search picture based on given string")]
+    Search,
 }
 
 async fn get_random_file() -> String {
@@ -33,7 +36,11 @@ async fn get_random_file() -> String {
         .clone()
 }
 
-async fn answer(cx: DispatcherHandlerCx<Message>, command: Command) -> ResponseResult<()> {
+async fn answer(
+    cx: DispatcherHandlerCx<Message>,
+    command: Command,
+    args: &[String],
+) -> ResponseResult<()> {
     match command {
         Command::Help => cx.answer(Command::descriptions()).send().await?,
         Command::Random => {
@@ -50,6 +57,19 @@ async fn answer(cx: DispatcherHandlerCx<Message>, command: Command) -> ResponseR
                 .send()
                 .await?
         }
+        Command::Search => {
+            let search_term = args.join("_");
+            let res = FILES
+                .clone()
+                .into_iter()
+                .filter(|x| x.starts_with(&search_term))
+                .collect::<Vec<String>>();
+            cx.answer(join_results_to_string(res, &**BASE_URL))
+                .parse_mode(ParseMode::MarkdownV2)
+                .reply_to_message_id(cx.update.id)
+                .send()
+                .await?
+        }
     };
 
     Ok(())
@@ -59,8 +79,8 @@ async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
     // Only iterate through commands in a proper format:
     rx.commands::<Command>()
         // Execute all incoming commands concurrently:
-        .for_each_concurrent(None, |(cx, command, _)| async move {
-            answer(cx, command).await.log_on_error().await;
+        .for_each_concurrent(None, |(cx, command, args)| async move {
+            answer(cx, command, &args).await.log_on_error().await;
         })
         .await;
 }

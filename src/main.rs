@@ -42,7 +42,12 @@ async fn answer(
     args: &[String],
 ) -> ResponseResult<()> {
     match command {
-        Command::Help => cx.answer(Command::descriptions()).send().await?,
+        Command::Help => {
+            cx.answer(Command::descriptions())
+                .reply_to_message_id(cx.update.id)
+                .send()
+                .await?
+        }
         Command::Random => {
             let file = get_random_file().await;
             let link = format!("{}/{}", *BASE_URL, file);

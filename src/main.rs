@@ -59,11 +59,11 @@ async fn answer(
         }
         Command::Search => {
             let search_term = args.join("_");
-            let res = FILES
+            let res: Vec<String> = FILES
                 .clone()
                 .into_iter()
                 .filter(|x| x.starts_with(&search_term))
-                .collect::<Vec<String>>();
+                .collect();
             cx.answer(join_results_to_string(res, &**BASE_URL))
                 .parse_mode(ParseMode::MarkdownV2)
                 .reply_to_message_id(cx.update.id)

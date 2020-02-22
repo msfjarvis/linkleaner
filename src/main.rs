@@ -29,7 +29,7 @@ enum Command {
     Search,
 }
 
-async fn get_random_file() -> String {
+fn get_random_file() -> String {
     FILES
         .get(thread_rng().gen_range(0, *FILE_COUNT))
         .unwrap()
@@ -49,7 +49,7 @@ async fn answer(
                 .await?
         }
         Command::Random => {
-            let file = get_random_file().await;
+            let file = get_random_file();
             let link = format!("{}/{}", *BASE_URL, file);
             cx.answer_photo(InputFile::url(&link))
                 .caption(format!(

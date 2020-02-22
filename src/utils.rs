@@ -7,5 +7,5 @@ pub fn join_results_to_string(items: Vec<String>, base_url: &str) -> String {
     for item in items.iter() {
         ret.push_str(&format!("[{}]({}/{})\n", item, base_url, item));
     }
-    return ret;
+    ret
 }

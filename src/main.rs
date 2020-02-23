@@ -65,7 +65,7 @@ async fn answer(
                 .into_iter()
                 .filter(|x| x.starts_with(&search_term))
                 .collect();
-            cx.answer(join_results_to_string(res, &**BASE_URL))
+            cx.answer(join_results_to_string(search_term, res, &**BASE_URL))
                 .parse_mode(ParseMode::MarkdownV2)
                 .reply_to_message_id(cx.update.id)
                 .send()

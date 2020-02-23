@@ -67,6 +67,7 @@ async fn answer(
                 .collect();
             cx.answer(join_results_to_string(search_term, res, &**BASE_URL))
                 .parse_mode(ParseMode::MarkdownV2)
+                .disable_web_page_preview(true)
                 .reply_to_message_id(cx.update.id)
                 .send()
                 .await?

@@ -8,7 +8,7 @@ use rand::{thread_rng, Rng};
 use std::env;
 use walkdir::WalkDir;
 
-use utils::escape_markdown_str;
+use utils::file_name_to_label;
 use utils::join_results_to_string;
 
 lazy_static! {
@@ -52,11 +52,7 @@ async fn answer(
             let file = get_random_file();
             let link = format!("{}/{}", *BASE_URL, file);
             cx.answer_photo(InputFile::url(&link))
-                .caption(format!(
-                    "[{}]({})",
-                    &escape_markdown_str(file).replace(".jpg", ""),
-                    link
-                ))
+                .caption(format!("[{}]({})", &file_name_to_label(file), link))
                 .parse_mode(ParseMode::MarkdownV2)
                 .reply_to_message_id(cx.update.id)
                 .send()

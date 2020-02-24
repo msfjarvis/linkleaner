@@ -8,8 +8,7 @@ use rand::{thread_rng, Rng};
 use std::env;
 use walkdir::WalkDir;
 
-use utils::file_name_to_label;
-use utils::join_results_to_string;
+use utils::{file_name_to_label, join_results_to_string};
 
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures();

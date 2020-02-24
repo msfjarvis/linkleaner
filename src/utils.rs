@@ -13,10 +13,10 @@ pub(crate) fn join_results_to_string(
     items: Vec<String>,
     base_url: &str,
 ) -> String {
-    let mut ret = String::from(format!(
+    let mut ret = format!(
         "Search results for '{}':\n",
         file_name_to_label(search_term)
-    ));
+    );
     for item in items.iter() {
         ret.push_str(&format!(
             "[{}]({}/{})\n",

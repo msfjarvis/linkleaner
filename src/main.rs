@@ -1,5 +1,9 @@
 mod utils;
 
+extern crate dotenv;
+
+use dotenv::dotenv;
+
 use teloxide::types::{InputFile, ParseMode};
 use teloxide::{prelude::*, utils::command::BotCommand};
 
@@ -161,6 +165,7 @@ async fn main() {
 }
 
 async fn run() {
+    dotenv().ok();
     teloxide::enable_logging!();
     log::info!("Starting simple_commands_bot!");
 

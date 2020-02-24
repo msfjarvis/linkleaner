@@ -8,7 +8,7 @@ use rand::{thread_rng, Rng};
 use std::env;
 use walkdir::WalkDir;
 
-use teloxide::requests::SendPhoto;
+use teloxide::requests::{SendChatActionKind, SendPhoto};
 use utils::{file_name_to_label, join_results_to_string};
 
 lazy_static! {
@@ -64,6 +64,10 @@ async fn answer(
 ) -> ResponseResult<()> {
     match command {
         Command::Help => {
+            cx.bot
+                .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
+                .send()
+                .await?;
             cx.answer(Command::descriptions())
                 .reply_to_message_id(cx.update.id)
                 .send()
@@ -71,6 +75,10 @@ async fn answer(
         }
         Command::Pic => {
             if args.is_empty() {
+                cx.bot
+                    .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
+                    .send()
+                    .await?;
                 cx.answer("No search query passed")
                     .reply_to_message_id(cx.update.id)
                     .send()
@@ -79,17 +87,29 @@ async fn answer(
                 let results = get_search_results(&args.join("_"));
                 let file = get_random_file(results);
                 let link = format!("{}/{}", *BASE_URL, file);
+                cx.bot
+                    .send_chat_action(cx.update.chat.id, SendChatActionKind::UploadPhoto)
+                    .send()
+                    .await?;
                 send_captioned_picture(cx, link, file).send().await?
             }
         }
         Command::Random => {
             let file = get_random_file((*FILES).clone());
             let link = format!("{}/{}", *BASE_URL, file);
+            cx.bot
+                .send_chat_action(cx.update.chat.id, SendChatActionKind::UploadPhoto)
+                .send()
+                .await?;
             send_captioned_picture(cx, link, file).send().await?
         }
         Command::Search => {
             let search_term = args.join("_");
             let res = get_search_results(&search_term);
+            cx.bot
+                .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
+                .send()
+                .await?;
             cx.answer(join_results_to_string(search_term, res, &**BASE_URL))
                 .parse_mode(ParseMode::MarkdownV2)
                 .disable_web_page_preview(true)

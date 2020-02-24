@@ -61,7 +61,7 @@ async fn answer(
     cx: DispatcherHandlerCx<Message>,
     command: Command,
     args: &[String],
-) -> ResponseResult<()> {
+) -> ResponseResult<Option<Message>> {
     match command {
         Command::Help => {
             cx.bot
@@ -119,7 +119,7 @@ async fn answer(
         }
     };
 
-    Ok(())
+    Ok(None)
 }
 
 async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
@@ -127,7 +127,15 @@ async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
     rx.commands::<Command>()
         // Execute all incoming commands concurrently:
         .for_each_concurrent(None, |(cx, command, args)| async move {
-            answer(cx, command, &args).await.log_on_error().await;
+            return match answer(cx, command, &args).await {
+                Ok(Some(msg)) => {
+                    if let Some(photo) = msg.photo() {
+                        println!("photo: {}", photo.get(0).unwrap().clone().file_unique_id);
+                    }
+                }
+                Ok(None) => {}
+                Err(_e) => {}
+            };
         })
         .await;
 }

@@ -1,7 +1,5 @@
 mod utils;
 
-extern crate dotenv;
-
 use dotenv::dotenv;
 
 use teloxide::types::{InputFile, ParseMode};

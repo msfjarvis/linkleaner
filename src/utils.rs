@@ -27,3 +27,13 @@ pub(crate) fn join_results_to_string(
     }
     ret
 }
+
+pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
+    let tokens = file_name_to_label(name).split(" ").map(|x| x.to_lowercase()).collect::<Vec<String>>();
+    for token in tokens {
+        if token == search_term {
+            return true;
+        }
+    }
+    false
+}

@@ -11,7 +11,7 @@ use std::env;
 use walkdir::WalkDir;
 
 use teloxide::requests::{SendChatActionKind, SendPhoto};
-use utils::{file_name_to_label, join_results_to_string};
+use crate::utils::{file_name_to_label, join_results_to_string, tokenized_search};
 
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures();
@@ -44,7 +44,7 @@ fn get_search_results(search_term: &str) -> Vec<String> {
     FILES
         .clone()
         .into_iter()
-        .filter(|x| x.starts_with(search_term))
+        .filter(|x| tokenized_search(x.to_string(), &search_term.to_lowercase()))
         .collect()
 }
 

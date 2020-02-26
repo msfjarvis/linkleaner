@@ -136,7 +136,7 @@ async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
                     }
                 }
                 Ok(None) => {}
-                Err(_e) => {}
+                Err(e) => log::error!("{}", e),
             };
         })
         .await;

@@ -10,8 +10,8 @@ use rand::{thread_rng, Rng};
 use std::env;
 use walkdir::WalkDir;
 
-use teloxide::requests::{SendChatActionKind, SendPhoto};
 use crate::utils::{file_name_to_label, join_results_to_string, tokenized_search};
+use teloxide::requests::{SendChatActionKind, SendPhoto};
 
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures();
@@ -87,13 +87,24 @@ async fn answer(
                     .await?
             } else {
                 let results = get_search_results(&args.join("_"));
-                let file = get_random_file(results);
-                let link = format!("{}/{}", *BASE_URL, file);
-                cx.bot
-                    .send_chat_action(cx.update.chat.id, SendChatActionKind::UploadPhoto)
-                    .send()
-                    .await?;
-                send_captioned_picture(cx, link, file).send().await?
+                if results.is_empty() {
+                    cx.bot
+                        .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
+                        .send()
+                        .await?;
+                    cx.answer(format!("No picture found for '{}'", &args.join(" ")))
+                        .reply_to_message_id(cx.update.id)
+                        .send()
+                        .await?
+                } else {
+                    let file = get_random_file(results);
+                    let link = format!("{}/{}", *BASE_URL, file);
+                    cx.bot
+                        .send_chat_action(cx.update.chat.id, SendChatActionKind::UploadPhoto)
+                        .send()
+                        .await?;
+                    send_captioned_picture(cx, link, file).send().await?
+                }
             }
         }
         Command::Random => {
@@ -112,12 +123,19 @@ async fn answer(
                 .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
                 .send()
                 .await?;
-            cx.answer(join_results_to_string(search_term, res, &**BASE_URL))
-                .parse_mode(ParseMode::MarkdownV2)
-                .disable_web_page_preview(true)
-                .reply_to_message_id(cx.update.id)
-                .send()
-                .await?
+            if res.is_empty() {
+                cx.answer(format!("No results found for '{}'", &args.join(" ")))
+                    .reply_to_message_id(cx.update.id)
+                    .send()
+                    .await?
+            } else {
+                cx.answer(join_results_to_string(search_term, res, &**BASE_URL))
+                    .parse_mode(ParseMode::MarkdownV2)
+                    .disable_web_page_preview(true)
+                    .reply_to_message_id(cx.update.id)
+                    .send()
+                    .await?
+            }
         }
     };
 

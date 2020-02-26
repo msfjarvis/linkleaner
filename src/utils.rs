@@ -30,9 +30,9 @@ pub(crate) fn join_results_to_string(
 
 pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
     let tokens = file_name_to_label(name)
-        .split(" ")
+        .split(' ')
         .map(|x| x.to_lowercase())
-        .filter(|x| !x.parse::<f32>().is_ok())
+        .filter(|x| x.parse::<f32>().is_err())
         .collect::<Vec<String>>();
     for token in tokens {
         if token == search_term {

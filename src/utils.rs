@@ -43,6 +43,7 @@ pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
     false
 }
 
+#[cfg(test)]
 mod tests {
     use super::{file_name_to_label, tokenized_search};
 

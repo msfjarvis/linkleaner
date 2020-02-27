@@ -143,16 +143,10 @@ async fn answer(
 }
 
 async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
-    // Only iterate through commands in a proper format:
     rx.commands::<Command>()
-        // Execute all incoming commands concurrently:
         .for_each_concurrent(None, |(cx, command, args)| async move {
             return match answer(cx, command, &args).await {
-                Ok(Some(msg)) => {
-                    if let Some(photo) = msg.photo() {
-                        println!("photo: {}", photo.get(0).unwrap().clone().file_unique_id);
-                    }
-                }
+                Ok(Some(_)) => {}
                 Ok(None) => {}
                 Err(e) => log::error!("{}", e),
             };
@@ -183,7 +177,6 @@ async fn main() {
 async fn run() {
     dotenv().ok();
     teloxide::enable_logging!();
-    log::info!("Starting simple_commands_bot!");
 
     log::debug!("Indexed {} files", FILES.len());
 

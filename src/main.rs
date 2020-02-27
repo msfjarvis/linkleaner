@@ -71,7 +71,7 @@ async fn answer(
     cx: DispatcherHandlerCx<Message>,
     command: Command,
     args: &[String],
-) -> ResponseResult<Option<Message>> {
+) -> ResponseResult<()> {
     match command {
         Command::Help => {
             cx.bot
@@ -147,17 +147,13 @@ async fn answer(
         }
     };
 
-    Ok(None)
+    Ok(())
 }
 
 async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
     rx.commands::<Command>()
         .for_each_concurrent(None, |(cx, command, args)| async move {
-            return match answer(cx, command, &args).await {
-                Ok(Some(_)) => {}
-                Ok(None) => {}
-                Err(e) => log::error!("{}", e),
-            };
+            answer(cx, command, &args).await.log_on_error().await;
         })
         .await;
 }

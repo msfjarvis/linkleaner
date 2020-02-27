@@ -42,3 +42,19 @@ pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
     }
     false
 }
+
+mod tests {
+    use super::{file_name_to_label, tokenized_search};
+
+    #[test]
+    fn file_name_to_label_test() {
+        assert_eq!(file_name_to_label("John_Doe_1.jpg".to_string()), "John Doe 1".to_string());
+        assert!(!file_name_to_label("Jane_Doe.jpg".to_string()).contains("_"))
+    }
+
+    #[test]
+    fn search_matches_full_terms_test() {
+        assert!(tokenized_search("John_Doe_1.jpg".to_string(), "Doe"));
+        assert!(tokenized_search("Jane_Doe.jpg".to_string(), "Jane"));
+    }
+}

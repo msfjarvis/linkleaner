@@ -49,7 +49,10 @@ mod tests {
 
     #[test]
     fn file_name_to_label_test() {
-        assert_eq!(file_name_to_label("John_Doe_1.jpg".to_string()), "John Doe 1".to_string());
+        assert_eq!(
+            file_name_to_label("John_Doe_1.jpg".to_string()),
+            "John Doe 1".to_string()
+        );
         assert!(!file_name_to_label("Jane_Doe.jpg".to_string()).contains("_"))
     }
 

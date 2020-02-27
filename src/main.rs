@@ -41,11 +41,19 @@ fn get_random_file(files: Vec<String>) -> String {
 }
 
 fn get_search_results(search_term: &str) -> Vec<String> {
-    FILES
-        .clone()
-        .into_iter()
-        .filter(|x| tokenized_search(x.to_string(), &search_term))
-        .collect()
+    if search_term.contains("_") {
+        FILES
+            .clone()
+            .into_iter()
+            .filter(|x| x.starts_with(&search_term))
+            .collect()
+    } else {
+        FILES
+            .clone()
+            .into_iter()
+            .filter(|x| tokenized_search(x.to_string(), &search_term))
+            .collect()
+    }
 }
 
 fn send_captioned_picture(

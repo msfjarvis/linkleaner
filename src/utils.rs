@@ -45,7 +45,13 @@ pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{file_name_to_label, tokenized_search};
+    use super::{escape_markdown_str, file_name_to_label, tokenized_search};
+
+    #[test]
+    fn markdown_escape_test() {
+        assert_eq!(r"John\_Doe\_1.jpg", escape_markdown_str("John_Doe_1.jpg".to_string()));
+        assert_eq!("[Test link](https://example.com)", escape_markdown_str("[Test link](https://example.com)".to_string()));
+    }
 
     #[test]
     fn file_name_to_label_test() {

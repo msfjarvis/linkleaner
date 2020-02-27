@@ -44,7 +44,7 @@ fn get_search_results(search_term: &str) -> Vec<String> {
     FILES
         .clone()
         .into_iter()
-        .filter(|x| tokenized_search(x.to_string(), &search_term.to_lowercase()))
+        .filter(|x| tokenized_search(x.to_string(), &search_term))
         .collect()
 }
 

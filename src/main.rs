@@ -10,7 +10,7 @@ use rand::{thread_rng, Rng};
 use std::env;
 use walkdir::WalkDir;
 
-use crate::utils::{file_name_to_label, join_results_to_string, tokenized_search};
+use crate::utils::{file_name_to_label, get_search_results, join_results_to_string};
 use teloxide::requests::{SendChatActionKind, SendPhoto};
 
 lazy_static! {
@@ -40,20 +40,8 @@ fn get_random_file(files: Vec<String>) -> String {
         .to_string()
 }
 
-fn get_search_results(search_term: &str) -> Vec<String> {
-    if search_term.contains("_") {
-        FILES
-            .clone()
-            .into_iter()
-            .filter(|x| x.starts_with(&search_term))
-            .collect()
-    } else {
-        FILES
-            .clone()
-            .into_iter()
-            .filter(|x| tokenized_search(x.to_string(), &search_term))
-            .collect()
-    }
+fn search(search_term: &str) -> Vec<String> {
+    get_search_results((*FILES).clone(), search_term)
 }
 
 fn send_captioned_picture(
@@ -94,7 +82,7 @@ async fn answer(
                     .send()
                     .await?
             } else {
-                let results = get_search_results(&args.join("_"));
+                let results = search(&args.join("_"));
                 if results.is_empty() {
                     cx.bot
                         .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
@@ -126,7 +114,7 @@ async fn answer(
         }
         Command::Search => {
             let search_term = args.join("_");
-            let res = get_search_results(&search_term);
+            let res = search(&search_term);
             cx.bot
                 .send_chat_action(cx.update.chat.id, SendChatActionKind::Typing)
                 .send()

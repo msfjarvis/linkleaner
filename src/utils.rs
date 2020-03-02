@@ -43,6 +43,22 @@ pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
     false
 }
 
+pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<String> {
+    if search_term.contains("_") {
+        items
+            .clone()
+            .into_iter()
+            .filter(|x| x.starts_with(&search_term))
+            .collect()
+    } else {
+        items
+            .clone()
+            .into_iter()
+            .filter(|x| tokenized_search(x.to_string(), &search_term))
+            .collect()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{escape_markdown_str, file_name_to_label, tokenized_search};

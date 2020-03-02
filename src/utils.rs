@@ -78,7 +78,10 @@ pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{escape_markdown_str, file_name_to_label, tokenized_search};
+    use super::{
+        escape_markdown_str, file_name_to_label, get_search_results, index_pictures,
+        tokenized_search,
+    };
 
     #[test]
     fn markdown_escape_test() {
@@ -105,5 +108,14 @@ mod tests {
     fn search_matches_full_terms_test() {
         assert!(tokenized_search("John_Doe_1.jpg".to_string(), "Doe"));
         assert!(tokenized_search("Jane_Doe.jpg".to_string(), "Jane"));
+    }
+
+    #[test]
+    fn search_matches_by_token() {
+        let items = index_pictures("testdata");
+        assert!(!items.is_empty());
+        let results = get_search_results(items, "De");
+        assert!(!results.contains(&String::from("Demi_Lovato.jpg")));
+        assert!(results.contains(&String::from("Ana_De_Armas.jpg")));
     }
 }

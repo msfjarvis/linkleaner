@@ -65,8 +65,14 @@ mod tests {
 
     #[test]
     fn markdown_escape_test() {
-        assert_eq!(r"John\_Doe\_1.jpg", escape_markdown_str("John_Doe_1.jpg".to_string()));
-        assert_eq!("[Test link](https://example.com)", escape_markdown_str("[Test link](https://example.com)".to_string()));
+        assert_eq!(
+            r"John\_Doe\_1.jpg",
+            escape_markdown_str("John_Doe_1.jpg".to_string())
+        );
+        assert_eq!(
+            "[Test link](https://example.com)",
+            escape_markdown_str("[Test link](https://example.com)".to_string())
+        );
     }
 
     #[test]

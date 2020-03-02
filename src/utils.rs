@@ -1,3 +1,5 @@
+use walkdir::WalkDir;
+
 pub(crate) fn file_name_to_label(msg: String) -> String {
     escape_markdown_str(msg)
         .replace(r"\_", " ")
@@ -57,6 +59,21 @@ pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<S
             .filter(|x| tokenized_search(x.to_string(), &search_term))
             .collect()
     }
+}
+
+pub(crate) fn index_pictures(directory: &str) -> Vec<String> {
+    let mut images: Vec<String> = Vec::new();
+    for entry in WalkDir::new(directory).into_iter().filter_map(|e| e.ok()) {
+        images.push(String::from(
+            entry
+                .path()
+                .strip_prefix(directory)
+                .unwrap()
+                .to_str()
+                .unwrap(),
+        ))
+    }
+    images
 }
 
 #[cfg(test)]

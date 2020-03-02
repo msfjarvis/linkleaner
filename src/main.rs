@@ -8,13 +8,14 @@ use teloxide::{prelude::*, utils::command::BotCommand};
 use lazy_static::lazy_static;
 use rand::{thread_rng, Rng};
 use std::env;
-use walkdir::WalkDir;
 
-use crate::utils::{file_name_to_label, get_search_results, join_results_to_string};
+use crate::utils::{
+    file_name_to_label, get_search_results, index_pictures, join_results_to_string,
+};
 use teloxide::requests::{SendChatActionKind, SendPhoto};
 
 lazy_static! {
-    static ref FILES: Vec<String> = index_pictures();
+    static ref FILES: Vec<String> = index_pictures(&**BASE_DIR);
     static ref FILE_COUNT: usize = FILES.len();
     static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
     static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
@@ -144,21 +145,6 @@ async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
             answer(cx, command, &args).await.log_on_error().await;
         })
         .await;
-}
-
-fn index_pictures() -> Vec<String> {
-    let mut images: Vec<String> = Vec::new();
-    for entry in WalkDir::new(&**BASE_DIR).into_iter().filter_map(|e| e.ok()) {
-        images.push(String::from(
-            entry
-                .path()
-                .strip_prefix(&**BASE_DIR)
-                .unwrap()
-                .to_str()
-                .unwrap(),
-        ))
-    }
-    images
 }
 
 #[tokio::main]

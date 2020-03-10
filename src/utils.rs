@@ -11,15 +11,13 @@ pub(crate) fn file_name_to_label(msg: String) -> String {
 }
 
 pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<String> {
-    if search_term.contains("_") {
+    if search_term.contains('_') {
         items
-            .clone()
             .into_iter()
             .filter(|x| x.starts_with(&search_term))
             .collect()
     } else {
         items
-            .clone()
             .into_iter()
             .filter(|x| tokenized_search(x.to_string(), &search_term))
             .collect()
@@ -101,7 +99,7 @@ mod tests {
             file_name_to_label("John_Doe_1.jpg".to_string()),
             "John Doe 1".to_string()
         );
-        assert!(!file_name_to_label("Jane_Doe.jpg".to_string()).contains("_"))
+        assert!(!file_name_to_label("Jane_Doe.jpg".to_string()).contains('_'))
     }
 
     #[test]

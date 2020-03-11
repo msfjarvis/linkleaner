@@ -12,7 +12,6 @@ readme = "README.md"
 
 [dependencies]
 teloxide = "0.1.0"
-futures = "0.3.4"
 tokio = "0.2.11"
 log = "0.4.8"
 pretty_env_logger = "0.4.0"

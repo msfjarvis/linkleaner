@@ -140,7 +140,7 @@ async fn answer(
 }
 
 async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
-    rx.commands::<Command>()
+    rx.commands::<Command, &str>("")
         .for_each_concurrent(None, |(cx, command, args)| async move {
             answer(cx, command, &args).await.log_on_error().await;
         })

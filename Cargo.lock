@@ -119,12 +119,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4358a9e11b9a09cf52383b451b49a169e8d797b68aa02301ff586d70d9661ea3"
 
 [[package]]
-name = "either"
-version = "1.5.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
-
-[[package]]
 name = "encoding_rs"
 version = "0.8.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -999,14 +993,13 @@ dependencies = [
 
 [[package]]
 name = "teloxide"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6eab6677a0e2cfd516941f82d9b4f07b743336880f9dee33ddc9ecf4fbd5c17f"
+checksum = "fb79bb6cc15e3124f3ed2a8092ba486fd3805d3ffea7ad9eae7ff3320001c7f4"
 dependencies = [
  "async-trait",
  "bytes",
  "derive_more",
- "either",
  "futures",
  "lockfree",
  "log",
@@ -1024,9 +1017,9 @@ dependencies = [
 
 [[package]]
 name = "teloxide-macros"
-version = "0.1.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f451c2e94d7391175d5e288a34efc2195ed40240ff15e444769a02e543bbcce"
+checksum = "54ebc068623c460929a05666b4687a511b359e40360276e08bc54beecc26b155"
 dependencies = [
  "quote",
  "syn",

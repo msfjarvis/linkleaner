@@ -11,8 +11,8 @@ homepage = "https://github.com/msfjarvis/walls-bot-rs"
 readme = "README.md"
 
 [dependencies]
-teloxide = "0.1.0"
-tokio = "0.2.11"
+teloxide = "0.2.0"
+tokio = "0.2.13"
 log = "0.4.8"
 pretty_env_logger = "0.4.0"
 rand = "0.7.3"

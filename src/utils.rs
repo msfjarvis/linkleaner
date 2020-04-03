@@ -83,10 +83,7 @@ mod tests {
 
     #[test]
     fn markdown_escape_test() {
-        assert_eq!(
-            r"John\_Doe\_1.jpg",
-            escape_markdown_str("John_Doe_1.jpg")
-        );
+        assert_eq!(r"John\_Doe\_1.jpg", escape_markdown_str("John_Doe_1.jpg"));
         assert_eq!(
             "[Test link](https://example.com)",
             escape_markdown_str("[Test link](https://example.com)")
@@ -95,10 +92,7 @@ mod tests {
 
     #[test]
     fn file_name_to_label_test() {
-        assert_eq!(
-            file_name_to_label("John_Doe_1.jpg"),
-            "John Doe 1"
-        );
+        assert_eq!(file_name_to_label("John_Doe_1.jpg"), "John Doe 1");
         assert!(!file_name_to_label("Jane_Doe.jpg").contains('_'))
     }
 

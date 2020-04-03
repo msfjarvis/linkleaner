@@ -46,9 +46,9 @@ fn search(search_term: &str) -> Vec<String> {
 }
 
 fn send_captioned_picture(
-    cx: DispatcherHandlerCx<Message>,
+    cx: &DispatcherHandlerCx<Message>,
     link: String,
-    file: String,
+    file: &str,
 ) -> SendPhoto {
     cx.answer_photo(InputFile::url(&link))
         .caption(format!("[{}]({})", &file_name_to_label(file), link))
@@ -100,7 +100,7 @@ async fn answer(
                         .send_chat_action(cx.update.chat.id, SendChatActionKind::UploadPhoto)
                         .send()
                         .await?;
-                    send_captioned_picture(cx, link, file).send().await?
+                    send_captioned_picture(&cx, link, &file).send().await?
                 }
             }
         }
@@ -111,7 +111,7 @@ async fn answer(
                 .send_chat_action(cx.update.chat.id, SendChatActionKind::UploadPhoto)
                 .send()
                 .await?;
-            send_captioned_picture(cx, link, file).send().await?
+            send_captioned_picture(&cx, link, &file).send().await?
         }
         Command::Search => {
             let search_term = args.join("_");

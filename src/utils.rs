@@ -1,10 +1,10 @@
 use walkdir::WalkDir;
 
-pub(crate) fn escape_markdown_str(msg: String) -> String {
+pub(crate) fn escape_markdown_str(msg: &str) -> String {
     msg.replace("_", r"\_")
 }
 
-pub(crate) fn file_name_to_label(msg: String) -> String {
+pub(crate) fn file_name_to_label(msg: &str) -> String {
     escape_markdown_str(msg)
         .replace(r"\_", " ")
         .replace(".jpg", "")
@@ -19,7 +19,7 @@ pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<S
     } else {
         items
             .into_iter()
-            .filter(|x| tokenized_search(x.to_string(), &search_term))
+            .filter(|x| tokenized_search(x, &search_term))
             .collect()
     }
 }
@@ -46,12 +46,12 @@ pub(crate) fn join_results_to_string(
 ) -> String {
     let mut ret = format!(
         "Search results for '{}':\n",
-        file_name_to_label(search_term)
+        file_name_to_label(&search_term)
     );
     for item in items.iter() {
         ret.push_str(&format!(
             "[{}]({}/{})\n",
-            file_name_to_label(item.clone()),
+            file_name_to_label(item),
             base_url,
             item
         ));
@@ -59,9 +59,9 @@ pub(crate) fn join_results_to_string(
     ret
 }
 
-pub(crate) fn tokenized_search(name: String, search_term: &str) -> bool {
+pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
     let term = search_term.to_lowercase();
-    let tokens = file_name_to_label(name)
+    let tokens = file_name_to_label(&name)
         .split(' ')
         .map(|x| x.to_lowercase())
         .filter(|x| x.parse::<f32>().is_err())
@@ -85,27 +85,27 @@ mod tests {
     fn markdown_escape_test() {
         assert_eq!(
             r"John\_Doe\_1.jpg",
-            escape_markdown_str("John_Doe_1.jpg".to_string())
+            escape_markdown_str("John_Doe_1.jpg")
         );
         assert_eq!(
             "[Test link](https://example.com)",
-            escape_markdown_str("[Test link](https://example.com)".to_string())
+            escape_markdown_str("[Test link](https://example.com)")
         );
     }
 
     #[test]
     fn file_name_to_label_test() {
         assert_eq!(
-            file_name_to_label("John_Doe_1.jpg".to_string()),
-            "John Doe 1".to_string()
+            file_name_to_label("John_Doe_1.jpg"),
+            "John Doe 1"
         );
-        assert!(!file_name_to_label("Jane_Doe.jpg".to_string()).contains('_'))
+        assert!(!file_name_to_label("Jane_Doe.jpg").contains('_'))
     }
 
     #[test]
     fn search_matches_full_terms_test() {
-        assert!(tokenized_search("John_Doe_1.jpg".to_string(), "Doe"));
-        assert!(tokenized_search("Jane_Doe.jpg".to_string(), "Jane"));
+        assert!(tokenized_search("John_Doe_1.jpg", "Doe"));
+        assert!(tokenized_search("Jane_Doe.jpg", "Jane"));
     }
 
     #[test]

@@ -17,7 +17,6 @@ use teloxide::requests::{SendChatActionKind, SendPhoto};
 
 lazy_static! {
     static ref FILES: Vec<String> = index_pictures(&**BASE_DIR);
-    static ref FILE_COUNT: usize = FILES.len();
     static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
     static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
 }

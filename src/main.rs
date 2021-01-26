@@ -36,7 +36,7 @@ enum Command {
 
 fn get_random_file(files: Vec<String>) -> String {
     files
-        .get(thread_rng().gen_range(0, files.len()))
+        .get(thread_rng().gen_range(0..files.len()))
         .unwrap()
         .to_string()
 }

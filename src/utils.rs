@@ -1,3 +1,4 @@
+use rand::{thread_rng, Rng};
 use walkdir::WalkDir;
 
 pub(crate) fn escape_markdown_str(msg: &str) -> String {
@@ -72,6 +73,13 @@ pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
         }
     }
     false
+}
+
+pub(crate) fn get_random_file(files: Vec<String>) -> String {
+    files
+        .get(thread_rng().gen_range(0..files.len()))
+        .unwrap()
+        .to_string()
 }
 
 #[cfg(test)]

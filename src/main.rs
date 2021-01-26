@@ -1,3 +1,4 @@
+mod commands;
 mod utils;
 
 use dotenv::dotenv;
@@ -6,11 +7,11 @@ use teloxide::types::{InputFile, ParseMode};
 use teloxide::{prelude::*, utils::command::BotCommand};
 
 use lazy_static::lazy_static;
-use rand::{thread_rng, Rng};
 use std::env;
 
+use crate::commands::Command;
 use crate::utils::{
-    file_name_to_label, get_search_results, index_pictures, join_results_to_string,
+    file_name_to_label, get_random_file, get_search_results, index_pictures, join_results_to_string,
 };
 use teloxide::requests::{SendChatActionKind, SendPhoto};
 
@@ -19,26 +20,6 @@ lazy_static! {
     static ref FILE_COUNT: usize = FILES.len();
     static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
     static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
-}
-
-#[derive(BotCommand)]
-#[command(rename = "lowercase", description = "These commands are supported:")]
-enum Command {
-    #[command(description = "display this text.")]
-    Help,
-    #[command(description = "return a picture matching a given query")]
-    Pic,
-    #[command(description = "return a random picture")]
-    Random,
-    #[command(description = "search picture based on given string")]
-    Search,
-}
-
-fn get_random_file(files: Vec<String>) -> String {
-    files
-        .get(thread_rng().gen_range(0..files.len()))
-        .unwrap()
-        .to_string()
 }
 
 fn search(search_term: &str) -> Vec<String> {

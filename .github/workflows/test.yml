@@ -1,32 +1,58 @@
 name: Run unit tests
-on: [push, pull_request]
+on:
+  - push
+  - pull_request
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        rust: [stable, beta, nightly]
+        os:
+          - macOS-latest
+          - ubuntu-latest
+          - windows-latest
+        rust:
+          - beta
+          - nightly
+          - stable
 
     steps:
-    - uses: hecrj/setup-rust-action@v1.3.3
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Rust nightly with rustfmt and clippy
+      uses: actions-rs/toolchain@v1
       with:
-        rust-version: ${{ matrix.rust }}
-    - uses: actions/checkout@master
-    - name: Cache cargo registry
-      uses: actions/cache@v1
+        profile: minimal
+        toolchain: ${{ matrix.rust }}
+        components: rustfmt, clippy
+
+    - name: Cache cargo registry and build outputs
+      uses: actions/cache@v2
       with:
-        path: ~/.cargo/registry
-        key: ${{ runner.os }}-${{ matrix.rust }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-    - name: Cache cargo index
-      uses: actions/cache@v1
+        path: |
+          ~/.cargo/registry
+          target
+        key: ${{ runner.os }}-cargo-${{ matrix.rust }}-${{ hashFiles('Cargo.lock') }}
+
+    - name: Check formatting
+      uses: actions-rs/cargo@v1
       with:
-        path: ~/.cargo/git
-        key: ${{ runner.os }}-${{ matrix.rust }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-    - name: Cache cargo build
-      uses: actions/cache@v1
+        command: fmt
+        args: -- --check
+
+    - name: Annotate commit with clippy warnings
+      uses: actions-rs/clippy-check@v1
       with:
-        path: target
-        key: ${{ runner.os }}-${{ matrix.rust }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-    - name: Run tests
-      run: cargo test
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --all-features
+
+    - name: Run cargo check
+      uses: actions-rs/cargo@v1
+      with:
+        command: check
+
+    - name: Run cargo test
+      uses: actions-rs/cargo@v1
+      with:
+        command: test

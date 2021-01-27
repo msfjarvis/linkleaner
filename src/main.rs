@@ -19,6 +19,7 @@ lazy_static! {
     static ref FILES: Vec<String> = index_pictures(&**BASE_DIR);
     static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
     static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
+    static ref BOT_NAME: String = env::var("BOT_NAME").unwrap_or_default();
 }
 
 fn search(search_term: &str) -> Vec<String> {
@@ -120,7 +121,7 @@ async fn answer(
 }
 
 async fn handle_commands(rx: DispatcherHandlerRx<Message>) {
-    rx.commands::<Command, &str>("")
+    rx.commands::<Command, &str>(&BOT_NAME)
         .for_each_concurrent(None, |(cx, command, args)| async move {
             answer(cx, command, &args).await.log_on_error().await;
         })

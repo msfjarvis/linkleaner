@@ -42,6 +42,7 @@ jobs:
         args: -- --check
 
     - name: Annotate commit with clippy warnings
+      if: "${{ github.event_name == 'push' }}"
       uses: actions-rs/clippy-check@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}

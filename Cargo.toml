@@ -25,6 +25,9 @@ teloxide = { version = "0.4.0", features = ["macros", "auto-send"] }
 tokio = { version = "1.5.0", features = ["rt-multi-thread", "macros"] }
 walkdir = "2.3.2"
 
+[patch.crates-io]
+teloxide-core = { git = "https://github.com/teloxide/teloxide-core", rev = "e8ca6a84455ecdabce26a0b8ae1fb9d3a8308808" }
+
 [profile.release]
 lto = "fat"
 codegen-units = 1

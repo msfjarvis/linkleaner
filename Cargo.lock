@@ -1274,7 +1274,7 @@ dependencies = [
 
 [[package]]
 name = "walls-bot-rs"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "dotenv",
  "imagesize",

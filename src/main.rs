@@ -7,7 +7,7 @@ use teloxide::{
     adaptors::auto_send::AutoRequest,
     payloads::SendPhoto,
     requests::MultipartRequest,
-    types::{InputFile, ParseMode},
+    types::{ChatAction, InputFile, ParseMode},
 };
 use teloxide::{prelude::*, utils::command::BotCommand};
 
@@ -46,22 +46,34 @@ fn send_captioned_picture(
 async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + Sync>> {
     match command {
         Command::Help => {
+            cx.requester
+                .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+                .await?;
             cx.answer(Command::descriptions()).await?;
         }
         Command::Pic { search_term } => {
             if search_term.is_empty() {
+                cx.requester
+                    .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+                    .await?;
                 cx.answer("No search query passed")
                     .reply_to_message_id(cx.update.id)
                     .await?;
             } else {
                 let results = search(&search_term.replace(" ", "_"));
                 if results.is_empty() {
+                    cx.requester
+                        .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+                        .await?;
                     cx.answer(format!("No picture found for '{}'", search_term))
                         .reply_to_message_id(cx.update.id)
                         .await?;
                 } else {
                     let file = get_random_file(results);
                     let link = format!("{}/{}", *BASE_URL, file);
+                    cx.requester
+                        .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
+                        .await?;
                     send_captioned_picture(cx, link, &file).await?;
                 }
             }
@@ -69,9 +81,15 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
         Command::Random => {
             let file = get_random_file((*FILES).clone());
             let link = format!("{}/{}", *BASE_URL, file);
+            cx.requester
+                .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
+                .await?;
             send_captioned_picture(cx, link, &file).await?;
         }
         Command::Search { search_term } => {
+            cx.requester
+                .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+                .await?;
             let res = search(&search_term);
             if res.is_empty() {
                 cx.answer(format!("No results found for '{}'", search_term))

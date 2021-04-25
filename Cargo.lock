@@ -436,6 +436,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "imagesize"
+version = "0.8.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd27b2139f540ac627a6cb1b96105e86bfc5136d06236ea90272eec35a4f5088"
+
+[[package]]
 name = "indexmap"
 version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1271,6 +1277,7 @@ name = "walls-bot-rs"
 version = "0.2.2"
 dependencies = [
  "dotenv",
+ "imagesize",
  "lazy_static",
  "log",
  "pretty_env_logger",

@@ -17,6 +17,7 @@ depends = "$auto"
 
 [dependencies]
 dotenv = "0.15.0"
+imagesize = "0.8.8"
 lazy_static = "1.4.0"
 log = "0.4.14"
 pretty_env_logger = "0.4.0"

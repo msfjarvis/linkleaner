@@ -5,7 +5,7 @@ use dotenv::dotenv;
 
 use teloxide::{
     adaptors::auto_send::AutoRequest,
-    payloads::SendPhoto,
+    payloads::{SendDocument, SendPhoto},
     requests::MultipartRequest,
     types::{ChatAction, InputFile, ParseMode},
 };
@@ -26,20 +26,81 @@ lazy_static! {
     static ref BOT_NAME: String = env::var("BOT_NAME").unwrap_or_default();
 }
 
+/// Telegram mandates a photo can not be larger than 10 megabytes
+const MAX_FILE_SIZE: u64 = 10485760;
+
+/// Telegram mandates a photo can not be longer than 10000 pixels across any dimension
+const MAX_DIMEN: usize = 10000;
+
 type Cx = UpdateWithCx<AutoSend<Bot>, Message>;
 
 fn search(search_term: &str) -> Vec<String> {
     get_search_results((*FILES).clone(), search_term)
 }
 
+/// Performs exhaustive checks on the given file path to verify if it needs to be sent as
+/// a document.
+fn should_send_as_document(file_path: &str) -> bool {
+    log::debug!("Checking {}", file_path);
+    if std::fs::metadata(file_path).unwrap().len() > MAX_FILE_SIZE {
+        log::debug!("{}: file size is larger than MAX_FILE_SIZE", file_path);
+        return true;
+    }
+    if let Ok(imagesize) = imagesize::size(file_path) {
+        if imagesize.height > MAX_DIMEN || imagesize.width > MAX_DIMEN {
+            log::debug!("{}: dimensions are larger than MAX_DIMEN", file_path);
+            return true;
+        };
+        if imagesize.width / imagesize.height > 20 {
+            log::debug!("{}: dimension ratio is larger than 20", file_path);
+            return true;
+        }
+    };
+    false
+}
+
+/// Given a file name, get its path on disk
+fn get_file_path(file_name: &str) -> String {
+    format!("{}/{}", *BASE_DIR, file_name)
+}
+
+/// Given a file name, get its URL
+fn get_file_url(file_name: &str) -> String {
+    format!("{}/{}", *BASE_URL, file_name)
+}
+
+/// Send the given file as a document, with its name and link as caption
+fn send_captioned_document(
+    cx: Cx,
+    file_url: &str,
+    file_name: &str,
+    file_path: &str,
+) -> AutoRequest<MultipartRequest<SendDocument>> {
+    let file = InputFile::File(PathBuf::from(file_path));
+    cx.answer_document(file)
+        .caption(format!(
+            "[{}]({})",
+            &file_name_to_label(file_name),
+            file_url
+        ))
+        .parse_mode(ParseMode::MarkdownV2)
+        .reply_to_message_id(cx.update.id)
+}
+
+/// Send the given file as a picture, with its name and link as caption
 fn send_captioned_picture(
     cx: Cx,
-    link: String,
-    path: &str,
+    file_url: &str,
+    file_name: &str,
+    file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendPhoto>> {
-    let file = InputFile::File(PathBuf::from(format!("{}/{}", *BASE_DIR, path)));
+    let file = InputFile::File(PathBuf::from(file_path));
     cx.answer_photo(file)
-        .caption(format!("[{}]({})", &file_name_to_label(path), link))
+        .caption(format!(
+            "[{}]({})",
+            &file_name_to_label(file_name),
+            file_url
+        ))
         .parse_mode(ParseMode::MarkdownV2)
         .reply_to_message_id(cx.update.id)
 }
@@ -71,21 +132,37 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
                         .await?;
                 } else {
                     let file = get_random_file(results);
-                    let link = format!("{}/{}", *BASE_URL, file);
-                    cx.requester
-                        .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
-                        .await?;
-                    send_captioned_picture(cx, link, &file).await?;
+                    let path = get_file_path(&file);
+                    let link = get_file_url(&file);
+                    if should_send_as_document(&path) {
+                        cx.requester
+                            .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
+                            .await?;
+                        send_captioned_document(cx, &link, &file, &path).await?;
+                    } else {
+                        cx.requester
+                            .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
+                            .await?;
+                        send_captioned_picture(cx, &link, &file, &path).await?;
+                    }
                 }
             }
         }
         Command::Random => {
             let file = get_random_file((*FILES).clone());
-            let link = format!("{}/{}", *BASE_URL, file);
-            cx.requester
-                .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
-                .await?;
-            send_captioned_picture(cx, link, &file).await?;
+            let path = get_file_path(&file);
+            let link = get_file_url(&file);
+            if should_send_as_document(&path) {
+                cx.requester
+                    .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
+                    .await?;
+                send_captioned_document(cx, &link, &file, &path).await?;
+            } else {
+                cx.requester
+                    .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
+                    .await?;
+                send_captioned_picture(cx, &link, &file, &path).await?;
+            }
         }
         Command::Search { search_term } => {
             cx.requester

@@ -16,14 +16,14 @@ priority = "optional"
 depends = "$auto"
 
 [dependencies]
-teloxide = "0.2.0"
-tokio = "0.2.21"
-log = "0.4.8"
+dotenv = "0.15.0"
+lazy_static = "1.4.0"
+log = "0.4.14"
 pretty_env_logger = "0.4.0"
 rand = "0.8.3"
-lazy_static = "1.4.0"
-walkdir = "2.3.1"
-dotenv = "0.15.0"
+teloxide = { version = "0.4.0", features = ["macros", "auto-send"] }
+tokio = { version = "1.5.0", features = ["rt-multi-thread", "macros"] }
+walkdir = "2.3.2"
 
 [profile.release]
 lto = "fat"

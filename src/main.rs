@@ -12,7 +12,7 @@ use teloxide::{
 use teloxide::{prelude::*, utils::command::BotCommand};
 
 use lazy_static::lazy_static;
-use std::{env, error::Error};
+use std::{env, error::Error, path::PathBuf};
 
 use crate::commands::Command;
 use crate::utils::{
@@ -35,10 +35,11 @@ fn search(search_term: &str) -> Vec<String> {
 fn send_captioned_picture(
     cx: Cx,
     link: String,
-    file: &str,
+    path: &str,
 ) -> AutoRequest<MultipartRequest<SendPhoto>> {
-    cx.answer_photo(InputFile::url(&link))
-        .caption(format!("[{}]({})", &file_name_to_label(file), link))
+    let file = InputFile::File(PathBuf::from(format!("{}/{}", *BASE_DIR, path)));
+    cx.answer_photo(file)
+        .caption(format!("[{}]({})", &file_name_to_label(path), link))
         .parse_mode(ParseMode::MarkdownV2)
         .reply_to_message_id(cx.update.id)
 }

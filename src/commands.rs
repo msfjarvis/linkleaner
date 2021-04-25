@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use teloxide::utils::command::BotCommand;
 
 pub(crate) type SearchTerm = String;

@@ -135,6 +135,35 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
     None
 }
 
+async fn send_random_image(
+    cx: Cx,
+    images: Vec<String>,
+) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
+    let file = get_random_file(images);
+    let path = get_file_path(&file);
+    let link = get_file_url(&file);
+    if should_send_as_document(&path) {
+        cx.requester
+            .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
+            .await?;
+        let msg = send_captioned_document(cx, &link, &file, &path).await?;
+        if let Some(doc) = msg.document() {
+            let document = doc.clone();
+            remember_file(path, document.file_id);
+        };
+    } else {
+        cx.requester
+            .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
+            .await?;
+        let msg = send_captioned_picture(cx, &link, &file, &path).await?;
+        if let Some(photos) = msg.photo() {
+            let photo = photos[0].clone();
+            remember_file(path, photo.file_id);
+        };
+    }
+    Ok(())
+}
+
 async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + Sync>> {
     match command {
         Command::Help => {
@@ -161,54 +190,12 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
                         .reply_to_message_id(cx.update.id)
                         .await?;
                 } else {
-                    let file = get_random_file(results);
-                    let path = get_file_path(&file);
-                    let link = get_file_url(&file);
-                    if should_send_as_document(&path) {
-                        cx.requester
-                            .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
-                            .await?;
-                        let msg = send_captioned_document(cx, &link, &file, &path).await?;
-                        if let Some(doc) = msg.document() {
-                            let document = doc.clone();
-                            remember_file(path, document.file_id);
-                        }
-                    } else {
-                        cx.requester
-                            .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
-                            .await?;
-                        let msg = send_captioned_picture(cx, &link, &file, &path).await?;
-                        if let Some(photos) = msg.photo() {
-                            let photo = photos[0].clone();
-                            remember_file(path, photo.file_id);
-                        }
-                    }
+                    send_random_image(cx, results).await?;
                 }
             }
         }
         Command::Random => {
-            let file = get_random_file((*FILES).clone());
-            let path = get_file_path(&file);
-            let link = get_file_url(&file);
-            if should_send_as_document(&path) {
-                cx.requester
-                    .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
-                    .await?;
-                let msg = send_captioned_document(cx, &link, &file, &path).await?;
-                if let Some(doc) = msg.document() {
-                    let document = doc.clone();
-                    remember_file(path, document.file_id);
-                }
-            } else {
-                cx.requester
-                    .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
-                    .await?;
-                let msg = send_captioned_picture(cx, &link, &file, &path).await?;
-                if let Some(photos) = msg.photo() {
-                    let photo = photos[0].clone();
-                    remember_file(path, photo.file_id);
-                }
-            }
+            send_random_image(cx, (*FILES).clone()).await?;
         }
         Command::Search { search_term } => {
             cx.requester

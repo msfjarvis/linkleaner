@@ -123,6 +123,7 @@ mod tests {
     fn search_matches_full_terms_test() {
         assert!(tokenized_search("John_Doe_1.jpg", "Doe"));
         assert!(tokenized_search("Jane_Doe.jpg", "Jane"));
+        assert!(!tokenized_search("Jane_Doe_1.jpg", "1"));
     }
 
     #[test]

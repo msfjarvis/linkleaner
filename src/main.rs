@@ -16,7 +16,8 @@ use std::{env, error::Error, path::PathBuf};
 
 use crate::commands::Command;
 use crate::utils::{
-    file_name_to_label, get_random_file, get_search_results, index_pictures, join_results_to_string,
+    file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
+    join_results_to_string,
 };
 
 lazy_static! {
@@ -76,7 +77,11 @@ fn send_captioned_document(
     file_name: &str,
     file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendDocument>> {
-    let file = InputFile::File(PathBuf::from(file_path));
+    let file = if let Some(file_id) = get_remembered_file(file_path) {
+        InputFile::FileId(file_id)
+    } else {
+        InputFile::File(PathBuf::from(file_path))
+    };
     cx.answer_document(file)
         .caption(format!(
             "[{}]({})",
@@ -94,7 +99,11 @@ fn send_captioned_picture(
     file_name: &str,
     file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendPhoto>> {
-    let file = InputFile::File(PathBuf::from(file_path));
+    let file = if let Some(file_id) = get_remembered_file(file_path) {
+        InputFile::FileId(file_id)
+    } else {
+        InputFile::File(PathBuf::from(file_path))
+    };
     cx.answer_photo(file)
         .caption(format!(
             "[{}]({})",
@@ -103,6 +112,16 @@ fn send_captioned_picture(
         ))
         .parse_mode(ParseMode::MarkdownV2)
         .reply_to_message_id(cx.update.id)
+}
+
+#[allow(dead_code, unused_variables)]
+fn remember_file(file_path: String, file_id: String) {
+    let hash = get_file_hash(&file_path);
+}
+
+#[allow(dead_code, unused_variables)]
+fn get_remembered_file(file_path: &str) -> Option<String> {
+    None
 }
 
 async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + Sync>> {
@@ -138,12 +157,20 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
                         cx.requester
                             .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
                             .await?;
-                        send_captioned_document(cx, &link, &file, &path).await?;
+                        let msg = send_captioned_document(cx, &link, &file, &path).await?;
+                        if let Some(doc) = msg.document() {
+                            let document = doc.clone();
+                            remember_file(path, document.file_id);
+                        }
                     } else {
                         cx.requester
                             .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
                             .await?;
-                        send_captioned_picture(cx, &link, &file, &path).await?;
+                        let msg = send_captioned_picture(cx, &link, &file, &path).await?;
+                        if let Some(photos) = msg.photo() {
+                            let photo = photos[0].clone();
+                            remember_file(path, photo.file_id);
+                        }
                     }
                 }
             }
@@ -156,12 +183,20 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
                 cx.requester
                     .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
                     .await?;
-                send_captioned_document(cx, &link, &file, &path).await?;
+                let msg = send_captioned_document(cx, &link, &file, &path).await?;
+                if let Some(doc) = msg.document() {
+                    let document = doc.clone();
+                    remember_file(path, document.file_id);
+                }
             } else {
                 cx.requester
                     .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
                     .await?;
-                send_captioned_picture(cx, &link, &file, &path).await?;
+                let msg = send_captioned_picture(cx, &link, &file, &path).await?;
+                if let Some(photos) = msg.photo() {
+                    let photo = photos[0].clone();
+                    remember_file(path, photo.file_id);
+                }
             }
         }
         Command::Search { search_term } => {

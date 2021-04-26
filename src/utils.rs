@@ -1,5 +1,21 @@
 use rand::{thread_rng, Rng};
+use seahash::hash;
+use std::fs::File;
+use std::io::Read;
 use walkdir::WalkDir;
+
+pub(crate) fn get_file_hash(file_path: &str) -> u64 {
+    let bytes = get_file_bytes(file_path);
+    hash(&bytes)
+}
+
+fn get_file_bytes(file_path: &str) -> Vec<u8> {
+    let mut f = File::open(file_path).expect("no file found");
+    let metadata = std::fs::metadata(&file_path).expect("unable to read metadata");
+    let mut buffer = vec![0; metadata.len() as usize];
+    f.read_exact(&mut buffer).expect("buffer overflow");
+    buffer
+}
 
 pub(crate) fn escape_markdown_str(msg: &str) -> String {
     msg.replace("_", r"\_")

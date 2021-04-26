@@ -80,7 +80,7 @@ pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
     let tokens = file_name_to_label(&name)
         .split(' ')
         .map(|x| x.to_lowercase())
-        .filter(|x| x.parse::<f32>().is_err())
+        .filter(|x| x.parse::<u8>().is_err())
         .collect::<Vec<String>>();
     for token in tokens {
         if token == term {

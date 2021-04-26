@@ -38,6 +38,16 @@ fn search(search_term: &str) -> Vec<String> {
     get_search_results((*FILES).clone(), search_term)
 }
 
+/// Given a file name, get its path on disk
+fn get_file_path(file_name: &str) -> String {
+    format!("{}/{}", *BASE_DIR, file_name)
+}
+
+/// Given a file name, get its URL
+fn get_file_url(file_name: &str) -> String {
+    format!("{}/{}", *BASE_URL, file_name)
+}
+
 /// Performs exhaustive checks on the given file path to verify if it needs to be sent as
 /// a document.
 fn should_send_as_document(file_path: &str) -> bool {
@@ -57,16 +67,6 @@ fn should_send_as_document(file_path: &str) -> bool {
         }
     };
     false
-}
-
-/// Given a file name, get its path on disk
-fn get_file_path(file_name: &str) -> String {
-    format!("{}/{}", *BASE_DIR, file_name)
-}
-
-/// Given a file name, get its URL
-fn get_file_url(file_name: &str) -> String {
-    format!("{}/{}", *BASE_URL, file_name)
 }
 
 /// Send the given file as a document, with its name and link as caption
@@ -185,11 +185,6 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
     Ok(())
 }
 
-#[tokio::main]
-async fn main() {
-    run().await;
-}
-
 async fn run() {
     dotenv().ok();
     teloxide::enable_logging!();
@@ -198,4 +193,9 @@ async fn run() {
 
     let bot = Bot::from_env().auto_send();
     teloxide::commands_repl(bot, BOT_NAME.as_str(), answer).await;
+}
+
+#[tokio::main]
+async fn main() {
+    run().await;
 }

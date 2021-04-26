@@ -25,6 +25,7 @@ lazy_static! {
     static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
     static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
     static ref BOT_NAME: String = env::var("BOT_NAME").unwrap_or_default();
+    static ref TREE: sled::Db = sled::open("file_id_cache").unwrap();
 }
 
 /// Telegram mandates a photo can not be larger than 10 megabytes
@@ -117,10 +118,22 @@ fn send_captioned_picture(
 #[allow(dead_code, unused_variables)]
 fn remember_file(file_path: String, file_id: String) {
     let hash = get_file_hash(&file_path);
+    if let Err(error) = TREE.insert(&format!("{}", hash), file_id.as_str()) {
+        log::debug!("failed to insert {} into db: {}", file_id, error);
+    };
 }
 
 #[allow(dead_code, unused_variables)]
 fn get_remembered_file(file_path: &str) -> Option<String> {
+    let hash = get_file_hash(&file_path);
+    if let Ok(value) = TREE.get(&format!("{}", hash)) {
+        if let Some(ivec) = value {
+            if let Ok(id) = String::from_utf8(ivec.to_vec()) {
+                log::debug!("found id for {}: {}", file_path, id);
+                return Some(id);
+            }
+        };
+    };
     None
 }
 

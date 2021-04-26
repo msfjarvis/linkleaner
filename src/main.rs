@@ -115,7 +115,6 @@ fn send_captioned_picture(
         .reply_to_message_id(cx.update.id)
 }
 
-#[allow(dead_code, unused_variables)]
 fn remember_file(file_path: String, file_id: String) {
     let hash = get_file_hash(&file_path);
     if let Err(error) = TREE.insert(&format!("{}", hash), file_id.as_str()) {
@@ -123,7 +122,6 @@ fn remember_file(file_path: String, file_id: String) {
     };
 }
 
-#[allow(dead_code, unused_variables)]
 fn get_remembered_file(file_path: &str) -> Option<String> {
     let hash = get_file_hash(&file_path);
     if let Ok(value) = TREE.get(&format!("{}", hash)) {

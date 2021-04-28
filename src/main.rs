@@ -57,7 +57,7 @@ fn get_file_url(file_name: &str) -> String {
 /// a document.
 fn should_send_as_document(file_path: &str) -> bool {
     log::debug!("Checking {}", file_path);
-    for file in FORCE_DOCUMENT.split(",") {
+    for file in FORCE_DOCUMENT.split(',') {
         if file == file_path {
             log::debug!("{}: forced as document via env variable", file_path);
             return true;
@@ -133,13 +133,11 @@ fn remember_file(file_path: String, file_id: String) {
 
 fn get_remembered_file(file_path: &str) -> Option<String> {
     let hash = get_file_hash(&file_path);
-    if let Ok(value) = TREE.get(&format!("{}", hash)) {
-        if let Some(ivec) = value {
-            if let Ok(id) = String::from_utf8(ivec.to_vec()) {
-                log::debug!("found id for {}: {}", file_path, id);
-                return Some(id);
-            }
-        };
+    if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
+        if let Ok(id) = String::from_utf8(ivec.to_vec()) {
+            log::debug!("found id for {}: {}", file_path, id);
+            return Some(id);
+        }
     };
     None
 }

@@ -82,6 +82,9 @@ pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
         .map(|x| x.to_lowercase())
         .filter(|x| x.parse::<u8>().is_err())
         .collect::<Vec<String>>();
+    if term.contains(" ") {
+        return tokens.join(" ").contains(&term);
+    }
     for token in tokens {
         if token == term {
             return true;
@@ -132,6 +135,14 @@ mod tests {
         assert!(!items.is_empty());
         let results = get_search_results(items, "De");
         assert!(!results.contains(&String::from("Demi_Lovato.jpg")));
+        assert!(results.contains(&String::from("Ana_De_Armas.jpg")));
+    }
+
+    #[test]
+    fn search_matches_multiple_terms() {
+        let items = index_pictures("testdata");
+        assert!(!items.is_empty());
+        let results = get_search_results(items, "De Armas");
         assert!(results.contains(&String::from("Ana_De_Armas.jpg")));
     }
 }

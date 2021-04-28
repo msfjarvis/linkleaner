@@ -82,7 +82,7 @@ pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
         .map(|x| x.to_lowercase())
         .filter(|x| x.parse::<u8>().is_err())
         .collect::<Vec<String>>();
-    if term.contains(" ") {
+    if term.contains(' ') {
         return tokens.join(" ").contains(&term);
     }
     for token in tokens {

@@ -30,7 +30,7 @@ pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<S
     if search_term.contains('_') {
         items
             .into_iter()
-            .filter(|x| x.starts_with(&search_term))
+            .filter(|x| x.to_lowercase().starts_with(&search_term.to_lowercase()))
             .collect()
     } else {
         items
@@ -143,6 +143,14 @@ mod tests {
         let items = index_pictures("testdata");
         assert!(!items.is_empty());
         let results = get_search_results(items, "De Armas");
+        assert!(results.contains(&String::from("Ana_De_Armas.jpg")));
+    }
+
+    #[test]
+    fn search_matches_lowercase_terms() {
+        let items = index_pictures("testdata");
+        assert!(!items.is_empty());
+        let results = get_search_results(items, "de armas");
         assert!(results.contains(&String::from("Ana_De_Armas.jpg")));
     }
 }

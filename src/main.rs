@@ -58,7 +58,6 @@ fn get_file_url(file_name: &str) -> String {
 fn should_send_as_document(file_path: &str) -> bool {
     log::debug!("Checking {}", file_path);
     for file in FORCE_DOCUMENT.split(",") {
-        log::debug!("file: {}", file);
         if file == file_path {
             log::debug!("{}: forced as document via env variable", file_path);
             return true;

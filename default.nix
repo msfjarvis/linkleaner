@@ -1,2 +1,2 @@
 with import <nixpkgs> { };
-mkShell { buildInputs = [ pkgconfig openssl ]; }
+mkShell { buildInputs = [ cargo openssl pkgconfig rustc ]; }

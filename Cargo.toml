@@ -29,7 +29,7 @@ tokio = { version = "1.6.1", features = ["rt-multi-thread", "macros"] }
 walkdir = "2.3.2"
 
 [patch.crates-io]
-teloxide-core = { git = "https://github.com/teloxide/teloxide-core", rev = "e8ca6a84455ecdabce26a0b8ae1fb9d3a8308808" }
+teloxide-core = { git = "https://github.com/teloxide/teloxide-core", rev = "b69ce47d23bef363a0489f2593848bbaeb7c7aba" }
 
 [profile.release]
 lto = "fat"

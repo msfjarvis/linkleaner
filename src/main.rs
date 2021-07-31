@@ -127,7 +127,7 @@ fn send_captioned_picture(
 fn remember_file(file_path: String, file_id: String) {
     let hash = get_file_hash(&file_path);
     if let Err(error) = TREE.insert(&format!("{}", hash), file_id.as_str()) {
-        log::debug!("failed to insert {} into db: {}", file_id, error);
+        log::debug!("Failed to insert {} into db: {}", file_id, error);
     };
 }
 
@@ -135,7 +135,7 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
     let hash = get_file_hash(&file_path);
     if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
         if let Ok(id) = String::from_utf8(ivec.to_vec()) {
-            log::debug!("found id for {}: {}", file_path, id);
+            log::debug!("Found id for {}: {}", file_path, id);
             return Some(id);
         }
     };

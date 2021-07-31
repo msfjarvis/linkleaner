@@ -25,9 +25,6 @@ lazy_static! {
     static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
     static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
     static ref BOT_NAME: String = env::var("BOT_NAME").unwrap_or_default();
-    // TODO: Remove this once we've figured out why exactly do specific pictures
-    // pass the document check yet fail on Telegram.
-    static ref FORCE_DOCUMENT: String = env::var("FORCED_DOCUMENT_FILES").unwrap_or_default();
     static ref TREE: sled::Db = sled::open("file_id_cache").unwrap();
 }
 
@@ -57,18 +54,12 @@ fn get_file_url(file_name: &str) -> String {
 /// a document.
 fn should_send_as_document(file_path: &str) -> bool {
     log::debug!("Checking {}", file_path);
-    for file in FORCE_DOCUMENT.split(',') {
-        if file == file_path {
-            log::debug!("{}: forced as document via env variable", file_path);
-            return true;
-        }
-    }
     if std::fs::metadata(file_path).unwrap().len() > MAX_FILE_SIZE {
         log::debug!("{}: file size is larger than MAX_FILE_SIZE", file_path);
         return true;
     }
     if let Ok(imagesize) = imagesize::size(file_path) {
-        if imagesize.height > MAX_DIMEN || imagesize.width > MAX_DIMEN {
+        if imagesize.height + imagesize.width > MAX_DIMEN {
             log::debug!("{}: dimensions are larger than MAX_DIMEN", file_path);
             return true;
         };

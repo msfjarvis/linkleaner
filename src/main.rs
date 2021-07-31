@@ -50,21 +50,25 @@ fn get_file_url(file_name: &str) -> String {
     format!("{}/{}", *BASE_URL, file_name)
 }
 
+fn to_relative_path(file_name: &str) -> String {
+    file_name.replace(&*BASE_DIR, "")
+}
+
 /// Performs exhaustive checks on the given file path to verify if it needs to be sent as
 /// a document.
 fn should_send_as_document(file_path: &str) -> bool {
-    log::debug!("Checking {}", file_path);
+    let file_name = to_relative_path(file_path);
     if std::fs::metadata(file_path).unwrap().len() > MAX_FILE_SIZE {
-        log::debug!("{}: file size is larger than MAX_FILE_SIZE", file_path);
+        log::debug!("{}: file size is larger than MAX_FILE_SIZE", file_name);
         return true;
     }
     if let Ok(imagesize) = imagesize::size(file_path) {
         if imagesize.height + imagesize.width > MAX_DIMEN {
-            log::debug!("{}: dimensions are larger than MAX_DIMEN", file_path);
+            log::debug!("{}: dimensions are larger than MAX_DIMEN", file_name);
             return true;
         };
         if imagesize.width / imagesize.height > 20 {
-            log::debug!("{}: dimension ratio is larger than 20", file_path);
+            log::debug!("{}: dimension ratio is larger than 20", file_name);
             return true;
         }
     };
@@ -126,7 +130,8 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
     let hash = get_file_hash(&file_path);
     if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
         if let Ok(id) = String::from_utf8(ivec.to_vec()) {
-            log::debug!("Found id for {}: {}", file_path, id);
+            let file_name = to_relative_path(file_path);
+            log::debug!("Found id for {}: {}", file_name, id);
             return Some(id);
         }
     };

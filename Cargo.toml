@@ -1,6 +1,6 @@
 [package]
 name = "walls-bot-rs"
-version = "0.5.2"
+version = "0.6.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2018"
 license = "MIT/Apache-2.0"

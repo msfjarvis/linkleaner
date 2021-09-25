@@ -1,34 +1,32 @@
-name: Run unit tests
+name: Test Rust project
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os:
-          - macOS-latest
-          - ubuntu-latest
-          - windows-latest
-        rust:
-          - beta
-          - nightly
-          - stable
+        rust: [nightly]
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
 
     - name: Install Rust nightly with rustfmt and clippy
-      uses: actions-rs/toolchain@v1
+      uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
       with:
         profile: minimal
         toolchain: ${{ matrix.rust }}
         components: rustfmt, clippy
 
     - name: Cache cargo registry and build outputs
-      uses: actions/cache@v2
+      uses: actions/cache@26968a09c0ea4f3e233fdddbafd1166051a095f6
       with:
         path: |
           ~/.cargo/registry
@@ -36,24 +34,26 @@ jobs:
         key: ${{ runner.os }}-cargo-${{ matrix.rust }}-${{ hashFiles('Cargo.lock') }}
 
     - name: Check formatting
-      uses: actions-rs/cargo@v1
+      uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
       with:
         command: fmt
         args: -- --check
 
     - name: Annotate commit with clippy warnings
       if: "${{ github.event_name == 'push' }}"
-      uses: actions-rs/clippy-check@v1
+      uses: actions-rs/clippy-check@b5b5f21f4797c02da247df37026fcd0a5024aa4d
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         args: --all-features
 
     - name: Run cargo check
-      uses: actions-rs/cargo@v1
+      uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
       with:
         command: check
+        args: --all-features
 
     - name: Run cargo test
-      uses: actions-rs/cargo@v1
+      uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
       with:
         command: test
+        args: --all-features

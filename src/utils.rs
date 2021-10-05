@@ -35,7 +35,7 @@ pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<S
     } else {
         items
             .into_iter()
-            .filter(|x| tokenized_search(x, &search_term))
+            .filter(|x| tokenized_search(x, search_term))
             .collect()
     }
 }
@@ -77,7 +77,7 @@ pub(crate) fn join_results_to_string(
 
 pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
     let term = search_term.to_lowercase();
-    let tokens = file_name_to_label(&name)
+    let tokens = file_name_to_label(name)
         .split(' ')
         .map(|x| x.to_lowercase())
         .filter(|x| x.parse::<u8>().is_err())

@@ -127,7 +127,7 @@ fn remember_file(file_path: String, file_id: String) {
 }
 
 fn get_remembered_file(file_path: &str) -> Option<String> {
-    let hash = get_file_hash(&file_path);
+    let hash = get_file_hash(file_path);
     if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
         if let Ok(id) = String::from_utf8(ivec.to_vec()) {
             let file_name = to_relative_path(file_path);

@@ -1,12 +1,12 @@
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
+    branches:
+      - main
 
 name: Check Rust code
 jobs:
   check:
     uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
-    secrets:
-      github-token: "${{ secrets.GITHUB_TOKEN }}"

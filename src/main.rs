@@ -29,7 +29,7 @@ lazy_static! {
 }
 
 /// Telegram mandates a photo can not be larger than 10 megabytes
-const MAX_FILE_SIZE: u64 = 10485760;
+const MAX_FILE_SIZE: u64 = 10_485_760;
 
 /// Telegram mandates a photo can not be longer than 10000 pixels across any dimension
 const MAX_DIMEN: usize = 10000;
@@ -77,7 +77,7 @@ fn should_send_as_document(file_path: &str) -> bool {
 
 /// Send the given file as a document, with its name and link as caption
 fn send_captioned_document(
-    cx: Cx,
+    cx: &Cx,
     file_url: &str,
     file_name: &str,
     file_path: &str,
@@ -99,7 +99,7 @@ fn send_captioned_document(
 
 /// Send the given file as a picture, with its name and link as caption
 fn send_captioned_picture(
-    cx: Cx,
+    cx: &Cx,
     file_url: &str,
     file_name: &str,
     file_path: &str,
@@ -119,9 +119,9 @@ fn send_captioned_picture(
         .reply_to_message_id(cx.update.id)
 }
 
-fn remember_file(file_path: String, file_id: String) {
-    let hash = get_file_hash(&file_path);
-    if let Err(error) = TREE.insert(&format!("{}", hash), file_id.as_str()) {
+fn remember_file(file_path: &str, file_id: &str) {
+    let hash = get_file_hash(file_path);
+    if let Err(error) = TREE.insert(&format!("{}", hash), file_id) {
         log::debug!("Failed to insert {} into db: {}", file_id, error);
     };
 }
@@ -149,19 +149,19 @@ async fn send_random_image(
         cx.requester
             .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
             .await?;
-        let msg = send_captioned_document(cx, &link, &file, &path).await?;
+        let msg = send_captioned_document(&cx, &link, &file, &path).await?;
         if let Some(doc) = msg.document() {
             let document = doc.clone();
-            remember_file(path, document.file_id);
+            remember_file(&path, &document.file_id);
         };
     } else {
         cx.requester
             .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
             .await?;
-        let msg = send_captioned_picture(cx, &link, &file, &path).await?;
+        let msg = send_captioned_picture(&cx, &link, &file, &path).await?;
         if let Some(photos) = msg.photo() {
             let photo = photos[0].clone();
-            remember_file(path, photo.file_id);
+            remember_file(&path, &photo.file_id);
         };
     }
     Ok(())
@@ -210,7 +210,7 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
                     .reply_to_message_id(cx.update.id)
                     .await?;
             } else {
-                cx.answer(join_results_to_string(search_term, res, &**BASE_URL))
+                cx.answer(join_results_to_string(&search_term, res, &**BASE_URL))
                     .parse_mode(ParseMode::MarkdownV2)
                     .disable_web_page_preview(true)
                     .reply_to_message_id(cx.update.id)

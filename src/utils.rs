@@ -56,7 +56,7 @@ pub(crate) fn index_pictures(directory: &str) -> Vec<String> {
 }
 
 pub(crate) fn join_results_to_string(
-    search_term: String,
+    search_term: &str,
     items: Vec<String>,
     base_url: &str,
 ) -> String {

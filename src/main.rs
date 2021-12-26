@@ -222,6 +222,7 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
 }
 
 async fn run() {
+    console_subscriber::init();
     dotenv().ok();
     teloxide::enable_logging!();
 

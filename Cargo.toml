@@ -16,6 +16,7 @@ priority = "optional"
 depends = "$auto"
 
 [dependencies]
+console-subscriber = "0.1.0"
 dotenv = "0.15.0"
 fastrand = "1.6.0"
 imagesize = "0.9.0"

@@ -9,6 +9,7 @@ keywords = ["telegram", "bot"]
 repository = "https://github.com/msfjarvis/walls-bot-rs"
 homepage = "https://github.com/msfjarvis/walls-bot-rs"
 readme = "README.md"
+include = ["src/**/*", "LICENSE-*", "README.md"]
 
 [package.metadata.deb]
 extended-description = "Telegram bot that scans a local filesystem for images and sends them to Telegram when commands are issued."

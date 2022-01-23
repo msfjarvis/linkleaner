@@ -22,7 +22,7 @@ tracing = [ "console-subscriber" ]
 [dependencies]
 console-subscriber = { version = "0.1.1", optional = true }
 dotenv = "0.15.0"
-fastrand = "1.6.0"
+fastrand = "1.7.0"
 imagesize = "0.9.0"
 lazy_static = "1.4.0"
 log = "0.4.14"

@@ -17,7 +17,7 @@ fn get_file_bytes(file_path: &str) -> Vec<u8> {
 }
 
 pub(crate) fn escape_markdown_str(msg: &str) -> String {
-    msg.replace("_", r"\_")
+    msg.replace('_', r"\_")
 }
 
 pub(crate) fn file_name_to_label(msg: &str) -> String {
@@ -42,7 +42,10 @@ pub(crate) fn get_search_results(items: Vec<String>, search_term: &str) -> Vec<S
 
 pub(crate) fn index_pictures(directory: &str) -> Vec<String> {
     let mut images: Vec<String> = Vec::new();
-    for entry in WalkDir::new(directory).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(directory)
+        .into_iter()
+        .filter_map(std::result::Result::ok)
+    {
         images.push(String::from(
             entry
                 .path()
@@ -50,7 +53,7 @@ pub(crate) fn index_pictures(directory: &str) -> Vec<String> {
                 .unwrap()
                 .to_str()
                 .unwrap(),
-        ))
+        ));
     }
     images
 }
@@ -62,9 +65,9 @@ pub(crate) fn join_results_to_string(
 ) -> String {
     let mut ret = format!(
         "Search results for '{}':\n",
-        file_name_to_label(&search_term)
+        file_name_to_label(search_term)
     );
-    for item in items.iter() {
+    for item in &items {
         ret.push_str(&format!(
             "[{}]({}/{})\n",
             file_name_to_label(item),
@@ -79,7 +82,7 @@ pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
     let term = search_term.to_lowercase();
     let tokens = file_name_to_label(name)
         .split(' ')
-        .map(|x| x.to_lowercase())
+        .map(str::to_lowercase)
         .filter(|x| x.parse::<u8>().is_err())
         .collect::<Vec<String>>();
     if term.contains(' ') {

@@ -184,7 +184,7 @@ async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + S
                     .reply_to_message_id(cx.update.id)
                     .await?;
             } else {
-                let results = search(&search_term.replace(" ", "_"));
+                let results = search(&search_term.replace(' ', "_"));
                 if results.is_empty() {
                     cx.requester
                         .send_chat_action(cx.update.chat.id, ChatAction::Typing)

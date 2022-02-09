@@ -9,7 +9,7 @@ use teloxide::{
     requests::MultipartRequest,
     types::{ChatAction, InputFile, ParseMode},
 };
-use teloxide::{prelude::*, utils::command::BotCommand};
+use teloxide::{prelude2::*, utils::command::BotCommand};
 
 use lazy_static::lazy_static;
 use std::{env, error::Error, path::PathBuf};
@@ -33,8 +33,6 @@ const MAX_FILE_SIZE: u64 = 10_485_760;
 
 /// Telegram mandates a photo can not be longer than 10000 pixels across any dimension
 const MAX_DIMEN: usize = 10000;
-
-type Cx = UpdateWithCx<AutoSend<Bot>, Message>;
 
 fn search(search_term: &str) -> Vec<String> {
     get_search_results((*FILES).clone(), search_term)
@@ -77,46 +75,48 @@ fn should_send_as_document(file_path: &str) -> bool {
 
 /// Send the given file as a document, with its name and link as caption
 fn send_captioned_document(
-    cx: &Cx,
+    bot: &AutoSend<Bot>,
+    message: &Message,
     file_url: &str,
     file_name: &str,
     file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendDocument>> {
     let file = if let Some(file_id) = get_remembered_file(file_path) {
-        InputFile::FileId(file_id)
+        InputFile::file_id(file_id)
     } else {
-        InputFile::File(PathBuf::from(file_path))
+        InputFile::file(PathBuf::from(file_path))
     };
-    cx.answer_document(file)
+    bot.send_document(message.chat.id, file)
         .caption(format!(
             "[{}]({})",
             &file_name_to_label(file_name),
             file_url
         ))
         .parse_mode(ParseMode::MarkdownV2)
-        .reply_to_message_id(cx.update.id)
+        .reply_to_message_id(message.id)
 }
 
 /// Send the given file as a picture, with its name and link as caption
 fn send_captioned_picture(
-    cx: &Cx,
+    bot: &AutoSend<Bot>,
+    message: &Message,
     file_url: &str,
     file_name: &str,
     file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendPhoto>> {
     let file = if let Some(file_id) = get_remembered_file(file_path) {
-        InputFile::FileId(file_id)
+        InputFile::file_id(file_id)
     } else {
-        InputFile::File(PathBuf::from(file_path))
+        InputFile::file(PathBuf::from(file_path))
     };
-    cx.answer_photo(file)
+    bot.send_photo(message.chat.id, file)
         .caption(format!(
             "[{}]({})",
             &file_name_to_label(file_name),
             file_url
         ))
         .parse_mode(ParseMode::MarkdownV2)
-        .reply_to_message_id(cx.update.id)
+        .reply_to_message_id(message.id)
 }
 
 fn remember_file(file_path: &str, file_id: &str) {
@@ -139,26 +139,25 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
 }
 
 async fn send_random_image(
-    cx: Cx,
+    bot: &AutoSend<Bot>,
+    message: &Message,
     images: Vec<String>,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     let file = get_random_file(images);
     let path = get_file_path(&file);
     let link = get_file_url(&file);
     if should_send_as_document(&path) {
-        cx.requester
-            .send_chat_action(cx.update.chat.id, ChatAction::UploadDocument)
+        bot.send_chat_action(message.chat.id, ChatAction::UploadDocument)
             .await?;
-        let msg = send_captioned_document(&cx, &link, &file, &path).await?;
+        let msg = send_captioned_document(&bot, &message, &link, &file, &path).await?;
         if let Some(doc) = msg.document() {
             let document = doc.clone();
             remember_file(&path, &document.file_id);
         };
     } else {
-        cx.requester
-            .send_chat_action(cx.update.chat.id, ChatAction::UploadPhoto)
+        bot.send_chat_action(message.chat.id, ChatAction::UploadPhoto)
             .await?;
-        let msg = send_captioned_picture(&cx, &link, &file, &path).await?;
+        let msg = send_captioned_picture(&bot, &message, &link, &file, &path).await?;
         if let Some(photos) = msg.photo() {
             let photo = photos[0].clone();
             remember_file(&path, &photo.file_id);
@@ -167,54 +166,64 @@ async fn send_random_image(
     Ok(())
 }
 
-async fn answer(cx: Cx, command: Command) -> Result<(), Box<dyn Error + Send + Sync>> {
+async fn answer(
+    bot: AutoSend<Bot>,
+    message: Message,
+    command: Command,
+) -> Result<(), Box<dyn Error + Send + Sync>> {
     match command {
         Command::Help => {
-            cx.requester
-                .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
                 .await?;
-            cx.answer(Command::descriptions()).await?;
+            bot.send_message(message.chat.id, Command::descriptions())
+                .await?;
         }
         Command::Pic { search_term } => {
             if search_term.is_empty() {
-                cx.requester
-                    .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
-                cx.answer("No search query passed")
-                    .reply_to_message_id(cx.update.id)
+                bot.send_message(message.chat.id, "No search query passed")
+                    .reply_to_message_id(message.id)
                     .await?;
             } else {
                 let results = search(&search_term.replace(' ', "_"));
                 if results.is_empty() {
-                    cx.requester
-                        .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+                    bot.send_chat_action(message.chat.id, ChatAction::Typing)
                         .await?;
-                    cx.answer(format!("No picture found for '{}'", search_term))
-                        .reply_to_message_id(cx.update.id)
-                        .await?;
+                    bot.send_message(
+                        message.chat.id,
+                        format!("No picture found for '{}'", search_term),
+                    )
+                    .reply_to_message_id(message.id)
+                    .await?;
                 } else {
-                    send_random_image(cx, results).await?;
+                    send_random_image(&bot, &message, results).await?;
                 }
             }
         }
         Command::Random => {
-            send_random_image(cx, (*FILES).clone()).await?;
+            send_random_image(&bot, &message, (*FILES).clone()).await?;
         }
         Command::Search { search_term } => {
-            cx.requester
-                .send_chat_action(cx.update.chat.id, ChatAction::Typing)
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
                 .await?;
             let res = search(&search_term);
             if res.is_empty() {
-                cx.answer(format!("No results found for '{}'", search_term))
-                    .reply_to_message_id(cx.update.id)
-                    .await?;
+                bot.send_message(
+                    message.chat.id,
+                    format!("No results found for '{}'", search_term),
+                )
+                .reply_to_message_id(message.id)
+                .await?;
             } else {
-                cx.answer(join_results_to_string(&search_term, res, &**BASE_URL))
-                    .parse_mode(ParseMode::MarkdownV2)
-                    .disable_web_page_preview(true)
-                    .reply_to_message_id(cx.update.id)
-                    .await?;
+                bot.send_message(
+                    message.chat.id,
+                    join_results_to_string(&search_term, res, &**BASE_URL),
+                )
+                .parse_mode(ParseMode::MarkdownV2)
+                .disable_web_page_preview(true)
+                .reply_to_message_id(message.id)
+                .await?;
             }
         }
     };
@@ -230,7 +239,7 @@ async fn run() {
     log::debug!("Indexed {} files", FILES.len());
 
     let bot = Bot::from_env().auto_send();
-    teloxide::commands_repl(bot, BOT_NAME.as_str(), answer).await;
+    teloxide::repls2::commands_repl(bot, answer, Command::ty()).await;
 }
 
 #[tokio::main]

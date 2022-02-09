@@ -9,7 +9,7 @@ use teloxide::{
     requests::MultipartRequest,
     types::{ChatAction, InputFile, ParseMode},
 };
-use teloxide::{prelude::*, utils::command::BotCommand};
+use teloxide::{prelude2::*, utils::command::BotCommand};
 
 use lazy_static::lazy_static;
 use std::{env, error::Error, path::PathBuf};
@@ -83,9 +83,9 @@ fn send_captioned_document(
     file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendDocument>> {
     let file = if let Some(file_id) = get_remembered_file(file_path) {
-        InputFile::FileId(file_id)
+        InputFile::file_id(file_id)
     } else {
-        InputFile::File(PathBuf::from(file_path))
+        InputFile::file(PathBuf::from(file_path))
     };
     cx.answer_document(file)
         .caption(format!(
@@ -105,9 +105,9 @@ fn send_captioned_picture(
     file_path: &str,
 ) -> AutoRequest<MultipartRequest<SendPhoto>> {
     let file = if let Some(file_id) = get_remembered_file(file_path) {
-        InputFile::FileId(file_id)
+        InputFile::file_id(file_id)
     } else {
-        InputFile::File(PathBuf::from(file_path))
+        InputFile::file(PathBuf::from(file_path))
     };
     cx.answer_photo(file)
         .caption(format!(

@@ -147,14 +147,16 @@ async fn send_random_image(
     let path = get_file_path(&file);
     let link = get_file_url(&file);
     if should_send_as_document(&path) {
-        bot.send_chat_action(message.chat.id, ChatAction::UploadDocument).await?;
+        bot.send_chat_action(message.chat.id, ChatAction::UploadDocument)
+            .await?;
         let msg = send_captioned_document(&bot, &message, &link, &file, &path).await?;
         if let Some(doc) = msg.document() {
             let document = doc.clone();
             remember_file(&path, &document.file_id);
         };
     } else {
-        bot.send_chat_action(message.chat.id, ChatAction::UploadPhoto).await?;
+        bot.send_chat_action(message.chat.id, ChatAction::UploadPhoto)
+            .await?;
         let msg = send_captioned_picture(&bot, &message, &link, &file, &path).await?;
         if let Some(photos) = msg.photo() {
             let photo = photos[0].clone();
@@ -171,22 +173,29 @@ async fn answer(
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     match command {
         Command::Help => {
-            bot.send_chat_action(message.chat.id, ChatAction::Typing).await?;
-            bot.send_message(message.chat.id, Command::descriptions()).await?;
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                .await?;
+            bot.send_message(message.chat.id, Command::descriptions())
+                .await?;
         }
         Command::Pic { search_term } => {
             if search_term.is_empty() {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing).await?;
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
                 bot.send_message(message.chat.id, "No search query passed")
                     .reply_to_message_id(message.id)
                     .await?;
             } else {
                 let results = search(&search_term.replace(' ', "_"));
                 if results.is_empty() {
-                    bot.send_chat_action(message.chat.id, ChatAction::Typing).await?;
-                    bot.send_message(message.chat.id, format!("No picture found for '{}'", search_term))
-                        .reply_to_message_id(message.id)
+                    bot.send_chat_action(message.chat.id, ChatAction::Typing)
                         .await?;
+                    bot.send_message(
+                        message.chat.id,
+                        format!("No picture found for '{}'", search_term),
+                    )
+                    .reply_to_message_id(message.id)
+                    .await?;
                 } else {
                     send_random_image(&bot, &message, results).await?;
                 }
@@ -196,18 +205,25 @@ async fn answer(
             send_random_image(&bot, &message, (*FILES).clone()).await?;
         }
         Command::Search { search_term } => {
-            bot.send_chat_action(message.chat.id, ChatAction::Typing).await?;
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                .await?;
             let res = search(&search_term);
             if res.is_empty() {
-                bot.send_message(message.chat.id, format!("No results found for '{}'", search_term))
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.send_message(
+                    message.chat.id,
+                    format!("No results found for '{}'", search_term),
+                )
+                .reply_to_message_id(message.id)
+                .await?;
             } else {
-                bot.send_message(message.chat.id, join_results_to_string(&search_term, res, &**BASE_URL))
-                    .parse_mode(ParseMode::MarkdownV2)
-                    .disable_web_page_preview(true)
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.send_message(
+                    message.chat.id,
+                    join_results_to_string(&search_term, res, &**BASE_URL),
+                )
+                .parse_mode(ParseMode::MarkdownV2)
+                .disable_web_page_preview(true)
+                .reply_to_message_id(message.id)
+                .await?;
             }
         }
     };

@@ -1,0 +1,76 @@
+targets = [
+  { triple = "x86_64-unknown-linux-gnu" },
+  { triple = "aarch64-unknown-linux-gnu" },
+  { triple = "x86_64-unknown-linux-musl" },
+  { triple = "aarch64-apple-darwin" },
+  { triple = "x86_64-apple-darwin" },
+  { triple = "x86_64-pc-windows-msvc" },
+]
+
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "warn"
+notice = "warn"
+ignore = [
+  "RUSTSEC-2020-0070",
+  "RUSTSEC-2020-0159",
+]
+[licenses]
+unlicensed = "deny"
+allow = [
+  "MIT",
+  "Apache-2.0",
+]
+copyleft = "allow"
+allow-osi-fsf-free = "neither"
+default = "deny"
+confidence-threshold = 0.8
+exceptions = [
+  { allow = ["BSD-3-Clause"], name = "never", version = "*" },
+  { allow = ["BSD-3-Clause"], name = "instant", version = "*" },
+  { allow = ["MIT", "ISC", "OpenSSL"], name = "ring", version = "*" },
+  { allow = ["ISC"], name = "untrusted", version = "*" },
+  { allow = ["ISC"], name = "webpki", version = "*" },
+  { allow = ["Apache-2.0", "MIT", "BSD-3-Clause"], name = "encoding_rs", version = "*" },
+]
+
+[[licenses.clarify]]
+name = "ring"
+version = "*"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [
+  { path = "LICENSE", hash = 0xbd0eed23 }
+]
+[[licenses.clarify]]
+name = "encoding_rs"
+version = "*"
+expression = "(Apache-2.0 OR MIT) AND BSD-3-Clause"
+license-files = [
+    { path = "COPYRIGHT", hash = 0x39f8ad31 }
+]
+
+[licenses.private]
+ignore = false
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"
+highlight = "all"
+skip = [
+  { name = "cfg-if" },
+  { name = "crossbeam-epoch" },
+  { name = "crossbeam-utils" },
+  { name = "lock_api" },
+  { name = "itoa" },
+  { name = "memoffset" },
+  { name = "parking_lot" },
+  { name = "parking_lot_core" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-git = []

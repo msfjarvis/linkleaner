@@ -64,7 +64,6 @@ skip = [
   { name = "crossbeam-epoch" },
   { name = "crossbeam-utils" },
   { name = "lock_api" },
-  { name = "itoa" },
   { name = "memoffset" },
   { name = "parking_lot" },
   { name = "parking_lot_core" },

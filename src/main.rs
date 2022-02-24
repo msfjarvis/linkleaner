@@ -149,7 +149,7 @@ async fn send_random_image(
     if should_send_as_document(&path) {
         bot.send_chat_action(message.chat.id, ChatAction::UploadDocument)
             .await?;
-        let msg = send_captioned_document(&bot, &message, &link, &file, &path).await?;
+        let msg = send_captioned_document(bot, message, &link, &file, &path).await?;
         if let Some(doc) = msg.document() {
             let document = doc.clone();
             remember_file(&path, &document.file_id);
@@ -157,7 +157,7 @@ async fn send_random_image(
     } else {
         bot.send_chat_action(message.chat.id, ChatAction::UploadPhoto)
             .await?;
-        let msg = send_captioned_picture(&bot, &message, &link, &file, &path).await?;
+        let msg = send_captioned_picture(bot, message, &link, &file, &path).await?;
         if let Some(photos) = msg.photo() {
             let photo = photos[0].clone();
             remember_file(&path, &photo.file_id);

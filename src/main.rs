@@ -234,7 +234,6 @@ async fn run() {
     #[cfg(feature = "console")]
     console_subscriber::init();
     dotenv().ok();
-    teloxide::enable_logging!();
 
     log::debug!("Indexed {} files", FILES.len());
 

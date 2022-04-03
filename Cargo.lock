@@ -1551,9 +1551,9 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 
 [[package]]
 name = "teloxide"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1661e7429fceb92080e41548b2fcc5b9cc38db8740316efbd9b53ba693cac0cf"
+checksum = "5e0471ee22325fa9d4d0574afb21104c28466dbd02495dbd5fef2d431c58c7a5"
 dependencies = [
  "aquamarine",
  "async-trait",
@@ -1578,9 +1578,9 @@ dependencies = [
 
 [[package]]
 name = "teloxide-core"
-version = "0.4.1"
+version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d067597ddd4bee33b348a6de609beb653d0b226eb721ff08f57e1c65d04ec9d"
+checksum = "dc4d7ef8a6e39097e49a2481169fa9fc0ff627d8321a7ab52cf6d5ac47850fff"
 dependencies = [
  "bitflags",
  "bytes",

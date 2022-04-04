@@ -17,7 +17,6 @@ notice = "warn"
 ignore = [
   "RUSTSEC-2020-0070",
   "RUSTSEC-2020-0159",
-  "RUSTSEC-2022-0013",
 ]
 [licenses]
 unlicensed = "deny"
@@ -68,6 +67,7 @@ skip = [
   { name = "memoffset" },
   { name = "parking_lot" },
   { name = "parking_lot_core" },
+  { name = "tokio-util" },
 ]
 
 [sources]

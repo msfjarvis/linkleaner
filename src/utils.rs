@@ -8,6 +8,7 @@ pub(crate) fn get_file_hash(file_path: &str) -> u64 {
     hash(&bytes)
 }
 
+#[allow(clippy::cast_possible_truncation)]
 fn get_file_bytes(file_path: &str) -> Vec<u8> {
     let mut f = File::open(file_path).expect("no file found");
     let metadata = std::fs::metadata(&file_path).expect("unable to read metadata");

@@ -60,14 +60,14 @@ pub(crate) fn index_pictures(directory: &str) -> Vec<String> {
 
 pub(crate) fn join_results_to_string(
     search_term: &str,
-    items: Vec<String>,
+    items: &[String],
     base_url: &str,
 ) -> String {
     let mut ret = format!(
         "Search results for '{}':\n",
         file_name_to_label(search_term)
     );
-    for item in &items {
+    for item in items {
         ret.push_str(&format!(
             "[{}]({}/{})\n",
             file_name_to_label(item),
@@ -96,7 +96,7 @@ pub(crate) fn tokenized_search(name: &str, search_term: &str) -> bool {
     false
 }
 
-pub(crate) fn get_random_file(files: Vec<String>) -> String {
+pub(crate) fn get_random_file(files: &[String]) -> String {
     files
         .get(fastrand::usize(..files.len()))
         .unwrap()

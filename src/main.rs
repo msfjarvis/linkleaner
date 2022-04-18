@@ -143,7 +143,7 @@ async fn send_random_image(
     message: &Message,
     images: Vec<String>,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    let file = get_random_file(images);
+    let file = get_random_file(&images);
     let path = get_file_path(&file);
     let link = get_file_url(&file);
     if should_send_as_document(&path) {
@@ -218,7 +218,7 @@ async fn answer(
             } else {
                 bot.send_message(
                     message.chat.id,
-                    join_results_to_string(&search_term, res, &**BASE_URL),
+                    join_results_to_string(&search_term, &res, &**BASE_URL),
                 )
                 .parse_mode(ParseMode::MarkdownV2)
                 .disable_web_page_preview(true)

@@ -9,7 +9,7 @@ use teloxide::{
     requests::MultipartRequest,
     types::{ChatAction, InputFile, ParseMode},
 };
-use teloxide::{prelude2::*, utils::command::BotCommand};
+use teloxide::{prelude::*, utils::command::BotCommands};
 
 use lazy_static::lazy_static;
 use std::{env, error::Error, path::PathBuf};
@@ -175,7 +175,7 @@ async fn answer(
         Command::Help => {
             bot.send_chat_action(message.chat.id, ChatAction::Typing)
                 .await?;
-            bot.send_message(message.chat.id, Command::descriptions())
+            bot.send_message(message.chat.id, Command::descriptions().to_string())
                 .await?;
         }
         Command::Pic { search_term } => {
@@ -238,7 +238,7 @@ async fn run() {
     log::debug!("Indexed {} files", FILES.len());
 
     let bot = Bot::from_env().auto_send();
-    teloxide::repls2::commands_repl(bot, answer, Command::ty()).await;
+    teloxide::commands_repl(bot, answer, Command::ty()).await;
 }
 
 #[tokio::main]

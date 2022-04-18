@@ -1,8 +1,8 @@
-use teloxide::utils::command::BotCommand;
+use teloxide::utils::command::BotCommands;
 
 pub(crate) type SearchTerm = String;
 
-#[derive(BotCommand, Clone)]
+#[derive(BotCommands, Clone)]
 #[command(rename = "lowercase", description = "These commands are supported:")]
 pub(crate) enum Command {
     #[command(description = "display this text.")]

@@ -29,7 +29,7 @@ log = "0.4.16"
 pretty_env_logger = "0.4.0"
 seahash = "4.1.0"
 sled = "0.34.7"
-teloxide = { version = "0.8.1", features = ["auto-send", "cache-me", "ctrlc_handler", "macros", "rustls"], default-features = false }
+teloxide = { version = "0.8.2", features = ["auto-send", "cache-me", "ctrlc_handler", "macros", "rustls"], default-features = false }
 tokio = { version = "1.17.0", features = ["rt-multi-thread", "macros"] }
 walkdir = "2.3.2"
 

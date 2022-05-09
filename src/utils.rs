@@ -1,4 +1,5 @@
 use seahash::hash;
+use std::fmt::Write as _;
 use std::fs::File;
 use std::io::Read;
 use walkdir::WalkDir;
@@ -69,12 +70,7 @@ pub(crate) fn join_results_to_string(
         file_name_to_label(search_term)
     );
     for item in items {
-        ret.push_str(&format!(
-            "[{}]({}/{})\n",
-            file_name_to_label(item),
-            base_url,
-            item
-        ));
+        let _ = writeln!(ret, "[{}]({}/{})", file_name_to_label(item), base_url, item);
     }
     ret
 }

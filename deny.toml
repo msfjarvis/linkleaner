@@ -14,9 +14,7 @@ vulnerability = "deny"
 unmaintained = "warn"
 yanked = "warn"
 notice = "warn"
-ignore = [
-  "RUSTSEC-2020-0159",
-]
+ignore = []
 [licenses]
 unlicensed = "deny"
 allow = [

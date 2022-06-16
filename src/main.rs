@@ -1,25 +1,26 @@
 mod commands;
 mod utils;
 
-use dotenv::dotenv;
+use std::{env, error::Error, path::PathBuf};
 
+use dotenv::dotenv;
+use once_cell::sync::Lazy;
 use teloxide::{
     adaptors::auto_send::AutoRequest,
     payloads::{SendDocument, SendPhoto},
+    prelude::*,
     requests::MultipartRequest,
     types::{ChatAction, InputFile, ParseMode},
-};
-use teloxide::{prelude::*, utils::command::BotCommands};
-
-use std::{env, error::Error, path::PathBuf};
-
-use crate::commands::Command;
-use crate::utils::{
-    file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
-    join_results_to_string,
+    utils::command::BotCommands,
 };
 
-use once_cell::sync::Lazy;
+use crate::{
+    commands::Command,
+    utils::{
+        file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
+        join_results_to_string,
+    },
+};
 
 static BASE_URL: Lazy<String> =
     Lazy::new(|| env::var("BASE_URL").expect("BASE_URL must be defined"));

@@ -1,7 +1,6 @@
+use std::{fmt::Write as _, fs::File, io::Read};
+
 use seahash::hash;
-use std::fmt::Write as _;
-use std::fs::File;
-use std::io::Read;
 use walkdir::WalkDir;
 
 pub(crate) fn get_file_hash(file_path: &str) -> u64 {

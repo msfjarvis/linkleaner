@@ -11,7 +11,6 @@ use teloxide::{
 };
 use teloxide::{prelude::*, utils::command::BotCommands};
 
-use lazy_static::lazy_static;
 use std::{env, error::Error, path::PathBuf};
 
 use crate::commands::Command;
@@ -20,13 +19,14 @@ use crate::utils::{
     join_results_to_string,
 };
 
-lazy_static! {
-    static ref FILES: Vec<String> = index_pictures(&**BASE_DIR);
-    static ref BASE_URL: String = env::var("BASE_URL").expect("BASE_URL must be defined");
-    static ref BASE_DIR: String = env::var("BASE_DIR").expect("BASE_DIR must be defined");
-    static ref BOT_NAME: String = env::var("BOT_NAME").unwrap_or_default();
-    static ref TREE: sled::Db = sled::open("file_id_cache").unwrap();
-}
+use once_cell::sync::Lazy;
+
+static BASE_URL: Lazy<String> =
+    Lazy::new(|| env::var("BASE_URL").expect("BASE_URL must be defined"));
+static BASE_DIR: Lazy<String> =
+    Lazy::new(|| env::var("BASE_DIR").expect("BASE_DIR must be defined"));
+static TREE: Lazy<sled::Db> = Lazy::new(|| sled::open("file_id_cache").unwrap());
+static FILES: Lazy<Vec<String>> = Lazy::new(|| index_pictures(&BASE_DIR));
 
 /// Telegram mandates a photo can not be larger than 10 megabytes
 const MAX_FILE_SIZE: u64 = 10_485_760;

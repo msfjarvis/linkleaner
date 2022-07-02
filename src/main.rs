@@ -219,7 +219,7 @@ async fn answer(
             } else {
                 bot.send_message(
                     message.chat.id,
-                    join_results_to_string(&search_term, &res, &**BASE_URL),
+                    join_results_to_string(&search_term, &res, &BASE_URL),
                 )
                 .parse_mode(ParseMode::MarkdownV2)
                 .disable_web_page_preview(true)

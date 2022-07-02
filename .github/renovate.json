@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "github>msfjarvis/shared-workflows//renovate/rust",
+    "github>msfjarvis/shared-workflows//renovate/automerge"
+  ]
+}

@@ -30,7 +30,7 @@ static BASE_DIR: Lazy<String> =
 static TREE: Lazy<sled::Db> = Lazy::new(|| sled::open("file_id_cache").unwrap());
 static FILES: Lazy<Vec<String>> = Lazy::new(|| index_pictures(&BASE_DIR));
 static TWITTER_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new("https://twitter.com/.*/status/.*").unwrap());
+    Lazy::new(|| Regex::new("^https://twitter.com/.*/status/[0-9]+.*").unwrap());
 
 /// Telegram mandates a photo can not be larger than 10 megabytes
 const MAX_FILE_SIZE: u64 = 10_485_760;

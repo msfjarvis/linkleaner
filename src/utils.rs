@@ -46,6 +46,7 @@ pub(crate) fn index_pictures(directory: &str) -> Vec<String> {
     for entry in WalkDir::new(directory)
         .into_iter()
         .filter_map(std::result::Result::ok)
+        .filter(|entry| entry.file_type().is_file())
     {
         images.push(String::from(
             entry

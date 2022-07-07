@@ -293,6 +293,10 @@ async fn run() {
     dotenv().ok();
     configure_tracing();
 
+    if FILES.is_empty() {
+        tracing::error!("Failed to index files from {}", *BASE_DIR);
+        return;
+    }
     tracing::debug!("Indexed {} files", FILES.len());
 
     let bot = Bot::from_env().auto_send();

@@ -1,6 +1,7 @@
 with import <nixpkgs> { overlays = [ (import <rust-overlay>) ]; };
 mkShell {
   buildInputs = [
+    just
     (rust-bin.stable.latest.default.override {
       extensions =
         [ "rust-src" "rustc-dev" "rustfmt-preview" "llvm-tools-preview" ];

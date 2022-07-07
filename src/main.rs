@@ -291,6 +291,7 @@ async fn run() {
     #[cfg(feature = "console")]
     console_subscriber::init();
     dotenv().ok();
+    configure_tracing();
 
     tracing::debug!("Indexed {} files", FILES.len());
 

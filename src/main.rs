@@ -15,6 +15,8 @@ use teloxide::{
     utils::command::BotCommands,
 };
 use tracing::subscriber::set_global_default;
+use tracing::Level;
+use tracing_subscriber::filter::Targets;
 
 use crate::{
     commands::Command,
@@ -267,26 +269,23 @@ async fn vxtwitter_handler(
 }
 
 #[cfg(not(feature = "journald"))]
-fn configure_tracing() {
-    use tracing::Level;
-    use tracing_subscriber::FmtSubscriber;
+fn configure_tracing(filter: Targets) {
+    use tracing_subscriber::layer::SubscriberExt;
+    use tracing_subscriber::{fmt, Layer};
 
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::DEBUG)
-        .finish();
-
+    let stdout_log = fmt::layer().pretty();
+    let subscriber = tracing_subscriber::registry().with(stdout_log.with_filter(filter));
     set_global_default(subscriber).expect("setting default subscriber failed");
 }
 
 #[cfg(feature = "journald")]
-fn configure_tracing() {
+fn configure_tracing(filter: Targets) {
     use tracing_journald::Layer;
-    use tracing_subscriber::filter::LevelFilter;
     use tracing_subscriber::layer::SubscriberExt;
-    use tracing_subscriber::Registry;
+    use tracing_subscriber::registry;
 
-    let subscriber = Registry::default()
-        .with(LevelFilter::DEBUG)
+    let subscriber = registry()
+        .with(filter)
         .with(Layer::new().unwrap().with_field_prefix(None));
     set_global_default(subscriber).expect("setting default subscriber failed");
 }
@@ -295,7 +294,8 @@ async fn run() {
     #[cfg(feature = "console")]
     console_subscriber::init();
     dotenv().ok();
-    configure_tracing();
+    let tracing_filter = Targets::new().with_target("walls_bot_rs", Level::DEBUG);
+    configure_tracing(tracing_filter);
 
     if FILES.is_empty() {
         tracing::error!("Failed to index files from {}", *BASE_DIR);

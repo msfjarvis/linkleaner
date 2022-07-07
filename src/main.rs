@@ -14,6 +14,7 @@ use teloxide::{
     types::{ChatAction, InputFile, ParseMode},
     utils::command::BotCommands,
 };
+use tracing::subscriber::set_global_default;
 
 use crate::{
     commands::Command,
@@ -271,20 +272,23 @@ fn configure_tracing() {
     use tracing_subscriber::FmtSubscriber;
 
     let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::TRACE)
+        .with_max_level(Level::DEBUG)
         .finish();
 
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    set_global_default(subscriber).expect("setting default subscriber failed");
 }
 
 #[cfg(feature = "journald")]
 fn configure_tracing() {
     use tracing_journald::Layer;
+    use tracing_subscriber::filter::LevelFilter;
     use tracing_subscriber::layer::SubscriberExt;
     use tracing_subscriber::Registry;
 
-    let subscriber = Registry::default().with(Layer::new().unwrap().with_field_prefix(None));
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    let subscriber = Registry::default()
+        .with(LevelFilter::DEBUG)
+        .with(Layer::new().unwrap().with_field_prefix(None));
+    set_global_default(subscriber).expect("setting default subscriber failed");
 }
 
 async fn run() {

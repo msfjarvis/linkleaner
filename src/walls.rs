@@ -49,14 +49,14 @@ fn get_file_url(file_name: &str) -> String {
     format!("{}/{}", *BASE_URL, file_name)
 }
 
-fn to_relative_path(file_name: &str) -> String {
-    file_name.replace(&*BASE_DIR, "")
+fn basename(file_name: &str) -> String {
+    file_name.replace(&format!("{}/", *BASE_DIR), "")
 }
 
 /// Performs exhaustive checks on the given file path to verify if it needs to be sent as
 /// a document.
 fn should_send_as_document(file_path: &str) -> bool {
-    let file_name = to_relative_path(file_path);
+    let file_name = basename(file_path);
     if std::fs::metadata(file_path).unwrap().len() > MAX_FILE_SIZE {
         debug!("{}: file size is larger than MAX_FILE_SIZE", file_name);
         return true;
@@ -131,7 +131,7 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
     let hash = get_file_hash(file_path);
     if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
         if let Ok(id) = String::from_utf8(ivec.to_vec()) {
-            let file_name = to_relative_path(file_path);
+            let file_name = basename(file_path);
             debug!("Found id for {}: {}", file_name, id);
             return Some(id);
         }

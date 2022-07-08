@@ -14,9 +14,9 @@ use teloxide::{
     types::{ChatAction, InputFile, ParseMode},
     utils::command::BotCommands,
 };
-use tracing::dispatcher::SetGlobalDefaultError;
 use tracing::subscriber::set_global_default;
 use tracing::Level;
+use tracing::{debug, dispatcher::SetGlobalDefaultError, error};
 use tracing_subscriber::filter::Targets;
 
 use crate::{
@@ -65,16 +65,16 @@ fn to_relative_path(file_name: &str) -> String {
 fn should_send_as_document(file_path: &str) -> bool {
     let file_name = to_relative_path(file_path);
     if std::fs::metadata(file_path).unwrap().len() > MAX_FILE_SIZE {
-        tracing::debug!("{}: file size is larger than MAX_FILE_SIZE", file_name);
+        debug!("{}: file size is larger than MAX_FILE_SIZE", file_name);
         return true;
     }
     if let Ok(imagesize) = imagesize::size(file_path) {
         if imagesize.height + imagesize.width > MAX_DIMEN {
-            tracing::debug!("{}: dimensions are larger than MAX_DIMEN", file_name);
+            debug!("{}: dimensions are larger than MAX_DIMEN", file_name);
             return true;
         };
         if imagesize.width / imagesize.height > 20 {
-            tracing::debug!("{}: dimension ratio is larger than 20", file_name);
+            debug!("{}: dimension ratio is larger than 20", file_name);
             return true;
         }
     };
@@ -130,7 +130,7 @@ fn send_captioned_picture(
 fn remember_file(file_path: &str, file_id: &str) {
     let hash = get_file_hash(file_path);
     if let Err(error) = TREE.insert(&format!("{}", hash), file_id) {
-        tracing::debug!("Failed to insert {} into db: {}", file_id, error);
+        debug!("Failed to insert {} into db: {}", file_id, error);
     };
 }
 
@@ -139,7 +139,7 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
     if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
         if let Ok(id) = String::from_utf8(ivec.to_vec()) {
             let file_name = to_relative_path(file_path);
-            tracing::debug!("Found id for {}: {}", file_name, id);
+            debug!("Found id for {}: {}", file_name, id);
             return Some(id);
         }
     };
@@ -297,15 +297,15 @@ async fn run() {
     dotenv().ok();
     let tracing_filter = Targets::new().with_target("walls_bot_rs", Level::DEBUG);
     if let Err(e) = configure_tracing(tracing_filter) {
-        tracing::error!(?e);
+        error!(?e);
         return;
     };
 
     if FILES.is_empty() {
-        tracing::error!("Failed to index files from {}", *BASE_DIR);
+        error!("Failed to index files from {}", *BASE_DIR);
         return;
     }
-    tracing::debug!("Indexed {} files", FILES.len());
+    debug!("Indexed {} files", FILES.len());
 
     let bot = Bot::from_env().auto_send();
 

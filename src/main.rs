@@ -1,12 +1,12 @@
 mod commands;
 mod logging;
 mod utils;
+mod vxtwitter;
 
 use std::{env, error::Error, marker::Send, path::PathBuf};
 
 use dotenv::dotenv;
 use once_cell::sync::Lazy;
-use regex::Regex;
 use teloxide::{
     adaptors::auto_send::AutoRequest,
     payloads::{SendDocument, SendPhoto},
@@ -31,8 +31,6 @@ static BASE_DIR: Lazy<String> =
     Lazy::new(|| env::var("BASE_DIR").expect("BASE_DIR must be defined"));
 static TREE: Lazy<sled::Db> = Lazy::new(|| sled::open("file_id_cache").unwrap());
 static FILES: Lazy<Vec<String>> = Lazy::new(|| index_pictures(&BASE_DIR));
-static TWITTER_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new("^https://twitter.com/.*/status/[0-9]+.*").unwrap());
 
 /// Telegram mandates a photo can not be larger than 10 megabytes
 const MAX_FILE_SIZE: u64 = 10_485_760;
@@ -236,37 +234,6 @@ async fn answer(
     Ok(())
 }
 
-async fn vxtwitter_handler(
-    bot: AutoSend<Bot>,
-    message: Message,
-) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    if let Some(text) = message.text() {
-        if let Some(user) = message.from() {
-            if TWITTER_REGEX.is_match(text) {
-                let text = text.replace("https://twitter.com", "https://vxtwitter.com");
-                let text = format!(
-                    "<a href=\"{}\">{}</a>: {}",
-                    user.id.url(),
-                    user.full_name(),
-                    text
-                );
-                bot.delete_message(message.chat.id, message.id).await?;
-                if let Some(reply) = message.reply_to_message() {
-                    bot.send_message(message.chat.id, text)
-                        .reply_to_message_id(reply.id)
-                        .parse_mode(ParseMode::Html)
-                        .await?;
-                } else {
-                    bot.send_message(message.chat.id, text)
-                        .parse_mode(ParseMode::Html)
-                        .await?;
-                }
-            }
-        }
-    }
-    Ok(())
-}
-
 async fn run() {
     if let Err(e) = logging::init() {
         error!(?e);
@@ -290,7 +257,7 @@ async fn run() {
                 .filter_command::<Command>()
                 .endpoint(answer),
         )
-        .branch(Update::filter_message().endpoint(vxtwitter_handler));
+        .branch(Update::filter_message().endpoint(vxtwitter::handler));
 
     Dispatcher::builder(bot, handler)
         .build()

@@ -14,6 +14,9 @@ set dotenv-load := true
 build type="":
     cargo build {{ type }}
 
+console:
+    RUSTFLAGS="--cfg tokio_unstable" cargo run --release --features console
+
 install:
     cargo deb
     sudo apt -f install ./target/debian/{{ name }}_{{ version }}_{{ arch }}.deb

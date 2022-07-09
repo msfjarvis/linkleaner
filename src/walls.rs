@@ -58,16 +58,16 @@ fn basename(file_name: &str) -> String {
 fn should_send_as_document(file_path: &str) -> bool {
     let file_name = basename(file_path);
     if std::fs::metadata(file_path).unwrap().len() > MAX_FILE_SIZE {
-        debug!("{}: file size is larger than MAX_FILE_SIZE", file_name);
+        debug!(?file_name, "file size is larger than MAX_FILE_SIZE");
         return true;
     }
     if let Ok(imagesize) = imagesize::size(file_path) {
         if imagesize.height + imagesize.width > MAX_DIMEN {
-            debug!("{}: dimensions are larger than MAX_DIMEN", file_name);
+            debug!(?file_name, "dimensions are larger than MAX_DIMEN");
             return true;
         };
         if imagesize.width / imagesize.height > 20 {
-            debug!("{}: dimension ratio is larger than 20", file_name);
+            debug!(?file_name, "dimension ratio is larger than 20");
             return true;
         }
     };
@@ -123,7 +123,7 @@ fn send_captioned_picture(
 fn remember_file(file_path: &str, file_id: &str) {
     let hash = get_file_hash(file_path);
     if let Err(error) = TREE.insert(&format!("{}", hash), file_id) {
-        debug!("Failed to insert {} into db: {}", file_id, error);
+        debug!(?file_id, ?error, "Failed to insert into DB");
     };
 }
 
@@ -132,7 +132,7 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
     if let Ok(Some(ivec)) = TREE.get(&format!("{}", hash)) {
         if let Ok(id) = String::from_utf8(ivec.to_vec()) {
             let file_name = basename(file_path);
-            debug!("Found id for {}: {}", file_name, id);
+            debug!(?file_name, ?id, "Found ID");
             return Some(id);
         }
     };

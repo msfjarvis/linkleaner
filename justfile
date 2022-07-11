@@ -24,7 +24,7 @@ fmt:
 
 install:
     cargo deb
-    sudo apt -f install ./target/debian/{{ name }}_{{ version }}_{{ arch }}.deb
+    sudo apt -f install --reinstall ./target/debian/{{ name }}_{{ version }}_{{ arch }}.deb
 
 run type="":
     cargo run {{ type }}

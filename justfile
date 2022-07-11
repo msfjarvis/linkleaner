@@ -1,4 +1,5 @@
 alias b := build
+alias c := clippy
 alias i := install
 alias f := fmt
 alias r := run
@@ -15,6 +16,9 @@ set dotenv-load := true
 
 build type="":
     cargo build {{ type }}
+
+clippy type="":
+    cargo clippy {{ type }}
 
 console:
     RUSTFLAGS="--cfg tokio_unstable" cargo run --release --features console

@@ -10,6 +10,66 @@ on:
 name: Check Rust code
 jobs:
   check:
-    uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
-    with:
-      msrv: stable
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-11
+          - ubuntu-20.04
+          - windows-2022
+        rust:
+          - nightly
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+
+    - uses: rui314/setup-mold@v1
+      if: runner.os == 'Linux'
+      with:
+        make-default: true
+
+    - name: Install Rust toolchain (Unix)
+      uses: dtolnay/rust-toolchain@nightly
+
+    - uses: Swatinem/rust-cache@v1
+      with:
+        key: cargo-cache-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}-${{ matrix.os }}-${{ matrix.rust }}
+
+    - name: Check formatting
+      uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
+      with:
+        command: fmt
+        args: -- --check
+
+    - name: Install cargo-nextest
+      uses: baptiste0928/cargo-install@v1
+      with:
+        crate: cargo-nextest
+        version: "0.9.24"
+
+    - name: Install cargo-deny
+      uses: baptiste0928/cargo-install@v1
+      with:
+        crate: cargo-deny
+        version: "0.12.1"
+
+    - name: cargo-deny
+      shell: bash
+      run: |
+        if [ -f deny.toml ]; then
+          cargo deny check
+        fi
+
+    - name: Clippy
+      uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
+      with:
+        command: clippy
+        args: -- -Wclippy::pedantic
+
+    - name: Run tests
+      uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
+      with:
+        command: nextest
+        args: run --all-features

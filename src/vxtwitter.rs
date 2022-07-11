@@ -11,14 +11,17 @@ use teloxide::{
 };
 
 static TWITTER_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new("^https://twitter.com/.*/status/[0-9]+.*").unwrap());
+    Lazy::new(|| Regex::new("^https://(mobile.)?twitter.com/.*/status/[0-9]+.*").unwrap());
+
+static TWITTER_REGEX_LINK: Lazy<Regex> =
+    Lazy::new(|| Regex::new("^https://(mobile.)?twitter.com").unwrap());
 
 pub async fn handler(
     bot: AutoSend<Bot>,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = message.text() && let Some(user) = message.from() && TWITTER_REGEX.is_match(text) {
-        let text = text.replace("https://twitter.com", "https://vxtwitter.com");
+        let text =  TWITTER_REGEX_LINK.replace(text, "https://vxtwitter.com");
         let text = format!(
             "<a href=\"{}\">{}</a>: {}",
             user.id.url(),

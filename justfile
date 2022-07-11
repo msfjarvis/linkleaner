@@ -1,6 +1,7 @@
 alias b := build
 alias i := install
 alias r := run
+alias t := test
 alias u := uninstall
 alias v := version
 
@@ -23,6 +24,9 @@ install:
 
 run type="":
     cargo run {{ type }}
+
+test:
+    cargo nextest run
 
 uninstall:
     sudo apt purge -y {{ name }}

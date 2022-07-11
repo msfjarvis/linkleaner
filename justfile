@@ -1,5 +1,6 @@
 alias b := build
 alias i := install
+alias f := fmt
 alias r := run
 alias t := test
 alias u := uninstall
@@ -17,6 +18,9 @@ build type="":
 
 console:
     RUSTFLAGS="--cfg tokio_unstable" cargo run --release --features console
+
+fmt:
+    cargo fmt
 
 install:
     cargo deb

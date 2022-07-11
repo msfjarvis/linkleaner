@@ -42,3 +42,15 @@ pub async fn handler(
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::TWITTER_REGEX;
+
+    #[test]
+    fn verify_regex() {
+        assert!(TWITTER_REGEX.is_match("https://twitter.com/Jack/status/20"));
+        assert!(TWITTER_REGEX.is_match("https://mobile.twitter.com/Jack/status/20"));
+        assert!(!TWITTER_REGEX.is_match("https://twitter.com/Jack/"));
+    }
+}

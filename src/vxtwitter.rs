@@ -29,7 +29,7 @@ pub async fn handler(
             user.full_name(),
             text
         );
-        bot.delete_message(message.chat.id, message.id).await?;
+        let _ = bot.delete_message(message.chat.id, message.id).await;
         if let Some(reply) = message.reply_to_message() {
             bot.send_message(message.chat.id, text)
                 .reply_to_message_id(reply.id)

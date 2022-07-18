@@ -1,5 +1,5 @@
 alias b := build
-alias c := clippy
+alias c := check
 alias i := install
 alias f := fmt
 alias r := run
@@ -16,6 +16,9 @@ set dotenv-load := true
 
 build type="":
     cargo build {{ type }}
+
+check type="":
+    cargo check {{ type }}
 
 clippy type="":
     cargo clippy {{ type }}

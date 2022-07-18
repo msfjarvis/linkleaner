@@ -20,7 +20,7 @@ pub async fn handler(
     bot: AutoSend<Bot>,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    if let Some(text) = message.text() && let Some(user) = message.from() && 
+    if let Some(text) = message.text() && let Some(user) = message.from() &&
         let Some(caps) = MATCH_REGEX.captures(text) {
         let text = text.replace(&caps[HOST_MATCH_GROUP], "ddinstagram.com");
         let text = format!(

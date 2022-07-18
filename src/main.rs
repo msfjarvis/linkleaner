@@ -10,7 +10,7 @@ use teloxide::{
     dispatching::{HandlerExt, UpdateFilterExt},
     dptree,
     prelude::{Dispatcher, RequesterExt},
-    types::Update,
+    types::{Message, Update},
     Bot,
 };
 use tracing::error;
@@ -37,13 +37,20 @@ async fn run() {
 
     let bot = Bot::from_env().auto_send();
 
-    let handler = dptree::entry()
+    let handler = Update::filter_message()
         .branch(
-            Update::filter_message()
+            dptree::entry()
                 .filter_command::<Command>()
                 .endpoint(walls::handler),
         )
-        .branch(Update::filter_message().endpoint(vxtwitter::handler));
+        .branch(
+            dptree::filter(|msg: Message| {
+                msg.text()
+                    .map(|text| vxtwitter::MATCH_REGEX.is_match(text))
+                    .unwrap_or_default()
+            })
+            .endpoint(vxtwitter::handler),
+        );
 
     Dispatcher::builder(bot, handler)
         .build()

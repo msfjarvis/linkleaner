@@ -12,7 +12,7 @@ use teloxide::{
 
 const HOST_MATCH_GROUP: &str = "host";
 
-static TWITTER_REGEX: Lazy<Regex> = Lazy::new(|| {
+pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("^https://(?P<host>(?:mobile.)?twitter.com)/.*/status/[0-9]+.*").unwrap()
 });
 
@@ -21,7 +21,7 @@ pub async fn handler(
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = message.text() && let Some(user) = message.from() &&
-        TWITTER_REGEX.is_match(text) && let Some(caps) = TWITTER_REGEX.captures(text) {
+        let Some(caps) = MATCH_REGEX.captures(text) {
         let text = text.replace(&caps[HOST_MATCH_GROUP], "vxtwitter.com");
         let text = format!(
             "<a href=\"{}\">{}</a>: {}",
@@ -46,18 +46,18 @@ pub async fn handler(
 
 #[cfg(test)]
 mod test {
-    use super::{HOST_MATCH_GROUP, TWITTER_REGEX};
+    use super::{HOST_MATCH_GROUP, MATCH_REGEX};
 
     #[test]
     fn verify_regex() {
-        assert!(TWITTER_REGEX.is_match("https://twitter.com/Jack/status/20"));
-        assert!(TWITTER_REGEX.is_match("https://mobile.twitter.com/Jack/status/20"));
-        assert!(!TWITTER_REGEX.is_match("https://twitter.com/Jack/"));
-        let caps = TWITTER_REGEX
+        assert!(MATCH_REGEX.is_match("https://twitter.com/Jack/status/20"));
+        assert!(MATCH_REGEX.is_match("https://mobile.twitter.com/Jack/status/20"));
+        assert!(!MATCH_REGEX.is_match("https://twitter.com/Jack/"));
+        let caps = MATCH_REGEX
             .captures("https://twitter.com/Jack/status/20")
             .unwrap();
         assert_eq!(&caps[HOST_MATCH_GROUP], "twitter.com");
-        let caps = TWITTER_REGEX
+        let caps = MATCH_REGEX
             .captures("https://mobile.twitter.com/Jack/status/20")
             .unwrap();
         assert_eq!(&caps[HOST_MATCH_GROUP], "mobile.twitter.com");

@@ -1,5 +1,6 @@
 #![feature(let_chains)]
 mod commands;
+mod ddinstagram;
 mod logging;
 mod utils;
 mod vxtwitter;
@@ -50,6 +51,14 @@ async fn run() {
                     .unwrap_or_default()
             })
             .endpoint(vxtwitter::handler),
+        )
+        .branch(
+            dptree::filter(|msg: Message| {
+                msg.text()
+                    .map(|text| ddinstagram::MATCH_REGEX.is_match(text))
+                    .unwrap_or_default()
+            })
+            .endpoint(ddinstagram::handler),
         );
 
     Dispatcher::builder(bot, handler)

@@ -1411,7 +1411,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with_macros",
- "teloxide-core",
+ "teloxide-core 0.6.3",
  "teloxide-macros",
  "thiserror",
  "tokio",
@@ -1448,7 +1448,38 @@ dependencies = [
  "tokio",
  "tokio-util 0.6.10",
  "url",
- "uuid",
+ "uuid 0.8.2",
+]
+
+[[package]]
+name = "teloxide-core"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae0e8df1cb0387cccab019e9c1243ac9a7646ef75fac767644ceb1e6a6ddc5bc"
+dependencies = [
+ "bitflags",
+ "bytes",
+ "chrono",
+ "derive_more",
+ "either",
+ "futures",
+ "log",
+ "mime",
+ "never",
+ "once_cell",
+ "pin-project",
+ "rc-box",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "serde_with_macros",
+ "take_mut",
+ "takecell",
+ "thiserror",
+ "tokio",
+ "tokio-util 0.7.3",
+ "url",
+ "uuid 1.1.2",
 ]
 
 [[package]]
@@ -1831,6 +1862,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "uuid"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd6469f4314d5f1ffec476e05f17cc9a78bc7a27a6a857842170bdf8d6f98d2f"
+dependencies = [
+ "getrandom",
+]
+
+[[package]]
 name = "valuable"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1867,7 +1907,7 @@ dependencies = [
  "seahash",
  "sled",
  "teloxide",
- "teloxide-core",
+ "teloxide-core 0.7.0",
  "tokio",
  "tracing",
  "tracing-journald",

@@ -1867,7 +1867,6 @@ dependencies = [
  "seahash",
  "sled",
  "teloxide",
- "teloxide-core",
  "tokio",
  "tracing",
  "tracing-journald",

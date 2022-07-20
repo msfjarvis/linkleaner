@@ -26,6 +26,9 @@ fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
 }
 
 pub fn init() -> Result<(), SetGlobalDefaultError> {
+    if cfg!(feature = "console") {
+        return Ok(());
+    }
     let tracing_filter = Targets::new().with_target("walls_bot_rs", Level::DEBUG);
     configure_tracing(tracing_filter)
 }

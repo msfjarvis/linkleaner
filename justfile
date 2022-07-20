@@ -30,7 +30,7 @@ fmt:
     cargo fmt
 
 install:
-    cargo deb
+    RUSTFLAGS="--cfg tokio_unstable" cargo deb
     sudo apt -f install --reinstall ./target/debian/{{ name }}_{{ version }}_{{ arch }}.deb
 
 run type="":

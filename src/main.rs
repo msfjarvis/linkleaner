@@ -59,8 +59,8 @@ async fn run() {
         );
 
     Dispatcher::builder(bot, handler)
+        .enable_ctrlc_handler()
         .build()
-        .setup_ctrlc_handler()
         .dispatch()
         .await;
 }

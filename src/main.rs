@@ -25,8 +25,6 @@ async fn run() {
         error!(?e);
         return;
     };
-    #[cfg(feature = "console")]
-    console_subscriber::init();
     dotenv().ok();
 
     if FILES.is_empty() {

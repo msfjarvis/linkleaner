@@ -1,0 +1,27 @@
+[Unit]
+Description=walls-bot-rs service
+After=network.target
+
+[Service]
+Restart=on-abort
+Type=simple
+User=bot
+WorkingDirectory=/home/bot
+EnvironmentFile=/home/bot/walls-bot.config
+ExecStart=/usr/bin/walls-bot-rs
+ExecReload=/bin/kill -USR1 $MAINPID
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutStopSec=10s
+
+# Security
+PrivateTmp=true
+ProtectSystem=full
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+PrivateDevices=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

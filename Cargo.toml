@@ -17,6 +17,8 @@ extended-description = "Telegram bot that scans a local filesystem for images an
 features = ["console", "journald"]
 priority = "optional"
 depends = "$auto"
+maintainer-scripts = "pkg/debian/"
+systemd-units = { enable = true }
 
 [features]
 console = ["console-subscriber"]

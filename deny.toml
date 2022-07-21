@@ -56,9 +56,6 @@ ignore = false
 multiple-versions = "deny"
 wildcards = "deny"
 highlight = "all"
-skip = [
-  { name = "tokio-util" },
-]
 
 [sources]
 unknown-registry = "deny"

@@ -19,15 +19,13 @@ fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
 
 #[cfg(feature = "journald")]
 fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
-    use tracing_journald::Layer;
+    use tracing_journald::layer;
     use tracing_subscriber::layer::SubscriberExt;
 
     let registry = registry();
     #[cfg(feature = "console")]
     let registry = registry.with(console_subscriber::spawn());
-    let subscriber = registry
-        .with(filter)
-        .with(Layer::new().unwrap().with_field_prefix(None));
+    let subscriber = registry.with(filter).with(layer().unwrap());
     set_global_default(subscriber)
 }
 

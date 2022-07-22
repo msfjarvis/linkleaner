@@ -1847,7 +1847,6 @@ dependencies = [
  "dotenv",
  "fastrand",
  "imagesize",
- "lazy_static",
  "once_cell",
  "regex",
  "seahash",

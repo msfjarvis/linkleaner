@@ -1396,9 +1396,9 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 
 [[package]]
 name = "teloxide"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d70ecd3284223a1f43e98aaf2dfc80b7da30cb1c881932f6679e8b0756eed44"
+checksum = "91471f2d0f91b079b1b71dc689daac4748ded26a32c1cf0c6fc4130490c8f64e"
 dependencies = [
  "aquamarine",
  "bytes",

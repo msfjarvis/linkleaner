@@ -7,6 +7,28 @@ on:
     branches:
       - main
 
+env:
+  RUSTFLAGS: '-Dwarnings'
+  # disable incremental compilation.
+  #
+  # incremental compilation is useful as part of an edit-build-test-edit cycle,
+  # as it lets the compiler avoid recompiling code that hasn't changed. however,
+  # on CI, we're not making small edits; we're almost always building the entire
+  # project from scratch. thus, incremental compilation on CI actually
+  # introduces *additional* overhead to support making future builds
+  # faster...but no future builds will ever occur in any given CI environment.
+  #
+  # see https://matklad.github.io/2021/09/04/fast-rust-builds.html#ci-workflow
+  # for details.
+  CARGO_INCREMENTAL: 0
+  # allow more retries for network requests in cargo (downloading crates) and
+  # rustup (installing toolchains). this should help to reduce flaky CI failures
+  # from transient network timeouts or other issues.
+  CARGO_NET_RETRY: 10
+  RUSTUP_MAX_RETRIES: 10
+  # don't emit giant backtraces in the CI logs.
+  RUST_BACKTRACE: short
+
 name: Check Rust code
 jobs:
   check:
@@ -18,44 +40,40 @@ jobs:
           - macos-11
           - ubuntu-20.04
           - windows-2022
-        rust:
-          - nightly
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      uses: actions/checkout@v3
 
-    - uses: rui314/setup-mold@v1
+    - uses: rui314/setup-mold@501fb85cee90dc5aea1f4691c0c7334ec4a4910c # tag=v1
       if: runner.os == 'Linux'
       with:
         make-default: true
 
-    - name: Install Rust toolchain (Unix)
-      uses: dtolnay/rust-toolchain@nightly
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@v1
+      with:
+        toolchain: nightly
+
+    - name: Install cargo-nextest
+      uses: baptiste0928/cargo-install@v1
+      with:
+        crate: cargo-nextest
+
+    - name: Install cargo-deny
+      uses: baptiste0928/cargo-install@v1
+      with:
+        crate: cargo-deny
 
     - uses: Swatinem/rust-cache@v1
       with:
         key: cargo-cache-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}-${{ matrix.os }}-${{ matrix.rust }}
 
     - name: Check formatting
-      uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
-      with:
-        command: fmt
-        args: -- --check
+      shell: bash
+      run: cargo fmt -- --check
 
-    - name: Install cargo-nextest
-      uses: baptiste0928/cargo-install@v1
-      with:
-        crate: cargo-nextest
-        version: "0.9.24"
-
-    - name: Install cargo-deny
-      uses: baptiste0928/cargo-install@v1
-      with:
-        crate: cargo-deny
-        version: "0.12.1"
-
-    - name: cargo-deny
+    - name: Run cargo-deny
       shell: bash
       run: |
         if [ -f deny.toml ]; then
@@ -63,13 +81,9 @@ jobs:
         fi
 
     - name: Clippy
-      uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
-      with:
-        command: clippy
-        args: -- -Wclippy::pedantic
+      shell: bash
+      run: cargo clippy -- -Wclippy::pedantic
 
     - name: Run tests
-      uses: actions-rs/cargo@9e120dd99b0fbad1c065f686657e914e76bd7b72
-      with:
-        command: nextest
-        args: run --all-features
+      shell: bash
+      run: cargo nextest run --all-features

@@ -32,6 +32,7 @@ exceptions = [
   { allow = ["ISC"], name = "untrusted", version = "*" },
   { allow = ["ISC"], name = "webpki", version = "*" },
   { allow = ["Apache-2.0", "MIT", "BSD-3-Clause"], name = "encoding_rs", version = "*" },
+  { allow = ["Unicode-DFS-2016"], name = "unicode-ident", version = "*" },
 ]
 
 [[licenses.clarify]]

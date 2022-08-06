@@ -13,7 +13,7 @@ use teloxide::{
 const HOST_MATCH_GROUP: &str = "host";
 
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("^https://(?:www.)?(?P<host>instagram.com)/(p|reel)/[A-Za-z0-9]+.*/").unwrap()
+    Regex::new("^https://(?:www.)?(?P<host>instagram.com)/(p|reel|tv)/[A-Za-z0-9]+.*/").unwrap()
 });
 
 pub async fn handler(
@@ -53,6 +53,7 @@ mod test {
         assert!(MATCH_REGEX.is_match("https://www.instagram.com/p/CgJESh6hxsS/"));
         assert!(MATCH_REGEX.is_match("https://instagram.com/p/CgJESh6hxsS/"));
         assert!(MATCH_REGEX.is_match("https://www.instagram.com/reel/CgHIG0Ih3XF/"));
+        assert!(MATCH_REGEX.is_match("https://www.instagram.com/tv/CgHIG0Ih3XF/"));
         assert!(!MATCH_REGEX.is_match("https://www.instagram.com/starsmitten_/"));
         let caps = MATCH_REGEX
             .captures("https://www.instagram.com/p/CfZdFVUJyQG/")

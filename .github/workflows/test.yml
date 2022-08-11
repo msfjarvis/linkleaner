@@ -7,83 +7,9 @@ on:
     branches:
       - main
 
-env:
-  RUSTFLAGS: '-Dwarnings'
-  # disable incremental compilation.
-  #
-  # incremental compilation is useful as part of an edit-build-test-edit cycle,
-  # as it lets the compiler avoid recompiling code that hasn't changed. however,
-  # on CI, we're not making small edits; we're almost always building the entire
-  # project from scratch. thus, incremental compilation on CI actually
-  # introduces *additional* overhead to support making future builds
-  # faster...but no future builds will ever occur in any given CI environment.
-  #
-  # see https://matklad.github.io/2021/09/04/fast-rust-builds.html#ci-workflow
-  # for details.
-  CARGO_INCREMENTAL: 0
-  # allow more retries for network requests in cargo (downloading crates) and
-  # rustup (installing toolchains). this should help to reduce flaky CI failures
-  # from transient network timeouts or other issues.
-  CARGO_NET_RETRY: 10
-  RUSTUP_MAX_RETRIES: 10
-  # don't emit giant backtraces in the CI logs.
-  RUST_BACKTRACE: short
-
 name: Check Rust code
 jobs:
   check:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - macos-11
-          - ubuntu-20.04
-          - windows-2022
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-
-    - uses: rui314/setup-mold@6dde38252affb567c951f891790da82dc6f23e6b # tag=v1
-      if: runner.os == 'Linux'
-      with:
-        make-default: true
-
-    - name: Install Rust
-      uses: dtolnay/rust-toolchain@1ce4a7352a1efe5dede2e52c75512b34256e4f44 # tag=v1
-      with:
-        toolchain: nightly
-
-    - name: Install cargo-nextest
-      uses: baptiste0928/cargo-install@bf6758885262d0e6f61089a9d8c8790d3ac3368f # tag=v1
-      with:
-        crate: cargo-nextest
-
-    - name: Install cargo-deny
-      uses: baptiste0928/cargo-install@bf6758885262d0e6f61089a9d8c8790d3ac3368f # tag=v1
-      with:
-        crate: cargo-deny
-
-    - uses: Swatinem/rust-cache@v1
-      with:
-        key: cargo-cache-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}-${{ matrix.os }}-${{ matrix.rust }}
-
-    - name: Check formatting
-      shell: bash
-      run: cargo fmt -- --check
-
-    - name: Run cargo-deny
-      shell: bash
-      run: |
-        if [ -f deny.toml ]; then
-          cargo deny check
-        fi
-
-    - name: Clippy
-      shell: bash
-      run: cargo clippy -- -Wclippy::pedantic
-
-    - name: Run tests
-      shell: bash
-      run: cargo nextest run --all-features
+    uses: msfjarvis/shared-workflows/.github/workflows/test-rust-project.yml@main
+    with:
+      msrv: stable

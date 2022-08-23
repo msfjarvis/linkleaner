@@ -1844,7 +1844,7 @@ dependencies = [
 
 [[package]]
 name = "walls-bot-rs"
-version = "0.16.4"
+version = "0.16.5"
 dependencies = [
  "console-subscriber",
  "dotenv",

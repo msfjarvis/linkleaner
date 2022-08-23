@@ -22,7 +22,7 @@ use crate::commands::Command;
 
 async fn run() {
     if let Err(e) = logging::init() {
-        error!(?e);
+        eprintln!("{}", e);
         return;
     };
     dotenv().ok();

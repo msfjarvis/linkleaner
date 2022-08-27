@@ -57,7 +57,7 @@ ignore = false
 
 [bans]
 multiple-versions = "deny"
-wildcards = "deny"
+wildcards = "allow"
 highlight = "all"
 
 [sources]

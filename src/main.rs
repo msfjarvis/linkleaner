@@ -1,3 +1,4 @@
+mod amputator;
 mod commands;
 mod ddinstagram;
 mod logging;
@@ -56,7 +57,8 @@ async fn run() {
                     .unwrap_or_default()
             })
             .endpoint(ddinstagram::handler),
-        );
+        )
+        .branch(dptree::filter(amputator::is_amp).endpoint(amputator::handler));
 
     Dispatcher::builder(bot, handler)
         .enable_ctrlc_handler()

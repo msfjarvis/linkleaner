@@ -1,7 +1,6 @@
-use std::error::Error;
-
 use once_cell::sync::Lazy;
 use regex::Regex;
+use std::error::Error;
 use teloxide::{
     adaptors::AutoSend,
     payloads::SendMessageSetters,

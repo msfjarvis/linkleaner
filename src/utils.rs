@@ -14,12 +14,12 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
         trace!(?entities, "URL entities");
         let mut urls = Vec::with_capacity(entities.len());
         for entity in entities {
-            urls.push(text[entity.offset..entity.offset + entity.length].to_string())
+            urls.push(text[entity.offset..entity.offset + entity.length].to_string());
         }
         trace!(?urls, "Parsed URLs");
         return urls;
     }
-    return Vec::with_capacity(0);
+    Vec::with_capacity(0)
 }
 
 pub(crate) fn get_file_hash(file_path: &str) -> u64 {

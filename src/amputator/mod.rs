@@ -35,7 +35,7 @@ pub async fn handler(
             debug!(?resp, "{url}");
             let resp = deserialize_amp_response(&resp)?;
             if let AMPResponse::Success(ok) = resp {
-                text = text.replace(url, &ok[0].canonical.url)
+                text = text.replace(url, &ok[0].canonical.url);
             } else {
                 return Ok(());
             }
@@ -61,8 +61,8 @@ pub async fn handler(
     Ok(())
 }
 
-pub fn is_amp(msg: Message) -> bool {
-    let urls = get_urls_from_message(&msg);
+pub fn is_amp(msg: &Message) -> bool {
+    let urls = get_urls_from_message(msg);
     if urls.is_empty() {
         return false;
     }

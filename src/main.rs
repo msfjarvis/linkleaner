@@ -6,7 +6,9 @@ mod utils;
 mod vxtwitter;
 mod walls;
 
+use crate::commands::Command;
 use crate::walls::{BASE_DIR, FILES};
+use dotenv::dotenv;
 use teloxide::{
     dispatching::{HandlerExt, UpdateFilterExt},
     dptree,
@@ -14,12 +16,8 @@ use teloxide::{
     types::{Message, Update},
     Bot,
 };
-use tracing::error;
-
-use dotenv::dotenv;
 use tracing::debug;
-
-use crate::commands::Command;
+use tracing::error;
 
 async fn run() {
     if let Err(e) = logging::init() {

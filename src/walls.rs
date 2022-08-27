@@ -1,6 +1,12 @@
-use std::{env, error::Error, marker::Send, path::PathBuf};
-
+use crate::{
+    commands::Command,
+    utils::{
+        file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
+        join_results_to_string,
+    },
+};
 use once_cell::sync::Lazy;
+use std::{env, error::Error, marker::Send, path::PathBuf};
 use teloxide::{
     adaptors::{auto_send::AutoRequest, AutoSend},
     payloads::{
@@ -13,14 +19,6 @@ use teloxide::{
     Bot,
 };
 use tracing::debug;
-
-use crate::{
-    commands::Command,
-    utils::{
-        file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
-        join_results_to_string,
-    },
-};
 
 static BASE_URL: Lazy<String> =
     Lazy::new(|| env::var("BASE_URL").expect("BASE_URL must be defined"));

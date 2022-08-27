@@ -33,8 +33,20 @@ install:
     RUSTFLAGS="--cfg tokio_unstable" cargo deb
     sudo apt -f install --reinstall ./target/debian/{{ name }}_{{ version }}_{{ arch }}.deb
 
+log:
+    sudo journalctl -xeu walls-bot-rs.service
+
 run type="":
     cargo run {{ type }}
+
+start:
+    sudo systemctl start walls-bot-rs.service
+
+status:
+    sudo systemctl status walls-bot-rs.service
+
+stop:
+    sudo systemctl stop walls-bot-rs.service
 
 test:
     cargo nextest run

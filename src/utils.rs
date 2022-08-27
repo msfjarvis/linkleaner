@@ -1,7 +1,26 @@
-use std::{fmt::Write as _, fs::File, io::Read};
-
 use seahash::hash;
+use std::{fmt::Write as _, fs::File, io::Read};
+use teloxide::types::{Message, MessageEntityKind};
+use tracing::trace;
 use walkdir::WalkDir;
+
+pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
+    if let Some(entities) = msg.entities() && let Some(text) = msg.text() {
+        trace!(?entities, "All entities");
+        let entities = entities
+            .iter()
+            .filter(|entity| entity.kind == MessageEntityKind::Url)
+            .collect::<Vec<_>>();
+        trace!(?entities, "URL entities");
+        let mut urls = Vec::with_capacity(entities.len());
+        for entity in entities {
+            urls.push(text[entity.offset..entity.offset + entity.length].to_string())
+        }
+        trace!(?urls, "Parsed URLs");
+        return urls;
+    }
+    return Vec::with_capacity(0);
+}
 
 pub(crate) fn get_file_hash(file_path: &str) -> u64 {
     let bytes = get_file_bytes(file_path);

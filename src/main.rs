@@ -11,7 +11,7 @@ use std::sync::Arc;
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
 use crate::walls::{BASE_DIR, FILES};
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use teloxide::{
     dispatching::{update_listeners::Polling, HandlerExt, UpdateFilterExt},
     dptree,

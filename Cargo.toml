@@ -26,7 +26,7 @@ journald = ["tracing-journald"]
 
 [dependencies]
 console-subscriber = { version = "0.1.7", optional = true }
-dotenv = "0.15.0"
+dotenvy = "0.15.0"
 fastrand = "1.8.0"
 futures = "*"
 imagesize = "0.10.0"

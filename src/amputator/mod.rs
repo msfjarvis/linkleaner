@@ -61,8 +61,10 @@ pub async fn handler(
     Ok(())
 }
 
-pub fn is_amp(msg: &Message) -> bool {
-    let urls = get_urls_from_message(msg);
+// The dptree handler requires this to be a move
+#[allow(clippy::needless_pass_by_value)]
+pub fn is_amp(msg: Message) -> bool {
+    let urls = get_urls_from_message(&msg);
     if urls.is_empty() {
         return false;
     }

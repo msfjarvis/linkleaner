@@ -1,3 +1,7 @@
+use futures::future::BoxFuture;
+use std::fmt::Debug;
+use std::sync::Arc;
+use teloxide::error_handlers::ErrorHandler;
 use tracing::dispatcher::SetGlobalDefaultError;
 use tracing::subscriber::set_global_default;
 use tracing::Level;
@@ -32,4 +36,17 @@ fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
 pub fn init() -> Result<(), SetGlobalDefaultError> {
     let tracing_filter = Targets::new().with_target("walls_bot_rs", Level::DEBUG);
     configure_tracing(tracing_filter)
+}
+
+#[derive(Default)]
+pub struct TeloxideLogger {}
+
+impl<E> ErrorHandler<E> for TeloxideLogger
+where
+    E: Debug,
+{
+    fn handle_error(self: Arc<Self>, error: E) -> BoxFuture<'static, ()> {
+        tracing::error!(?error);
+        Box::pin(async {})
+    }
 }

@@ -6,11 +6,14 @@ mod utils;
 mod vxtwitter;
 mod walls;
 
+use std::sync::Arc;
+
 use crate::commands::Command;
+use crate::logging::TeloxideLogger;
 use crate::walls::{BASE_DIR, FILES};
 use dotenv::dotenv;
 use teloxide::{
-    dispatching::{HandlerExt, UpdateFilterExt},
+    dispatching::{update_listeners::Polling, HandlerExt, UpdateFilterExt},
     dptree,
     prelude::{Dispatcher, RequesterExt},
     types::{Message, Update},
@@ -58,10 +61,12 @@ async fn run() {
         )
         .branch(dptree::filter(amputator::is_amp).endpoint(amputator::handler));
 
+    let error_handler = Arc::new(TeloxideLogger::default());
+    let listener = Polling::builder(bot.clone()).build();
     Dispatcher::builder(bot, handler)
         .enable_ctrlc_handler()
         .build()
-        .dispatch()
+        .dispatch_with_listener(listener, error_handler)
         .await;
 }
 

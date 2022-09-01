@@ -1849,6 +1849,7 @@ dependencies = [
  "console-subscriber",
  "dotenv",
  "fastrand",
+ "futures",
  "imagesize",
  "once_cell",
  "regex",

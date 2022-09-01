@@ -62,7 +62,7 @@ async fn run() {
         .branch(dptree::filter(amputator::is_amp).endpoint(amputator::handler));
 
     let error_handler = Arc::new(TeloxideLogger::default());
-    let listener = Polling::builder(bot.clone()).build();
+    let listener = Polling::builder(bot.clone()).drop_pending_updates().build();
     Dispatcher::builder(bot, handler)
         .enable_ctrlc_handler()
         .build()

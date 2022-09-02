@@ -6,12 +6,11 @@ mod utils;
 mod vxtwitter;
 mod walls;
 
-use std::sync::Arc;
-
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
 use crate::walls::{BASE_DIR, FILES};
 use dotenvy::dotenv;
+use std::sync::Arc;
 use teloxide::{
     dispatching::{update_listeners::Polling, HandlerExt, UpdateFilterExt},
     dptree,

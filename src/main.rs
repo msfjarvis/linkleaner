@@ -21,6 +21,8 @@ use teloxide::{
 use tracing::debug;
 use tracing::error;
 
+const REPLACE_SKIP_TOKEN: &'static str = "#skip";
+
 async fn run() {
     if let Err(e) = logging::init() {
         eprintln!("{}", e);
@@ -45,7 +47,9 @@ async fn run() {
         .branch(
             dptree::filter(|msg: Message| {
                 msg.text()
-                    .map(|text| vxtwitter::MATCH_REGEX.is_match(text))
+                    .map(|text| {
+                        vxtwitter::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
+                    })
                     .unwrap_or_default()
             })
             .endpoint(vxtwitter::handler),
@@ -53,7 +57,10 @@ async fn run() {
         .branch(
             dptree::filter(|msg: Message| {
                 msg.text()
-                    .map(|text| ddinstagram::MATCH_REGEX.is_match(text))
+                    .map(|text| {
+                        ddinstagram::MATCH_REGEX.is_match(text)
+                            && !text.contains(REPLACE_SKIP_TOKEN)
+                    })
                     .unwrap_or_default()
             })
             .endpoint(ddinstagram::handler),

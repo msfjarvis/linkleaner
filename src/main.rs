@@ -21,7 +21,7 @@ use teloxide::{
 use tracing::debug;
 use tracing::error;
 
-const REPLACE_SKIP_TOKEN: &'static str = "#skip";
+const REPLACE_SKIP_TOKEN: &str = "#skip";
 
 async fn run() {
     if let Err(e) = logging::init() {

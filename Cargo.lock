@@ -695,9 +695,9 @@ dependencies = [
 
 [[package]]
 name = "imagesize"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97464129b16a0c241f7aeb076b54031be8e973eab85f672c4e36f9bdd9c13fef"
+checksum = "df19da1e92fbfec043ca97d622955381b1f3ee72a180ec999912df31b1ccd951"
 
 [[package]]
 name = "indexmap"

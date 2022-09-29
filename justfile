@@ -14,14 +14,17 @@ arch := `dpkg --print-architecture`
 set positional-arguments := true
 set dotenv-load := true
 
-build type="":
-    cargo build {{ type }}
+_default:
+    just --list
 
-check type="":
-    cargo check {{ type }}
+build *args:
+    cargo build {{ args }}
 
-clippy type="":
-    cargo clippy {{ type }}
+check *args:
+    cargo check {{ args }}
+
+clippy *args:
+    cargo clippy {{ args }}
 
 console:
     RUSTFLAGS="--cfg tokio_unstable" cargo run --release --features console

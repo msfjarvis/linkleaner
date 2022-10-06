@@ -42,7 +42,7 @@ teloxide = { version = "0.10.1", features = ["auto-send", "cache-me", "ctrlc_han
 tokio = { version = "1.21.2", features = ["rt-multi-thread", "macros"] }
 tracing = "0.1.37"
 tracing-journald = { version = "0.3.0", optional = true }
-tracing-subscriber = { version = "0.3.15", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
 walkdir = "2.3.2"
 
 [profile.release]

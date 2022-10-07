@@ -14,7 +14,7 @@ use std::sync::Arc;
 use teloxide::{
     dispatching::{update_listeners::Polling, HandlerExt, UpdateFilterExt},
     dptree,
-    prelude::{Dispatcher, RequesterExt},
+    prelude::Dispatcher,
     types::{Message, Update},
     Bot,
 };
@@ -36,7 +36,7 @@ async fn run() {
     }
     debug!("Indexed {} files", FILES.len());
 
-    let bot = Bot::from_env().auto_send();
+    let bot = Bot::from_env();
 
     let handler = Update::filter_message()
         .branch(

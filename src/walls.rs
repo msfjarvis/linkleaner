@@ -8,7 +8,6 @@ use crate::{
 use once_cell::sync::Lazy;
 use std::{env, error::Error, marker::Send, path::PathBuf};
 use teloxide::{
-    adaptors::{auto_send::AutoRequest, AutoSend},
     payloads::{
         SendDocument, SendDocumentSetters, SendMessageSetters, SendPhoto, SendPhotoSetters,
     },
@@ -74,12 +73,12 @@ fn should_send_as_document(file_path: &str) -> bool {
 
 /// Send the given file as a document, with its name and link as caption
 fn send_captioned_document(
-    bot: &AutoSend<Bot>,
+    bot: &Bot,
     message: &Message,
     file_url: &str,
     file_name: &str,
     file_path: &str,
-) -> AutoRequest<MultipartRequest<SendDocument>> {
+) -> MultipartRequest<SendDocument> {
     let file = if let Some(file_id) = get_remembered_file(file_path) {
         InputFile::file_id(file_id)
     } else {
@@ -97,12 +96,12 @@ fn send_captioned_document(
 
 /// Send the given file as a picture, with its name and link as caption
 fn send_captioned_picture(
-    bot: &AutoSend<Bot>,
+    bot: &Bot,
     message: &Message,
     file_url: &str,
     file_name: &str,
     file_path: &str,
-) -> AutoRequest<MultipartRequest<SendPhoto>> {
+) -> MultipartRequest<SendPhoto> {
     let file = if let Some(file_id) = get_remembered_file(file_path) {
         InputFile::file_id(file_id)
     } else {
@@ -138,7 +137,7 @@ fn get_remembered_file(file_path: &str) -> Option<String> {
 }
 
 async fn send_random_image(
-    bot: &AutoSend<Bot>,
+    bot: &Bot,
     message: &Message,
     images: Vec<String>,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
@@ -151,7 +150,7 @@ async fn send_random_image(
         let msg = send_captioned_document(bot, message, &link, &file, &path).await?;
         if let Some(doc) = msg.document() {
             let document = doc.clone();
-            remember_file(&path, &document.file_id);
+            remember_file(&path, &document.file.id);
         };
     } else {
         bot.send_chat_action(message.chat.id, ChatAction::UploadPhoto)
@@ -159,14 +158,14 @@ async fn send_random_image(
         let msg = send_captioned_picture(bot, message, &link, &file, &path).await?;
         if let Some(photos) = msg.photo() {
             let photo = photos[0].clone();
-            remember_file(&path, &photo.file_id);
+            remember_file(&path, &photo.file.id);
         };
     }
     Ok(())
 }
 
 pub(crate) async fn handler(
-    bot: AutoSend<Bot>,
+    bot: Bot,
     message: Message,
     command: Command,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {

@@ -2,7 +2,6 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::error::Error;
 use teloxide::{
-    adaptors::AutoSend,
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{Message, ParseMode},
@@ -16,7 +15,7 @@ pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
 });
 
 pub async fn handler(
-    bot: AutoSend<Bot>,
+    bot: Bot,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = message.text() && let Some(user) = message.from() &&

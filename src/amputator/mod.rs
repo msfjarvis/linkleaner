@@ -5,7 +5,6 @@ use model::AMPResponse;
 use reqwest::Url;
 use std::{error::Error, str::FromStr};
 use teloxide::{
-    adaptors::AutoSend,
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{Message, ParseMode},
@@ -20,7 +19,7 @@ fn deserialize_amp_response(text: &str) -> Result<AMPResponse, serde_json::Error
 }
 
 pub async fn handler(
-    bot: AutoSend<Bot>,
+    bot: Bot,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = message.text() && let Some(user) = message.from() {

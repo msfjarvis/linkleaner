@@ -1,6 +1,7 @@
 use teloxide::utils::command::BotCommands;
 
 pub(crate) type SearchTerm = String;
+pub(crate) type FilterState = String;
 
 #[derive(BotCommands, Clone)]
 #[command(
@@ -16,16 +17,8 @@ pub(crate) enum Command {
     Random,
     #[command(description = "search picture based on given string")]
     Search { search_term: SearchTerm },
-    #[command(description = "enable or disable Instagram link replacement", parse_with = parse_bool)]
-    Ddinstagram { filter_state: Option<bool> },
-    #[command(description = "enable or disable Twitter link replacement", parse_with = parse_bool)]
-    Vxtwitter { filter_state: Option<bool> },
-}
-
-fn parse_bool(input: String) -> Result<(Option<bool>,), teloxide::utils::command::ParseError> {
-    match input.to_lowercase().as_str() {
-        "true" | "on" | "yes" | "enable" => Ok((Some(true),)),
-        "false" | "off" | "no" | "disable" => Ok((Some(false),)),
-        _ => Ok((None,)),
-    }
+    #[command(description = "enable or disable Instagram link replacement")]
+    Ddinstagram { filter_state: FilterState },
+    #[command(description = "enable or disable Twitter link replacement")]
+    Vxtwitter { filter_state: FilterState },
 }

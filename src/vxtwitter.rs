@@ -7,7 +7,7 @@ use std::{
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{Message, ParseMode},
+    types::{ChatAction, Message, ParseMode},
     Bot,
 };
 
@@ -31,6 +31,8 @@ pub async fn set_filter_state(
             } else {
                 "disabled"
             };
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                .await?;
             bot.send_message(
                 message.chat.id,
                 format!("Twitter link replacement is {state}"),
@@ -41,6 +43,8 @@ pub async fn set_filter_state(
         Some(state) => {
             FILTER_ENABLED.store(state, Ordering::Relaxed);
             let state = if state { "enabled" } else { "disabled" };
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                .await?;
             bot.send_message(
                 message.chat.id,
                 format!("Twitter link replacement has been {state}"),

@@ -2,7 +2,7 @@ use crate::{
     commands::Command,
     utils::{
         file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
-        join_results_to_string,
+        join_results_to_string, parse_bool,
     },
 };
 use once_cell::sync::Lazy;
@@ -224,12 +224,30 @@ pub(crate) async fn handler(
                 .await?;
             }
         }
-        Command::Ddinstagram { filter_state } => {
-            crate::ddinstagram::set_filter_state(bot, message, filter_state).await?;
-        }
-        Command::Vxtwitter { filter_state } => {
-            crate::vxtwitter::set_filter_state(bot, message, filter_state).await?;
-        }
+        Command::Ddinstagram { filter_state } => match parse_bool(&filter_state) {
+            Ok(filter_state) => {
+                crate::ddinstagram::set_filter_state(bot, message, filter_state).await?;
+            }
+            Err(error_message) => {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, error_message)
+                    .reply_to_message_id(message.id)
+                    .await?;
+            }
+        },
+        Command::Vxtwitter { filter_state } => match parse_bool(&filter_state) {
+            Ok(filter_state) => {
+                crate::vxtwitter::set_filter_state(bot, message, filter_state).await?;
+            }
+            Err(error_message) => {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, error_message)
+                    .reply_to_message_id(message.id)
+                    .await?;
+            }
+        },
     };
     Ok(())
 }

@@ -42,7 +42,7 @@ async fn run() {
         .branch(
             dptree::entry()
                 .filter_command::<Command>()
-                .endpoint(walls::handler),
+                .endpoint(commands::handler),
         )
         .branch(
             dptree::filter(|msg: Message| {

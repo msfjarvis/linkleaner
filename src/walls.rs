@@ -224,6 +224,12 @@ pub(crate) async fn handler(
                 .await?;
             }
         }
+        Command::Ddinstagram { filter_state } => {
+            crate::ddinstagram::set_filter_state(bot, message, filter_state).await?;
+        }
+        Command::Vxtwitter { filter_state } => {
+            crate::vxtwitter::set_filter_state(bot, message, filter_state).await?;
+        }
     };
     Ok(())
 }

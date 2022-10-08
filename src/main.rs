@@ -10,7 +10,7 @@ use crate::commands::Command;
 use crate::logging::TeloxideLogger;
 use crate::walls::{BASE_DIR, FILES};
 use dotenvy::dotenv;
-use std::sync::Arc;
+use std::sync::{atomic::Ordering, Arc};
 use teloxide::{
     dispatching::{update_listeners::Polling, HandlerExt, UpdateFilterExt},
     dptree,
@@ -46,22 +46,27 @@ async fn run() {
         )
         .branch(
             dptree::filter(|msg: Message| {
-                msg.text()
-                    .map(|text| {
-                        vxtwitter::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
-                    })
-                    .unwrap_or_default()
+                vxtwitter::FILTER_ENABLED.load(Ordering::Relaxed)
+                    && msg
+                        .text()
+                        .map(|text| {
+                            vxtwitter::MATCH_REGEX.is_match(text)
+                                && !text.contains(REPLACE_SKIP_TOKEN)
+                        })
+                        .unwrap_or_default()
             })
             .endpoint(vxtwitter::handler),
         )
         .branch(
             dptree::filter(|msg: Message| {
-                msg.text()
-                    .map(|text| {
-                        ddinstagram::MATCH_REGEX.is_match(text)
-                            && !text.contains(REPLACE_SKIP_TOKEN)
-                    })
-                    .unwrap_or_default()
+                ddinstagram::FILTER_ENABLED.load(Ordering::Relaxed)
+                    && msg
+                        .text()
+                        .map(|text| {
+                            ddinstagram::MATCH_REGEX.is_match(text)
+                                && !text.contains(REPLACE_SKIP_TOKEN)
+                        })
+                        .unwrap_or_default()
             })
             .endpoint(ddinstagram::handler),
         )

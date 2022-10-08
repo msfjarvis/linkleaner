@@ -1,6 +1,9 @@
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::error::Error;
+use std::{
+    error::Error,
+    sync::atomic::{AtomicBool, Ordering},
+};
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
@@ -13,6 +16,41 @@ const HOST_MATCH_GROUP: &str = "host";
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("^https://(?:www.)?(?P<host>instagram.com)/(p|reel|tv)/[A-Za-z0-9]+.*/").unwrap()
 });
+
+pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
+
+pub async fn set_filter_state(
+    bot: Bot,
+    message: Message,
+    filter_state: Option<bool>,
+) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
+    match filter_state {
+        None => {
+            let state = if FILTER_ENABLED.load(Ordering::Relaxed) {
+                "enabled"
+            } else {
+                "disabled"
+            };
+            bot.send_message(
+                message.chat.id,
+                format!("Instagram link replacement is {state}"),
+            )
+            .reply_to_message_id(message.id)
+            .await?;
+        }
+        Some(state) => {
+            FILTER_ENABLED.store(state, Ordering::Relaxed);
+            let state = if state { "enabled" } else { "disabled" };
+            bot.send_message(
+                message.chat.id,
+                format!("Instagram link replacement has been {state}"),
+            )
+            .reply_to_message_id(message.id)
+            .await?;
+        }
+    };
+    Ok(())
+}
 
 pub async fn handler(
     bot: Bot,

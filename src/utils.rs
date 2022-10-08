@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use seahash::hash;
 use std::{fmt::Write as _, fs::File, io::Read};
 use teloxide::types::{Message, MessageEntityKind};
@@ -117,6 +118,40 @@ pub(crate) fn get_random_file(files: &[String]) -> String {
         .get(fastrand::usize(..files.len()))
         .unwrap()
         .to_string()
+}
+
+pub(crate) fn parse_bool(input: &str) -> Result<Option<bool>, String> {
+    const TRUE_VALUES: [&str; 4] = ["true", "on", "yes", "enable"];
+    const FALSE_VALUES: [&str; 4] = ["false", "off", "no", "disable"];
+    static EXPECTED_VALUES: Lazy<String> = Lazy::new(|| {
+        [TRUE_VALUES, FALSE_VALUES]
+            .concat()
+            .iter()
+            .map(|item| format!("'{item}'"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    });
+
+    let input = input.split(' ').collect::<Vec<_>>();
+    if input.len() > 1 {
+        return Err(format!(
+            "Unexpected number of arguments. Expected one of: {}.",
+            *EXPECTED_VALUES
+        ));
+    }
+
+    match input[0].to_lowercase().as_str() {
+        arg if TRUE_VALUES.contains(&arg) => Ok(Some(true)),
+        arg if FALSE_VALUES.contains(&arg) => Ok(Some(false)),
+        "" => Ok(None),
+        arg => {
+            let message = format!(
+                "Unexpected argument '{arg}'. Expected one of: {}.",
+                *EXPECTED_VALUES
+            );
+            Err(message)
+        }
+    }
 }
 
 #[cfg(test)]

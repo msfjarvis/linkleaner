@@ -2,7 +2,7 @@ use crate::{
     commands::Command,
     utils::{
         file_name_to_label, get_file_hash, get_random_file, get_search_results, index_pictures,
-        join_results_to_string,
+        join_results_to_string, parse_bool,
     },
 };
 use once_cell::sync::Lazy;
@@ -13,7 +13,7 @@ use teloxide::{
     },
     prelude::Requester,
     requests::MultipartRequest,
-    types::{ChatAction, InputFile, Message, ParseMode},
+    types::{ChatAction, InputFile, Message, ParseMode, UserId},
     utils::command::BotCommands,
     Bot,
 };
@@ -25,6 +25,13 @@ static TREE: Lazy<sled::Db> = Lazy::new(|| sled::open("file_id_cache").unwrap())
 pub static BASE_DIR: Lazy<String> =
     Lazy::new(|| env::var("BASE_DIR").expect("BASE_DIR must be defined"));
 pub static FILES: Lazy<Vec<String>> = Lazy::new(|| index_pictures(&BASE_DIR));
+pub static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
+    let value = env::var("BOT_OWNER_ID").expect("BOT_OWNER_ID must be defined");
+    let id = value
+        .parse::<u64>()
+        .expect("BOT_OWNER_ID must be a valid integer");
+    UserId(id)
+});
 
 /// Telegram mandates a photo can not be larger than 10 megabytes
 const MAX_FILE_SIZE: u64 = 10_485_760;
@@ -222,6 +229,50 @@ pub(crate) async fn handler(
                 .disable_web_page_preview(true)
                 .reply_to_message_id(message.id)
                 .await?;
+            }
+        }
+        Command::Ddinstagram { filter_state } => {
+            if let Some(_) = message.from().map(|from| from.id != *BOT_OWNER) {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
+            } else {
+                match parse_bool(&filter_state) {
+                    Ok(filter_state) => {
+                        crate::ddinstagram::set_filter_state(bot, message, filter_state).await?;
+                    }
+                    Err(error_message) => {
+                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                            .await?;
+                        bot.send_message(message.chat.id, error_message)
+                            .reply_to_message_id(message.id)
+                            .await?;
+                    }
+                }
+            }
+        }
+        Command::Vxtwitter { filter_state } => {
+            if let Some(_) = message.from().map(|from| from.id != *BOT_OWNER) {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
+            } else {
+                match parse_bool(&filter_state) {
+                    Ok(filter_state) => {
+                        crate::vxtwitter::set_filter_state(bot, message, filter_state).await?;
+                    }
+                    Err(error_message) => {
+                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                            .await?;
+                        bot.send_message(message.chat.id, error_message)
+                            .reply_to_message_id(message.id)
+                            .await?;
+                    }
+                }
             }
         }
     };

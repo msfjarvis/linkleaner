@@ -51,7 +51,7 @@ pub(crate) async fn handler(
             bot.send_message(message.chat.id, Command::descriptions().to_string())
                 .await?;
         }
-        Command::Pic { search_term:_ } | Command::Search { search_term: _ } => {
+        Command::Pic { search_term: _ } | Command::Search { search_term: _ } => {
             crate::walls::handler(bot, message, command).await?;
         }
         Command::Random => {

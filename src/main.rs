@@ -1,3 +1,4 @@
+#![feature(let_chains)]
 mod amputator;
 mod commands;
 mod ddinstagram;

@@ -65,7 +65,7 @@ jobs:
       with:
         crate: cargo-deny
 
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@22c9328bcba27aa81a32b1bef27c7e3c78052531 # tag=v2
       with:
         key: cargo-cache-${{ hashFiles('Cargo.lock', 'Cargo.toml') }}-${{ matrix.os }}-${{ matrix.rust }}
 

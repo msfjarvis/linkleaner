@@ -45,7 +45,7 @@ pub(crate) async fn handler(
                 .await?;
         }
         Command::Ddinstagram { filter_state } => {
-            if message.from().map(|from| from.id != *BOT_OWNER).is_some() {
+            if let Some(from) = message.from() && from.id != *BOT_OWNER {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
                 bot.send_message(message.chat.id, "You are not authorized for this action")
@@ -67,7 +67,7 @@ pub(crate) async fn handler(
             }
         }
         Command::Vxtwitter { filter_state } => {
-            if message.from().map(|from| from.id != *BOT_OWNER).is_some() {
+            if let Some(from) = message.from() && from.id != *BOT_OWNER {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
                 bot.send_message(message.chat.id, "You are not authorized for this action")

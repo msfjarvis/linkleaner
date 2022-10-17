@@ -9,7 +9,6 @@ use teloxide::{
     Bot,
 };
 
-pub(crate) type SearchTerm = String;
 pub(crate) type FilterState = String;
 static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
     let value = env::var("BOT_OWNER_ID").expect("BOT_OWNER_ID must be defined");
@@ -27,12 +26,6 @@ static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
 pub(crate) enum Command {
     #[command(description = "display this text.")]
     Help,
-    #[command(description = "return a picture matching a given query")]
-    Pic { search_term: SearchTerm },
-    #[command(description = "return a random picture")]
-    Random,
-    #[command(description = "search picture based on given string")]
-    Search { search_term: SearchTerm },
     #[command(description = "enable or disable Instagram link replacement")]
     Ddinstagram { filter_state: FilterState },
     #[command(description = "enable or disable Twitter link replacement")]
@@ -50,12 +43,6 @@ pub(crate) async fn handler(
                 .await?;
             bot.send_message(message.chat.id, Command::descriptions().to_string())
                 .await?;
-        }
-        Command::Pic { search_term: _ } | Command::Search { search_term: _ } => {
-            crate::walls::handler(bot, message, command).await?;
-        }
-        Command::Random => {
-            crate::walls::handler(bot, message, command).await?;
         }
         Command::Ddinstagram { filter_state } => {
             if message.from().map(|from| from.id != *BOT_OWNER).is_some() {

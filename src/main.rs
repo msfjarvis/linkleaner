@@ -5,11 +5,9 @@ mod ddinstagram;
 mod logging;
 mod utils;
 mod vxtwitter;
-mod walls;
 
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
-use crate::walls::{BASE_DIR, FILES};
 use dotenvy::dotenv;
 use std::sync::{atomic::Ordering, Arc};
 use teloxide::{
@@ -19,8 +17,6 @@ use teloxide::{
     types::{Message, Update},
     Bot,
 };
-use tracing::debug;
-use tracing::error;
 
 const REPLACE_SKIP_TOKEN: &str = "#skip";
 
@@ -30,12 +26,6 @@ async fn run() {
         return;
     };
     dotenv().ok();
-
-    if FILES.is_empty() {
-        error!("Failed to index files from {}", *BASE_DIR);
-        return;
-    }
-    debug!("Indexed {} files", FILES.len());
 
     let bot = Bot::from_env();
 

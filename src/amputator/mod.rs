@@ -27,7 +27,7 @@ pub async fn handler(
         let urls = get_urls_from_message(&message);
         debug!(?urls);
         for url in &urls {
-            let resp = reqwest::get(&format!("{}{}", BASE_URL, url))
+            let resp = reqwest::get(&format!("{BASE_URL}{url}"))
                 .await?
                 .text()
                 .await?;

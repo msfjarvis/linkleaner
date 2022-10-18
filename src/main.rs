@@ -22,7 +22,7 @@ const REPLACE_SKIP_TOKEN: &str = "#skip";
 
 async fn run() {
     if let Err(e) = logging::init() {
-        eprintln!("{}", e);
+        eprintln!("{e}");
         return;
     };
     dotenv().ok();

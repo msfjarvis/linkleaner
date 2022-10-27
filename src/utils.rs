@@ -31,9 +31,9 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
                 final_text = final_text.replace(&item, &scrubbed_url);
             }
         }
-        return Some(final_text);
+        Some(final_text)
     } else {
-        return None;
+        None
     }
 }
 

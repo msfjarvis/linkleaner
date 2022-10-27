@@ -73,13 +73,6 @@ jobs:
       shell: bash
       run: cargo fmt -- --check
 
-    - name: Run cargo-deny
-      shell: bash
-      run: |
-        if [ -f deny.toml ]; then
-          cargo deny check
-        fi
-
     - name: Clippy
       shell: bash
       run: cargo clippy -- -Wclippy::pedantic
@@ -87,3 +80,20 @@ jobs:
     - name: Run tests
       shell: bash
       run: cargo nextest run --all-features
+
+  cargo-deny:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+
+    # Prevent sudden announcement of a new advisory from failing ci:
+    continue-on-error: ${{ matrix.checks == 'advisories' }}
+
+    steps:
+    - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # tag=v2
+    - uses: EmbarkStudios/cargo-deny-action@7257a18a9c2fe3f92b85d41ae473520dff953c97 # tag=v1
+      with:
+        command: check ${{ matrix.checks }}

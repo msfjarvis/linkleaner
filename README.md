@@ -1,4 +1,4 @@
-# walls-bot-rs ![Run unit tests](https://github.com/msfjarvis/walls-bot-rs/workflows/Run%20unit%20tests/badge.svg)
+# walls-bot-rs [![Check Rust code](https://github.com/msfjarvis/walls-bot-rs/actions/workflows/test.yml/badge.svg)](https://github.com/msfjarvis/walls-bot-rs/actions/workflows/test.yml)
 
 Telegram bot for my wallpapers collection, in Rust.
 

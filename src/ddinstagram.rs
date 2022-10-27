@@ -1,3 +1,4 @@
+use crate::utils::scrub_urls;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
@@ -62,6 +63,7 @@ pub async fn handler(
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = message.text() && let Some(user) = message.from() &&
         let Some(caps) = MATCH_REGEX.captures(text) {
+        let text = scrub_urls(&message).unwrap_or(text.to_owned());
         let text = text.replace(&caps[HOST_MATCH_GROUP], "ddinstagram.com");
         let text = format!(
             "<a href=\"{}\">{}</a>: {}",

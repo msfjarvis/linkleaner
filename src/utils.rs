@@ -1,4 +1,5 @@
 use once_cell::sync::Lazy;
+use reqwest::Url;
 use teloxide::types::{Message, MessageEntityKind};
 use tracing::trace;
 
@@ -18,6 +19,22 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
         return urls;
     }
     Vec::with_capacity(0)
+}
+
+pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
+    if let Some(text) = msg.text() {
+        let urls = get_urls_from_message(msg);
+        let mut final_text = text.to_owned();
+        for item in urls {
+            if let Ok(url) = Url::parse(&item) && let Some(query_str) = url.query() {
+                let scrubbed_url = item.replace(&format!("?{query_str}"), "");
+                final_text = final_text.replace(&item, &scrubbed_url);
+            }
+        }
+        return Some(final_text);
+    } else {
+        return None;
+    }
 }
 
 pub(crate) fn parse_bool(input: &str) -> Result<Option<bool>, String> {

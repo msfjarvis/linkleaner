@@ -26,6 +26,8 @@ static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
 pub(crate) enum Command {
     #[command(description = "display this text.")]
     Help,
+    #[command(description = "Pong?")]
+    Ping,
     #[command(description = "enable or disable Instagram link replacement")]
     Ddinstagram { filter_state: FilterState },
     #[command(description = "enable or disable Twitter link replacement")]
@@ -44,6 +46,12 @@ pub(crate) async fn handler(
             bot.send_message(message.chat.id, Command::descriptions().to_string())
                 .await?;
         }
+        Command::Ping => {
+            bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                .await?;
+            bot.send_message(message.chat.id, "Pong")
+                .await?;
+        },
         Command::Ddinstagram { filter_state } => {
             if let Some(from) = message.from() && from.id != *BOT_OWNER {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)

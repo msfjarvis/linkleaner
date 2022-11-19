@@ -33,7 +33,7 @@
           overlays = [ (import rust-overlay) ];
         };
 
-        rustNightly = pkgs.rust-bin.nightly."2022-10-14".default.override {
+        rustNightly = pkgs.rust-bin.nightly."2022-11-14".default.override {
           extensions = [ ];
           targets =
             pkgs.lib.optionals pkgs.stdenv.isDarwin [ "aarch64-apple-darwin" ]

@@ -185,3 +185,7 @@ fabric.properties
 
 # Database
 /file_id_cache
+
+# Nix result
+/result
+/result-*

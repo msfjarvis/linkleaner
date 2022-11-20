@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # v2
       - name: Install Nix
-        uses: cachix/install-nix-action@v16
+        uses: cachix/install-nix-action@d56f3ce9be45c562799280e8a561fbbe8f36de44 # v16
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@v14
+        uses: DeterminateSystems/update-flake-lock@0ad9a550487687dcea451e57e09d99725e664d77 # v14
         with:
           inputs: nixpkgs crane flake-utils advisory-db rust-overlay

@@ -11,9 +11,10 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
             .filter(|entity| entity.kind == MessageEntityKind::Url)
             .collect::<Vec<_>>();
         trace!(?entities, "URL entities");
+        let utf16 = text.encode_utf16().collect::<Vec<u16>>();
         let mut urls = Vec::with_capacity(entities.len());
         for entity in entities {
-            urls.push(text[entity.offset..entity.offset + entity.length].to_string());
+            urls.push(String::from_utf16_lossy(&utf16[entity.offset..entity.offset + entity.length]));
         }
         trace!(?urls, "Parsed URLs");
         return urls;

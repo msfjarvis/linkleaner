@@ -1,7 +1,5 @@
 allow-branch = ["main"]
 push = true
 pre-release-commit-message = "chore(release): bump {{crate_name}} to version {{version}}"
-sign-commit = true
-sign-tag = true
 tag-message = "{{crate_name}} version {{version}}"
 tag-name = "v{{version}}"

@@ -45,6 +45,7 @@ impl<E> ErrorHandler<E> for TeloxideLogger
 where
     E: Debug,
 {
+    #[track_caller]
     fn handle_error(self: Arc<Self>, error: E) -> BoxFuture<'static, ()> {
         tracing::error!(?error);
         Box::pin(async {})

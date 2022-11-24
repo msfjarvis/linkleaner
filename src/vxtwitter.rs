@@ -8,6 +8,7 @@ use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{ChatAction, Message, ParseMode},
+    utils::html::link,
     Bot,
 };
 
@@ -64,9 +65,8 @@ pub async fn handler(
         let Some(caps) = MATCH_REGEX.captures(text) {
         let text = text.replace(&caps[HOST_MATCH_GROUP], "c.vxtwitter.com");
         let text = format!(
-            "<a href=\"{}\">{}</a>: {}",
-            user.id.url(),
-            user.full_name(),
+            "{}: {}",
+            link(user.url().as_str(), &user.full_name()),
             text
         );
         let _del = bot.delete_message(message.chat.id, message.id).await;

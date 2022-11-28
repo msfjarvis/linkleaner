@@ -13,6 +13,6 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@daddc62a2e67d1decb56e028c9fa68344b9b7c2a # v18
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@0ad9a550487687dcea451e57e09d99725e664d77 # v14
+        uses: DeterminateSystems/update-flake-lock@aa092a7430ae3d1fa7ff69a1e3f85d16530a74ef # v15
         with:
           inputs: nixpkgs crane flake-utils advisory-db rust-overlay

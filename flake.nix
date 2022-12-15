@@ -1,5 +1,5 @@
 {
-  description = "walls-bot-rs";
+  description = "linkleaner";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -46,12 +46,12 @@
         cargoArtifacts = craneLib.buildDepsOnly { inherit src buildInputs; };
         buildInputs = [ ];
 
-        tgbot = craneLib.buildPackage {
+        linkleaner = craneLib.buildPackage {
           inherit src;
           doCheck = false;
         };
       in {
-        checks = { inherit tgbot; };
+        checks = { inherit linkleaner; };
 
         # Run clippy (and deny all warnings) on the crate source,
         # again, resuing the dependency artifacts from above.
@@ -59,31 +59,31 @@
         # Note that this is done as a separate derivation so that
         # we can block the CI if there are issues here, but not
         # prevent downstream consumers from building our crate by itself.
-        tgbot-clippy = craneLib.cargoClippy {
+        linkleaner-clippy = craneLib.cargoClippy {
           inherit cargoArtifacts src buildInputs;
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
 
-        tgbot-doc = craneLib.cargoDoc { inherit cargoArtifacts src; };
+        linkleaner-doc = craneLib.cargoDoc { inherit cargoArtifacts src; };
 
         # Check formatting
-        tgbot-fmt = craneLib.cargoFmt { inherit src; };
+        linkleaner-fmt = craneLib.cargoFmt { inherit src; };
 
         # Audit dependencies
-        tgbot-audit = craneLib.cargoAudit { inherit src advisory-db; };
+        linkleaner-audit = craneLib.cargoAudit { inherit src advisory-db; };
 
         # Run tests with cargo-nextest
-        # Consider setting `doCheck = false` on `tgbot` if you do not want
+        # Consider setting `doCheck = false` on `linkleaner` if you do not want
         # the tests to run twice
-        tgbot-nextest = craneLib.cargoNextest {
+        linkleaner-nextest = craneLib.cargoNextest {
           inherit cargoArtifacts src buildInputs;
           partitions = 1;
           partitionType = "count";
         };
 
-        packages.default = tgbot;
+        packages.default = linkleaner;
 
-        apps.default = flake-utils.lib.mkApp { drv = tgbot; };
+        apps.default = flake-utils.lib.mkApp { drv = linkleaner; };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;

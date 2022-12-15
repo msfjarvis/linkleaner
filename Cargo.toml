@@ -1,19 +1,19 @@
 [package]
-name = "walls-bot-rs"
+name = "linkleaner"
 version = "0.20.2"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2021"
 license = "MIT/Apache-2.0"
-description = "Telegram bot that scans a local filesystem for images and sends them to Telegram when commands are issued."
+description = "Telegram bot that replaces social media links to enhance their previews"
 keywords = ["telegram", "bot"]
-repository = "https://github.com/msfjarvis/walls-bot-rs"
-homepage = "https://github.com/msfjarvis/walls-bot-rs"
+repository = "https://github.com/msfjarvis/linkleaner"
+homepage = "https://github.com/msfjarvis/linkleaner"
 readme = "README.md"
 include = ["src/**/*", "LICENSE-*", "README.md"]
 publish = false
 
 [package.metadata.deb]
-extended-description = "Telegram bot that scans a local filesystem for images and sends them to Telegram when commands are issued."
+extended-description = "Telegram bot that replaces social media links to enhance their previews"
 features = ["console", "journald"]
 priority = "optional"
 depends = "$auto"

@@ -37,19 +37,19 @@ install:
     sudo apt -f install --reinstall ./target/debian/{{ name }}_{{ version }}_{{ arch }}.deb
 
 log:
-    sudo journalctl -xeu walls-bot-rs.service
+    sudo journalctl -xeu linkleaner.service
 
 run type="":
     cargo run {{ type }}
 
 start:
-    sudo systemctl start walls-bot-rs.service
+    sudo systemctl start linkleaner.service
 
 status:
-    sudo systemctl status walls-bot-rs.service
+    sudo systemctl status linkleaner.service
 
 stop:
-    sudo systemctl stop walls-bot-rs.service
+    sudo systemctl stop linkleaner.service
 
 test:
     cargo nextest run

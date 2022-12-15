@@ -680,6 +680,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc7fcc620a3bff7cdd7a365be3376c97191aeaccc2a603e600951e452615bf89"
 
 [[package]]
+name = "linkleaner"
+version = "0.20.2"
+dependencies = [
+ "console-subscriber",
+ "dotenvy",
+ "futures",
+ "once_cell",
+ "regex",
+ "reqwest",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "teloxide",
+ "tokio",
+ "tracing",
+ "tracing-journald",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "log"
 version = "0.4.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1687,26 +1707,6 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
-
-[[package]]
-name = "walls-bot-rs"
-version = "0.20.2"
-dependencies = [
- "console-subscriber",
- "dotenvy",
- "futures",
- "once_cell",
- "regex",
- "reqwest",
- "serde",
- "serde_derive",
- "serde_json",
- "teloxide",
- "tokio",
- "tracing",
- "tracing-journald",
- "tracing-subscriber",
-]
 
 [[package]]
 name = "want"

@@ -34,7 +34,7 @@ fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
 }
 
 pub fn init() -> Result<(), SetGlobalDefaultError> {
-    let tracing_filter = Targets::new().with_target("walls_bot_rs", Level::DEBUG);
+    let tracing_filter = Targets::new().with_target("linkleaner", Level::DEBUG);
     configure_tracing(tracing_filter)
 }
 

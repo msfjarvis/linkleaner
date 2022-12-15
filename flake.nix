@@ -64,8 +64,6 @@
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
 
-        linkleaner-doc = craneLib.cargoDoc { inherit cargoArtifacts src; };
-
         # Check formatting
         linkleaner-fmt = craneLib.cargoFmt { inherit src; };
 

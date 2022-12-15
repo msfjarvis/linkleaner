@@ -50,33 +50,21 @@
           inherit src;
           doCheck = false;
         };
-      in {
-        checks = { inherit linkleaner; };
-
-        # Run clippy (and deny all warnings) on the crate source,
-        # again, resuing the dependency artifacts from above.
-        #
-        # Note that this is done as a separate derivation so that
-        # we can block the CI if there are issues here, but not
-        # prevent downstream consumers from building our crate by itself.
         linkleaner-clippy = craneLib.cargoClippy {
           inherit cargoArtifacts src buildInputs;
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
-
-        # Check formatting
         linkleaner-fmt = craneLib.cargoFmt { inherit src; };
-
-        # Audit dependencies
         linkleaner-audit = craneLib.cargoAudit { inherit src advisory-db; };
-
-        # Run tests with cargo-nextest
-        # Consider setting `doCheck = false` on `linkleaner` if you do not want
-        # the tests to run twice
         linkleaner-nextest = craneLib.cargoNextest {
           inherit cargoArtifacts src buildInputs;
           partitions = 1;
           partitionType = "count";
+        };
+      in {
+        checks = {
+          inherit linkleaner linkleaner-audit linkleaner-clippy linkleaner-fmt
+            linkleaner-nextest;
         };
 
         packages.default = linkleaner;

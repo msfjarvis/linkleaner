@@ -21,10 +21,12 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
-    - name: Install and enable cachix
-      run: |
-        nix-env --quiet -j8 -iA cachix -f https://cachix.org/api/v1/install
-        cachix use msfjarvis
+    - name: Set up Cachix (msfjarvis)
+      uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # tag=v12
+      with:
+        name: msfjarvis
+        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+        cachixArgs: -c9 --omit-deriver
 
     - name: Run checks
       run: |

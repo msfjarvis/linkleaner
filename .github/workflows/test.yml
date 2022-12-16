@@ -10,24 +10,7 @@ on:
 name: Check Rust code
 jobs:
   check:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3
-
-    - name: Install Nix
-      uses: cachix/install-nix-action@daddc62a2e67d1decb56e028c9fa68344b9b7c2a # tag=v18
-      with:
-        nix_path: nixpkgs=channel:nixos-unstable
-
-    - name: Set up Cachix (msfjarvis)
-      uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # tag=v12
-      with:
-        name: msfjarvis
-        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-        cachixArgs: -c9 --omit-deriver
-
-    - name: Run checks
-      run: |
-        nix flake check
+    uses: msfjarvis/shared-workflows/.github/workflows/test-flakes-project.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      cachix-token: ${{ secrets.CACHIX_AUTH_TOKEN }}

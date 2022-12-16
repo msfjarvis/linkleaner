@@ -1,10 +1,10 @@
 #![feature(let_chains)]
-mod amputator;
 mod commands;
-mod ddinstagram;
+mod deamp;
+mod instagram;
 mod logging;
+mod twitter;
 mod utils;
-mod vxtwitter;
 
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
@@ -37,31 +37,31 @@ async fn run() {
         )
         .branch(
             dptree::filter(|msg: Message| {
-                vxtwitter::FILTER_ENABLED.load(Ordering::Relaxed)
+                twitter::FILTER_ENABLED.load(Ordering::Relaxed)
                     && msg
                         .text()
                         .map(|text| {
-                            vxtwitter::MATCH_REGEX.is_match(text)
+                            twitter::MATCH_REGEX.is_match(text)
                                 && !text.contains(REPLACE_SKIP_TOKEN)
                         })
                         .unwrap_or_default()
             })
-            .endpoint(vxtwitter::handler),
+            .endpoint(twitter::handler),
         )
         .branch(
             dptree::filter(|msg: Message| {
-                ddinstagram::FILTER_ENABLED.load(Ordering::Relaxed)
+                instagram::FILTER_ENABLED.load(Ordering::Relaxed)
                     && msg
                         .text()
                         .map(|text| {
-                            ddinstagram::MATCH_REGEX.is_match(text)
+                            instagram::MATCH_REGEX.is_match(text)
                                 && !text.contains(REPLACE_SKIP_TOKEN)
                         })
                         .unwrap_or_default()
             })
-            .endpoint(ddinstagram::handler),
+            .endpoint(instagram::handler),
         )
-        .branch(dptree::filter(amputator::is_amp).endpoint(amputator::handler));
+        .branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
 
     let error_handler = Arc::new(TeloxideLogger::default());
     let listener = Polling::builder(bot.clone()).drop_pending_updates().build();

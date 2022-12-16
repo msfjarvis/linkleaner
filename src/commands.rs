@@ -62,7 +62,7 @@ pub(crate) async fn handler(
             } else {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        crate::ddinstagram::set_filter_state(bot, message, filter_state).await?;
+                        crate::instagram::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_action(message.chat.id, ChatAction::Typing)
@@ -84,7 +84,7 @@ pub(crate) async fn handler(
             } else {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        crate::vxtwitter::set_filter_state(bot, message, filter_state).await?;
+                        crate::twitter::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_action(message.chat.id, ChatAction::Typing)

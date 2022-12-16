@@ -63,7 +63,7 @@ pub async fn handler(
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = message.text() && let Some(user) = message.from() &&
         let Some(caps) = MATCH_REGEX.captures(text) {
-        let text = text.replace(&caps[HOST_MATCH_GROUP], "c.vxtwitter.com");
+        let text = text.replace(&caps[HOST_MATCH_GROUP], "fxtwitter.com");
         let text = format!(
             "{}: {}",
             link(user.url().as_str(), &user.full_name()),

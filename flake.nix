@@ -2,17 +2,12 @@
   description = "linkleaner";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs = { url = "github:NixOS/nixpkgs/nixpkgs-unstable"; };
 
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-utils = { url = "github:numtide/flake-utils"; };
 
-    flake-utils.url = "github:numtide/flake-utils";
-
-    advisory-db = {
-      url = "github:rustsec/advisory-db";
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
       flake = false;
     };
 
@@ -22,6 +17,21 @@
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
       };
+    };
+
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
+
+    advisory-db = {
+      url = "github:rustsec/advisory-db";
+      flake = false;
     };
   };
 

@@ -28,6 +28,7 @@ pub(crate) enum Command {
     Help,
     #[command(description = "Pong?")]
     Ping,
+    #[cfg(feature = "ddinstagram")]
     #[command(description = "enable or disable Instagram link replacement")]
     Ddinstagram { filter_state: FilterState },
     #[command(description = "enable or disable Twitter link replacement")]
@@ -52,6 +53,7 @@ pub(crate) async fn handler(
             bot.send_message(message.chat.id, "Pong")
                 .await?;
         },
+        #[cfg(feature = "ddinstagram")]
         Command::Ddinstagram { filter_state } => {
             if let Some(from) = message.from() && from.id != *BOT_OWNER {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)

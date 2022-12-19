@@ -1,6 +1,7 @@
 #![feature(let_chains)]
 mod commands;
 mod deamp;
+#[cfg(feature = "ddinstagram")]
 mod instagram;
 mod logging;
 mod twitter;
@@ -47,21 +48,22 @@ async fn run() {
                         .unwrap_or_default()
             })
             .endpoint(twitter::handler),
-        )
-        .branch(
-            dptree::filter(|msg: Message| {
-                instagram::FILTER_ENABLED.load(Ordering::Relaxed)
-                    && msg
-                        .text()
-                        .map(|text| {
-                            instagram::MATCH_REGEX.is_match(text)
-                                && !text.contains(REPLACE_SKIP_TOKEN)
-                        })
-                        .unwrap_or_default()
-            })
-            .endpoint(instagram::handler),
-        )
-        .branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
+        );
+    #[cfg(feature = "ddinstagram")]
+    let handler = handler.branch(
+        dptree::filter(|msg: Message| {
+            instagram::FILTER_ENABLED.load(Ordering::Relaxed)
+                && msg
+                    .text()
+                    .map(|text| {
+                        instagram::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
+                    })
+                    .unwrap_or_default()
+        })
+        .endpoint(instagram::handler),
+    );
+
+    let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
 
     let error_handler = Arc::new(TeloxideLogger::default());
     let listener = Polling::builder(bot.clone()).drop_pending_updates().build();

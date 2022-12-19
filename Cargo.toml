@@ -22,6 +22,7 @@ systemd-units = { enable = true }
 
 [features]
 console = ["console-subscriber"]
+ddinstagram = []
 journald = ["tracing-journald"]
 
 [dependencies]

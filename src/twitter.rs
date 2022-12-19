@@ -1,3 +1,4 @@
+use crate::utils::scrub_urls;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
@@ -61,8 +62,8 @@ pub async fn handler(
     bot: Bot,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    if let Some(text) = message.text() && let Some(user) = message.from() &&
-        let Some(caps) = MATCH_REGEX.captures(text) {
+    if let Some(text) = scrub_urls(&message) && let Some(user) = message.from() &&
+        let Some(caps) = MATCH_REGEX.captures(&text) {
         let text = text.replace(&caps[HOST_MATCH_GROUP], "fxtwitter.com");
         let text = format!(
             "{}: {}",

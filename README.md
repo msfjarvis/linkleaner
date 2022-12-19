@@ -2,8 +2,8 @@
 
 Telegram bot to replace social media links with their improved preview variants. Supported platforms:
 
-- Twitter: [BetterTwitFix](https://github.com/dylanpdx/BetterTwitFix)
-- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix)
+- Twitter: [FixTweet](https://github.com/FixTweet/FixTweet)
+- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix) (behind the `ddinstagram` feature)
 
 ### Running
 

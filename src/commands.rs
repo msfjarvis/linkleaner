@@ -30,9 +30,9 @@ pub(crate) enum Command {
     Ping,
     #[cfg(feature = "ddinstagram")]
     #[command(description = "enable or disable Instagram link replacement")]
-    Ddinstagram { filter_state: FilterState },
+    Instagram { filter_state: FilterState },
     #[command(description = "enable or disable Twitter link replacement")]
-    Vxtwitter { filter_state: FilterState },
+    Twitter { filter_state: FilterState },
 }
 
 pub(crate) async fn handler(
@@ -54,7 +54,7 @@ pub(crate) async fn handler(
                 .await?;
         },
         #[cfg(feature = "ddinstagram")]
-        Command::Ddinstagram { filter_state } => {
+        Command::Instagram { filter_state } => {
             if let Some(from) = message.from() && from.id != *BOT_OWNER {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
@@ -76,7 +76,7 @@ pub(crate) async fn handler(
                 }
             }
         }
-        Command::Vxtwitter { filter_state } => {
+        Command::Twitter { filter_state } => {
             if let Some(from) = message.from() && from.id != *BOT_OWNER {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;

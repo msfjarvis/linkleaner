@@ -1,0 +1,7 @@
+app = "linkleaner"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+image = "registry.fly.io/linkleaner:latest-x86_64-linux"

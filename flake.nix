@@ -78,6 +78,17 @@
         };
 
         packages.default = linkleaner;
+        packages.container = pkgs.dockerTools.buildImage {
+          name = "registry.fly.io/linkleaner";
+          tag = "latest-${system}";
+          created = "now";
+          copyToRoot = pkgs.buildEnv {
+          	name = "linkleaner";
+          	paths = [ linkleaner ];
+          	pathsToLink = [ "/bin" ];
+          };
+          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+        };
 
         apps.default = flake-utils.lib.mkApp { drv = linkleaner; };
 

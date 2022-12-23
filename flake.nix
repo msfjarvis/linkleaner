@@ -83,9 +83,9 @@
           tag = "latest-${system}";
           created = "now";
           copyToRoot = pkgs.buildEnv {
-          	name = "linkleaner";
-          	paths = [ linkleaner ];
-          	pathsToLink = [ "/bin" ];
+            name = "linkleaner";
+            paths = [ linkleaner ];
+            pathsToLink = [ "/bin" ];
           };
           config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
         };
@@ -95,7 +95,7 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;
 
-          nativeBuildInputs = with pkgs; [ cargo-release rustNightly ];
+          nativeBuildInputs = with pkgs; [ cargo-release nil rustNightly ];
         };
       });
 }

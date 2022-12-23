@@ -12,14 +12,6 @@ readme = "README.md"
 include = ["src/**/*", "LICENSE-*", "README.md"]
 publish = false
 
-[package.metadata.deb]
-extended-description = "Telegram bot that replaces social media links to enhance their previews"
-features = ["console", "journald"]
-priority = "optional"
-depends = "$auto"
-maintainer-scripts = "pkg/debian/"
-systemd-units = { enable = true }
-
 [features]
 console = ["console-subscriber"]
 ddinstagram = []

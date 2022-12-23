@@ -5,18 +5,16 @@ use tracing::trace;
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
     if let Some(entities) = msg.entities() && let Some(text) = msg.text() {
-        trace!(?entities, "All entities");
-        let entities = entities
+        let url_entities = entities
             .iter()
             .filter(|entity| entity.kind == MessageEntityKind::Url)
             .collect::<Vec<_>>();
-        trace!(?entities, "URL entities");
         let utf16 = text.encode_utf16().collect::<Vec<u16>>();
-        let mut urls = Vec::with_capacity(entities.len());
-        for entity in entities {
+        let mut urls = Vec::with_capacity(url_entities.len());
+        for entity in &url_entities {
             urls.push(String::from_utf16_lossy(&utf16[entity.offset..entity.offset + entity.length]));
         }
-        trace!(?urls, "Parsed URLs");
+        trace!(?entities, ?url_entities, ?urls, "get_urls_from_message");
         return urls;
     }
     Vec::with_capacity(0)

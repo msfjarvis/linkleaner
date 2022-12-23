@@ -42,6 +42,6 @@ jobs:
     - name: Publish image and deploy
       shell: bash
       run: |
-        flyctl docker auth
+        flyctl auth docker
         docker push registry.fly.io/linkleaner:latest-x86_64-linux
         flyctl deploy

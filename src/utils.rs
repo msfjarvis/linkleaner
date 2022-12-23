@@ -30,8 +30,10 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
                 final_text = final_text.replace(&item, &scrubbed_url);
             }
         }
+        trace!(?text, ?final_text, "scrub_urls");
         Some(final_text)
     } else {
+        trace!(message_id = %msg.id.0, "scrub_urls failed to find text");
         None
     }
 }

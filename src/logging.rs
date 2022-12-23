@@ -16,7 +16,7 @@ fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
     let registry = registry();
     #[cfg(feature = "console")]
     let registry = registry.with(console_subscriber::spawn());
-    let stdout_log = fmt::layer().pretty();
+    let stdout_log = fmt::layer().compact();
     let subscriber = registry.with(stdout_log.with_filter(filter));
     set_global_default(subscriber)
 }

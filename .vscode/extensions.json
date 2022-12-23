@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "skellock.just",
+        "arrterian.nix-env-selector",
         "rust-lang.rust-analyzer"
     ]
 }

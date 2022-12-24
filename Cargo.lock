@@ -681,7 +681,7 @@ checksum = "fc7fcc620a3bff7cdd7a365be3376c97191aeaccc2a603e600951e452615bf89"
 
 [[package]]
 name = "linkleaner"
-version = "1.2.3"
+version = "1.2.4"
 dependencies = [
  "console-subscriber",
  "dotenvy",

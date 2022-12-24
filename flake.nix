@@ -51,23 +51,25 @@
             ++ pkgs.lib.optionals pkgs.stdenv.isLinux
             [ "x86_64-unknown-linux-gnu" ];
         };
+        cargoExtraArgs = "--features ddinstagram";
         craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;
         src = craneLib.cleanCargoSource ./.;
-        cargoArtifacts = craneLib.buildDepsOnly { inherit src buildInputs; };
+        cargoArtifacts =
+          craneLib.buildDepsOnly { inherit src buildInputs cargoExtraArgs; };
         buildInputs = [ ];
 
         linkleaner = craneLib.buildPackage {
-          inherit src;
+          inherit src cargoExtraArgs;
           doCheck = false;
         };
         linkleaner-clippy = craneLib.cargoClippy {
-          inherit cargoArtifacts src buildInputs;
+          inherit cargoArtifacts src buildInputs cargoExtraArgs;
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
         linkleaner-fmt = craneLib.cargoFmt { inherit src; };
         linkleaner-audit = craneLib.cargoAudit { inherit src advisory-db; };
         linkleaner-nextest = craneLib.cargoNextest {
-          inherit cargoArtifacts src buildInputs;
+          inherit cargoArtifacts src buildInputs cargoExtraArgs;
           partitions = 1;
           partitionType = "count";
         };

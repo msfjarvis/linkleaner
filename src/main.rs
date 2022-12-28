@@ -6,6 +6,7 @@ mod instagram;
 mod logging;
 mod twitter;
 mod utils;
+mod youtube;
 
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
@@ -61,6 +62,18 @@ async fn run() {
                     .unwrap_or_default()
         })
         .endpoint(instagram::handler),
+    );
+    let handler = handler.branch(
+        dptree::filter(|msg: Message| {
+            youtube::FILTER_ENABLED.load(Ordering::Relaxed)
+                && msg
+                    .text()
+                    .map(|text| {
+                        youtube::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
+                    })
+                    .unwrap_or_default()
+        })
+        .endpoint(youtube::handler),
     );
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));

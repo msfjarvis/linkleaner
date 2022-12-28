@@ -33,6 +33,8 @@ pub(crate) enum Command {
     Instagram { filter_state: FilterState },
     #[command(description = "enable or disable Twitter link replacement")]
     Twitter { filter_state: FilterState },
+    #[command(description = "enable or disable YouTube link replacement")]
+    YouTube { filter_state: FilterState },
 }
 
 pub(crate) async fn handler(
@@ -87,6 +89,28 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::twitter::set_filter_state(bot, message, filter_state).await?;
+                    }
+                    Err(error_message) => {
+                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                            .await?;
+                        bot.send_message(message.chat.id, error_message)
+                            .reply_to_message_id(message.id)
+                            .await?;
+                    }
+                }
+            }
+        }
+        Command::YouTube { filter_state } => {
+            if let Some(from) = message.from() && from.id != *BOT_OWNER {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
+            } else {
+                match parse_bool(&filter_state) {
+                    Ok(filter_state) => {
+                        crate::youtube::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_action(message.chat.id, ChatAction::Typing)

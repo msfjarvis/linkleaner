@@ -13,6 +13,7 @@ include = ["src/**/*", "LICENSE-*", "README.md"]
 publish = false
 
 [features]
+default = ["ddinstagram"]
 console = ["console-subscriber"]
 ddinstagram = []
 journald = ["tracing-journald"]

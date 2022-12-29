@@ -58,26 +58,40 @@
           ["x86_64-unknown-linux-gnu"];
       };
       craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;
-      src = craneLib.cleanCargoSource ./.;
-      cargoArtifacts =
-        craneLib.buildDepsOnly {inherit src buildInputs;};
-      buildInputs = [];
-
-      linkleaner = craneLib.buildPackage {
-        inherit src;
-        doCheck = false;
-      };
-      linkleaner-clippy = craneLib.cargoClippy {
-        inherit cargoArtifacts src buildInputs;
+      commonArgs = {
+        src = craneLib.cleanCargoSource ./.;
+        buildInputs = [];
+        nativeBuildInputs = [];
         cargoClippyExtraArgs = "--all-targets -- --deny warnings";
       };
-      linkleaner-fmt = craneLib.cargoFmt {inherit src;};
-      linkleaner-audit = craneLib.cargoAudit {inherit src advisory-db;};
-      linkleaner-nextest = craneLib.cargoNextest {
-        inherit cargoArtifacts src buildInputs;
-        partitions = 1;
-        partitionType = "count";
-      };
+      cargoArtifacts = craneLib.buildDepsOnly (commonArgs
+        // {
+          pname = "linkleaner-deps";
+        });
+      linkleaner-fmt = craneLib.cargoFmt (commonArgs
+        // {
+          inherit cargoArtifacts;
+        });
+      linkleaner-clippy = craneLib.cargoClippy (commonArgs
+        // {
+          cargoArtifacts = linkleaner-fmt;
+        });
+      linkleaner = craneLib.buildPackage (commonArgs
+        // {
+          cargoArtifacts = linkleaner-clippy;
+          doCheck = false;
+        });
+      linkleaner-nextest = craneLib.cargoNextest (commonArgs
+        // {
+          cargoArtifacts = linkleaner;
+          partitions = 1;
+          partitionType = "count";
+        });
+      linkleaner-audit = craneLib.cargoAudit (commonArgs
+        // {
+          inherit advisory-db;
+          cargoArtifacts = linkleaner;
+        });
     in {
       checks = {
         inherit

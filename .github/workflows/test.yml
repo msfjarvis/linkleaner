@@ -59,5 +59,4 @@ jobs:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |
         flyctl auth docker
-        docker push registry.fly.io/linkleaner:latest-x86_64-linux
         flyctl deploy

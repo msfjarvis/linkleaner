@@ -14,7 +14,7 @@ use teloxide::{
 };
 
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("^https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9]{11}.*").unwrap()
+    Regex::new("^https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-]{11}.*").unwrap()
 });
 
 pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
@@ -92,6 +92,7 @@ mod test {
         assert!(MATCH_REGEX.is_match("https://www.youtube.com/shorts/SqjNixegPKk"));
         assert!(MATCH_REGEX.is_match("https://www.youtube.com/shorts/SqjNixegPKk?feature=share"));
         assert!(MATCH_REGEX.is_match("https://youtube.com/shorts/SqjNixegPKk"));
+        assert!(MATCH_REGEX.is_match("https://youtube.com/shorts/JY55-UBtlf8?feature=share"));
         assert!(!MATCH_REGEX.is_match("https://youtube.com/watch?v=SqjNixegPKk"));
     }
 }

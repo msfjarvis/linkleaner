@@ -121,7 +121,7 @@
       devShells.default = pkgs.mkShell {
         inputsFrom = builtins.attrValues self.checks;
 
-        nativeBuildInputs = with pkgs; [cargo-release nil rustNightly];
+        nativeBuildInputs = with pkgs; [cargo-nextest cargo-release nil rustNightly];
       };
     });
 }

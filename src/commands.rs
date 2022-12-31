@@ -31,6 +31,8 @@ pub(crate) enum Command {
     #[cfg(feature = "ddinstagram")]
     #[command(description = "enable or disable Instagram link replacement")]
     Instagram { filter_state: FilterState },
+    #[command(description = "generate a twitchtheater link for the given streamers")]
+    Ttv { names: String },
     #[command(description = "enable or disable Twitter link replacement")]
     Twitter { filter_state: FilterState },
     #[command(description = "enable or disable YouTube link replacement")]
@@ -77,6 +79,12 @@ pub(crate) async fn handler(
                     }
                 }
             }
+        }
+        Command::Ttv { names } => {
+            let text = format!("https://twitchtheater.tv/{}", names.replace(' ', "/"));
+            bot.send_message(message.chat.id, text)
+                .reply_to_message_id(message.id)
+                .await?;
         }
         Command::Twitter { filter_state } => {
             if let Some(from) = message.from() && from.id != *BOT_OWNER {

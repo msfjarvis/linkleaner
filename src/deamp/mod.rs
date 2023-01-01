@@ -8,6 +8,7 @@ use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{Message, ParseMode},
+    utils::html::link,
     Bot,
 };
 use tracing::debug;
@@ -40,9 +41,8 @@ pub async fn handler(
             }
         }
         let text = format!(
-            "<a href=\"{}\">{}</a>: {}",
-            user.id.url(),
-            user.full_name(),
+            "{}: {}",
+            link(user.url().as_str(), &user.full_name()),
             text
         );
         let _del = bot.delete_message(message.chat.id, message.id).await;

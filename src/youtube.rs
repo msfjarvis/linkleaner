@@ -1,4 +1,4 @@
-use crate::utils::scrub_urls;
+use crate::{message::SendLinkleanerMessage, utils::scrub_urls};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
@@ -8,7 +8,7 @@ use std::{
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, Message, ParseMode},
+    types::{ChatAction, Message},
     utils::html::link,
     Bot,
 };
@@ -69,16 +69,7 @@ pub async fn handler(
             text
         );
         let _del = bot.delete_message(message.chat.id, message.id).await;
-        if let Some(reply) = message.reply_to_message() {
-            bot.send_message(message.chat.id, text)
-                .reply_to_message_id(reply.id)
-                .parse_mode(ParseMode::Html)
-                .await?;
-        } else {
-            bot.send_message(message.chat.id, text)
-                .parse_mode(ParseMode::Html)
-                .await?;
-        }
+        bot.send_cleaned(message, text).await?;
     }
     Ok(())
 }

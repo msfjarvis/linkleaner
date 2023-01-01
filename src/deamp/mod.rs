@@ -1,13 +1,12 @@
 mod model;
 
-use crate::utils::get_urls_from_message;
+use crate::{message::SendLinkleanerMessage, utils::get_urls_from_message};
 use model::AMPResponse;
 use reqwest::Url;
 use std::{error::Error, str::FromStr};
 use teloxide::{
-    payloads::SendMessageSetters,
     prelude::Requester,
-    types::{Message, ParseMode},
+    types::Message,
     utils::html::link,
     Bot,
 };
@@ -46,16 +45,7 @@ pub async fn handler(
             text
         );
         let _del = bot.delete_message(message.chat.id, message.id).await;
-        if let Some(reply) = message.reply_to_message() {
-            bot.send_message(message.chat.id, text)
-                .reply_to_message_id(reply.id)
-                .parse_mode(ParseMode::Html)
-                .await?;
-        } else {
-            bot.send_message(message.chat.id, text)
-                .parse_mode(ParseMode::Html)
-                .await?;
-        }
+        bot.send_cleaned(message, text).await?;
     }
     Ok(())
 }

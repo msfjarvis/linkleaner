@@ -4,12 +4,7 @@ use crate::{message::SendLinkleanerMessage, utils::get_urls_from_message};
 use model::AMPResponse;
 use reqwest::Url;
 use std::{error::Error, str::FromStr};
-use teloxide::{
-    prelude::Requester,
-    types::Message,
-    utils::html::link,
-    Bot,
-};
+use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 use tracing::debug;
 
 const BASE_URL: &str = "https://www.amputatorbot.com/api/v1/convert?gac=true&md=3&q=";

@@ -1,4 +1,4 @@
-# linkleaner [![Check Rust code](https://github.com/msfjarvis/linkleaner/actions/workflows/test.yml/badge.svg)](https://github.com/msfjarvis/linkleaner/actions/workflows/test.yml)
+# linkleaner [![Check Rust code](https://github.com/msfjarvis/linkleaner/actions/workflows/test.yml/badge.svg)](https://github.com/msfjarvis/linkleaner/actions/workflows/test.yml) [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 Telegram bot to replace social media links with their improved preview variants. Supported platforms:
 

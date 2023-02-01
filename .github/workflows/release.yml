@@ -44,9 +44,9 @@ jobs:
     outputs:
       tag: ${{ steps.create-gh-release.outputs.computed-prefix }}${{ steps.create-gh-release.outputs.version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - id: create-gh-release
-        uses: taiki-e/create-gh-release-action@v1
+        uses: taiki-e/create-gh-release-action@53e4930bd2723a82d1a54b244a80277657781ec6 # v1
         with:
           draft: true
           # (required) GitHub token for creating GitHub Releases.
@@ -73,7 +73,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - name: Install Rust
         run: rustup update stable && rustup default stable
       - name: Install cargo-dist
@@ -102,7 +102,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - name: Install Rust
         run: rustup update stable && rustup default stable
       - name: Install cargo-dist
@@ -143,7 +143,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - name: mark release as non-draft
         run: |
           gh release edit ${{ needs.create-release.outputs.tag }} --draft=false

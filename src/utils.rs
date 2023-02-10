@@ -10,6 +10,7 @@ static URL_CACHE: Lazy<Mutex<HashMap<MessageId, Vec<String>>>> =
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
     if let Some(entities) = msg.entities() && !entities.is_empty() && let Some(text) = msg.text() {
+        if entities[0].kind == MessageEntityKind::BotCommand { return Vec::new(); };
         let mut cache = URL_CACHE.lock().unwrap();
         if cache.contains_key(&msg.id) {
             return cache.get(&msg.id).unwrap().to_vec()

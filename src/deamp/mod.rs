@@ -1,6 +1,6 @@
 mod model;
 
-use crate::{message::SendLinkleanerMessage, utils::get_urls_from_message};
+use crate::{message::TryReplyMessage, utils::get_urls_from_message};
 use model::AMPResponse;
 use reqwest::Url;
 use std::{error::Error, str::FromStr};
@@ -40,7 +40,7 @@ pub async fn handler(
             text
         );
         let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.send_cleaned(message, text).await?;
+        bot.try_reply(message, text).await?;
     }
     Ok(())
 }

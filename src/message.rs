@@ -5,12 +5,12 @@ use teloxide::{
     Bot, RequestError,
 };
 
-pub(crate) trait SendLinkleanerMessage {
-    async fn send_cleaned(&self, message: Message, text: String) -> Result<Message, RequestError>;
+pub(crate) trait TryReplyMessage {
+    async fn try_reply(&self, message: Message, text: String) -> Result<Message, RequestError>;
 }
 
-impl SendLinkleanerMessage for Bot {
-    async fn send_cleaned(&self, message: Message, text: String) -> Result<Message, RequestError> {
+impl TryReplyMessage for Bot {
+    async fn try_reply(&self, message: Message, text: String) -> Result<Message, RequestError> {
         if let Some(reply) = message.reply_to_message() {
             self.send_message(message.chat.id, text)
                 .reply_to_message_id(reply.id)

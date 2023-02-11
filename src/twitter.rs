@@ -1,4 +1,4 @@
-use crate::{message::SendLinkleanerMessage, utils::scrub_urls};
+use crate::{message::TryReplyMessage, utils::scrub_urls};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
@@ -71,7 +71,7 @@ pub async fn handler(
             text
         );
         let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.send_cleaned(message, text).await?;
+        bot.try_reply(message, text).await?;
     }
     Ok(())
 }

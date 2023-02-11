@@ -106,7 +106,7 @@
       packages.default = linkleaner;
       packages.container = pkgs.dockerTools.buildImage {
         name = "registry.fly.io/linkleaner";
-        tag = "latest-${system}";
+        tag = "latest";
         created = "now";
         copyToRoot = pkgs.buildEnv {
           name = "linkleaner";

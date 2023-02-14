@@ -22,7 +22,7 @@ journald = ["tracing-journald"]
 console-subscriber = { version = "0.1.8", optional = true }
 dotenvy = "0.15.6"
 futures = "*"
-once_cell = "1.17.0"
+once_cell = "1.17.1"
 regex = "1.7.1"
 reqwest = { version = "*", default-features = false, features = ["json", "rustls-tls"] }
 serde = "*"

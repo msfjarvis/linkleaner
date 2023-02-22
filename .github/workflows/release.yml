@@ -2,30 +2,14 @@ name: Build and deploy
 
 on:
   push:
-    branches:
-      - main
-      - renovate/**
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
-  pull_request:
-    branches:
-      - main
 
 concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  check:
-    uses: msfjarvis/shared-workflows/.github/workflows/test-flakes-project.yml@main
-    with:
-      extra-targets: '.#container'
-    secrets:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      cachix-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
-
   deploy:
-    needs: [ "check" ]
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     name: Deploy app
     runs-on: ubuntu-latest
     steps:
@@ -41,11 +25,8 @@ jobs:
         nix_path: nixpkgs=channel:nixos-unstable
         extra_nix_config:
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-
-    - name: Set up Cachix (msfjarvis)
-      uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # tag=v12
-      with:
-        name: msfjarvis
+          substituters = https://cache.garnix.io
+          trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=
 
     - name: Build and load container image
       shell: bash

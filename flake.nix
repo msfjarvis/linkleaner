@@ -50,13 +50,7 @@
         overlays = [(import rust-overlay)];
       };
 
-      rustNightly = pkgs.rust-bin.nightly."2022-12-15".default.override {
-        extensions = ["rust-src"];
-        targets =
-          pkgs.lib.optionals pkgs.stdenv.isDarwin ["aarch64-apple-darwin"]
-          ++ pkgs.lib.optionals pkgs.stdenv.isLinux
-          ["x86_64-unknown-linux-gnu"];
-      };
+      rustNightly = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
       craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;
       commonArgs = {
         src = craneLib.cleanCargoSource ./.;

@@ -14,7 +14,7 @@ use teloxide::{
 };
 
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("^https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-_]{11}.*").unwrap()
+    Regex::new("https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-_]{11}.*").unwrap()
 });
 
 pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
@@ -80,11 +80,17 @@ mod test {
 
     #[test]
     fn verify_regex() {
-        assert!(MATCH_REGEX.is_match("https://www.youtube.com/shorts/SqjNixegPKk"));
-        assert!(MATCH_REGEX.is_match("https://www.youtube.com/shorts/SqjNixegPKk?feature=share"));
-        assert!(MATCH_REGEX.is_match("https://youtube.com/shorts/SqjNixegPKk"));
-        assert!(MATCH_REGEX.is_match("https://youtube.com/shorts/JY55-UBtlf8?feature=share"));
-        assert!(MATCH_REGEX.is_match("https://youtube.com/shorts/afHFjnPy_vk?feature=share"));
+        let items = vec![
+            "https://www.youtube.com/shorts/SqjNixegPKk",
+            "https://www.youtube.com/shorts/SqjNixegPKk?feature=share",
+            "https://youtube.com/shorts/SqjNixegPKk",
+            "https://youtube.com/shorts/JY55-UBtlf8?feature=share",
+            "https://youtube.com/shorts/afHFjnPy_vk?feature=share",
+        ];
+        for item in items {
+            assert!(MATCH_REGEX.is_match(item));
+            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")));
+        }
         assert!(!MATCH_REGEX.is_match("https://youtube.com/watch?v=SqjNixegPKk"));
     }
 }

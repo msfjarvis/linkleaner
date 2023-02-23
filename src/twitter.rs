@@ -16,7 +16,7 @@ use teloxide::{
 const HOST_MATCH_GROUP: &str = "host";
 
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("^https://(?P<host>(?:mobile.)?twitter.com)/.*/status/[0-9]+.*").unwrap()
+    Regex::new("https://(?P<host>(?:mobile.)?twitter.com)/.*/status/[0-9]+.*").unwrap()
 });
 
 pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
@@ -82,8 +82,14 @@ mod test {
 
     #[test]
     fn verify_regex() {
-        assert!(MATCH_REGEX.is_match("https://twitter.com/Jack/status/20"));
-        assert!(MATCH_REGEX.is_match("https://mobile.twitter.com/Jack/status/20"));
+        let items = vec![
+            "https://twitter.com/Jack/status/20",
+            "https://mobile.twitter.com/Jack/status/20",
+        ];
+        for item in items {
+            assert!(MATCH_REGEX.is_match(item));
+            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")));
+        }
         assert!(!MATCH_REGEX.is_match("https://twitter.com/Jack/"));
         let caps = MATCH_REGEX
             .captures("https://twitter.com/Jack/status/20")

@@ -20,7 +20,7 @@ journald = ["tracing-journald"]
 
 [dependencies]
 console-subscriber = { version = "0.1.8", optional = true }
-dotenvy = "0.15.6"
+dotenvy = "0.15.7"
 futures = "*"
 once_cell = "1.17.1"
 regex = "1.7.2"

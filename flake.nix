@@ -116,6 +116,8 @@
         inputsFrom = builtins.attrValues self.checks;
 
         nativeBuildInputs = with pkgs; [cargo-nextest cargo-release nil rustNightly];
+
+        CARGO_REGISTRIES_CRATES_IO_PROTOCOL = "sparse";
       };
     });
 }

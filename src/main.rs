@@ -7,6 +7,7 @@ mod deamp;
 mod instagram;
 mod logging;
 mod message;
+mod medium;
 mod twitter;
 mod utils;
 mod youtube;
@@ -77,6 +78,18 @@ async fn run() {
                     .unwrap_or_default()
         })
         .endpoint(youtube::handler),
+    );
+    let handler = handler.branch(
+        dptree::filter(|msg: Message| {
+            medium::FILTER_ENABLED.load(Ordering::Relaxed)
+                && msg
+                    .text()
+                    .map(|text| {
+                        medium::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
+                    })
+                    .unwrap_or_default()
+        })
+        .endpoint(medium::handler),
     );
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));

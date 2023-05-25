@@ -29,13 +29,15 @@ pub(crate) enum Command {
     #[command(description = "Pong?")]
     Ping,
     #[cfg(feature = "ddinstagram")]
-    #[command(description = "enable or disable Instagram link replacement")]
+    #[command(description = "toggle Instagram link replacement")]
     Instagram { filter_state: FilterState },
+    #[command(description = "toggle Medium link replacement")]
+    Medium { filter_state: FilterState },
     #[command(description = "generate a twitchtheater link for the given streamers")]
     Ttv { names: String },
-    #[command(description = "enable or disable Twitter link replacement")]
+    #[command(description = "toggle Twitter link replacement")]
     Twitter { filter_state: FilterState },
-    #[command(description = "enable or disable YouTube link replacement")]
+    #[command(description = "toggle YouTube link replacement")]
     YouTube { filter_state: FilterState },
 }
 
@@ -69,6 +71,28 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::instagram::set_filter_state(bot, message, filter_state).await?;
+                    }
+                    Err(error_message) => {
+                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                            .await?;
+                        bot.send_message(message.chat.id, error_message)
+                            .reply_to_message_id(message.id)
+                            .await?;
+                    }
+                }
+            }
+        }
+        Command::Medium { filter_state } => {
+            if let Some(from) = message.from() && from.id != *BOT_OWNER {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
+            } else {
+                match parse_bool(&filter_state) {
+                    Ok(filter_state) => {
+                        crate::medium::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_action(message.chat.id, ChatAction::Typing)

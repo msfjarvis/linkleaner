@@ -2,9 +2,10 @@
 
 Telegram bot to replace social media links with their improved preview variants. Supported platforms:
 
-- Twitter: [FixTweet](https://github.com/FixTweet/FixTweet)
-- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix) (behind the `ddinstagram` feature)
 - Accelerated Mobile Pages (AMP): [AmputatorBot](https://www.amputatorbot.com/)
+- Instagram: [InstaFix](https://github.com/Wikidepia/InstaFix) (behind the `ddinstagram` feature)
+- Medium: [Scribe](https://sr.ht/~edwardloveall/Scribe/)
+- Twitter: [FixTweet](https://github.com/FixTweet/FixTweet)
 - YouTube Shorts: In-process transform (changes `/shorts/` URLs to regular video player)
 
 ### Running

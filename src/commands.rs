@@ -33,6 +33,8 @@ pub(crate) enum Command {
     Instagram { filter_state: FilterState },
     #[command(description = "toggle Medium link replacement")]
     Medium { filter_state: FilterState },
+    #[command(description = "display this text.")]
+    Start,
     #[command(description = "generate a twitchtheater link for the given streamers")]
     Ttv { names: String },
     #[command(description = "toggle Twitter link replacement")]
@@ -47,7 +49,7 @@ pub(crate) async fn handler(
     command: Command,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     match command {
-        Command::Help => {
+        Command::Help | Command::Start => {
             bot.send_chat_action(message.chat.id, ChatAction::Typing)
                 .await?;
             bot.send_message(message.chat.id, Command::descriptions().to_string())

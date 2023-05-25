@@ -36,7 +36,7 @@ pub async fn set_filter_state(
                 .await?;
             bot.send_message(
                 message.chat.id,
-                format!("Twitter link replacement is {state}"),
+                format!("Medium link replacement is {state}"),
             )
             .reply_to_message_id(message.id)
             .await?;
@@ -48,7 +48,7 @@ pub async fn set_filter_state(
                 .await?;
             bot.send_message(
                 message.chat.id,
-                format!("Twitter link replacement has been {state}"),
+                format!("Medium link replacement has been {state}"),
             )
             .reply_to_message_id(message.id)
             .await?;

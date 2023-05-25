@@ -6,8 +6,8 @@ mod deamp;
 #[cfg(feature = "ddinstagram")]
 mod instagram;
 mod logging;
-mod message;
 mod medium;
+mod message;
 mod twitter;
 mod utils;
 mod youtube;

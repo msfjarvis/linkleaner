@@ -63,7 +63,7 @@ pub async fn handler(
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = scrub_urls(&message) && let Some(user) = message.from() &&
         let Some(caps) = MATCH_REGEX.captures(&text) {
-        let text = text.replace(&caps[HOST_MATCH_GROUP], "scribe.rip");
+        let text = text.replace(&caps[HOST_MATCH_GROUP], "medium.rip");
         let text = format!(
             "{}: {}",
             link(user.url().as_str(), &user.full_name()),

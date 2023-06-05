@@ -89,8 +89,8 @@ mod test {
             "https://www.instagram.com/tv/CgHIG0Ih3XF/",
         ];
         for item in items {
-            assert!(MATCH_REGEX.is_match(item));
-            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")));
+            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
+            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")), "{item} failed to match");
         }
         assert!(!MATCH_REGEX.is_match("https://www.instagram.com/starsmitten_/"));
         let caps = MATCH_REGEX

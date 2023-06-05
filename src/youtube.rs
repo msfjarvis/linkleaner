@@ -88,8 +88,8 @@ mod test {
             "https://youtube.com/shorts/afHFjnPy_vk?feature=share",
         ];
         for item in items {
-            assert!(MATCH_REGEX.is_match(item));
-            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")));
+            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
+            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")), "{item} failed to match");
         }
         assert!(!MATCH_REGEX.is_match("https://youtube.com/watch?v=SqjNixegPKk"));
     }

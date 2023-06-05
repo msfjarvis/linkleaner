@@ -87,8 +87,8 @@ mod test {
             "https://medium.com/@Aaron0928/30-year-old-code-killed-microsoft-rewrites-windows-kernel-with-180-000-lines-of-rust-f891c95959f2",
         ];
         for item in items {
-            assert!(MATCH_REGEX.is_match(item));
-            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")));
+            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
+            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")), "{item} failed to match");
         }
         let caps = MATCH_REGEX
             .captures("https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5")

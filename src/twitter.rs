@@ -87,8 +87,8 @@ mod test {
             "https://mobile.twitter.com/Jack/status/20",
         ];
         for item in items {
-            assert!(MATCH_REGEX.is_match(item));
-            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")));
+            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
+            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")), "{item} failed to match");
         }
         assert!(!MATCH_REGEX.is_match("https://twitter.com/Jack/"));
         let caps = MATCH_REGEX

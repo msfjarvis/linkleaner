@@ -88,7 +88,10 @@ mod test {
         ];
         for item in items {
             assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
-            assert!(MATCH_REGEX.is_match(&format!("Some leading text {item}")), "{item} failed to match");
+            assert!(
+                MATCH_REGEX.is_match(&format!("Some leading text {item}")),
+                "{item} failed to match"
+            );
         }
         let caps = MATCH_REGEX
             .captures("https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5")

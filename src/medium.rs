@@ -18,7 +18,7 @@ const HOST_MATCH_GROUP: &str = "host";
 pub static MATCH_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new("https://(?P<host>(?:.*)?medium.com)/.*").unwrap());
 
-pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(false);
+pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
 
 pub async fn set_filter_state(
     bot: Bot,

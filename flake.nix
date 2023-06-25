@@ -1,45 +1,34 @@
 {
   description = "linkleaner";
 
-  inputs = {
-    nixpkgs = {url = "github:NixOS/nixpkgs/nixpkgs-unstable";};
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+  inputs.systems.url = "github:msfjarvis/flake-systems";
 
-    flake-utils = {url = "github:numtide/flake-utils";};
+  inputs.advisory-db.url = "github:rustsec/advisory-db";
+  inputs.advisory-db.flake = false;
 
-    flake-compat = {
-      url = "github:nix-community/flake-compat";
-      flake = false;
-    };
+  inputs.crane.url = "github:ipetkov/crane";
+  inputs.crane.inputs.flake-compat.follows = "flake-compat";
+  inputs.crane.inputs.flake-utils.follows = "flake-utils";
+  inputs.crane.inputs.nixpkgs.follows = "nixpkgs";
 
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+  inputs.fenix.url = "github:nix-community/fenix";
+  inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
 
-    advisory-db = {
-      url = "github:rustsec/advisory-db";
-      flake = false;
-    };
-  };
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.flake-utils.inputs.systems.follows = "systems";
+
+  inputs.flake-compat.url = "github:nix-community/flake-compat";
+  inputs.flake-compat.flake = false;
 
   outputs = {
     self,
     nixpkgs,
-    fenix,
-    crane,
-    flake-utils,
     advisory-db,
+    crane,
+    fenix,
+    flake-utils,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let

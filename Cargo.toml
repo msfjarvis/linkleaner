@@ -38,7 +38,7 @@ teloxide = { version = "0.12.2", features = [
   "macros",
   "rustls",
 ], default-features = false }
-tokio = { version = "1.29.0", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.29.1", features = ["rt-multi-thread", "macros"] }
 tracing = "0.1.37"
 tracing-journald = { version = "0.3.0", optional = true }
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }

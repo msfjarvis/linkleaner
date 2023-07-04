@@ -19,7 +19,7 @@ ddinstagram = []
 journald = ["tracing-journald"]
 
 [dependencies]
-console-subscriber = { version = "0.1.9", optional = true }
+console-subscriber = { version = "0.1.10", optional = true }
 dotenvy = "0.15.7"
 futures = "*"
 once_cell = "1.18.0"

@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use reqwest::Url;
 use teloxide::types::{Message, MessageEntityKind};
-use tracing::trace;
+use tracing::{error, info};
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
     if let Some(entities) = msg.entities() && !entities.is_empty() && let Some(text) = msg.text() {
@@ -18,7 +18,7 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
         for entity in &url_entities {
             urls.push(String::from_utf16_lossy(&utf16[entity.offset..entity.offset + entity.length]));
         }
-        trace!(?entities, ?url_entities, ?urls, "get_urls_from_message");
+        info!(message_id = %msg.id.0, ?urls, "get_urls_from_message");
         return urls;
     }
     Vec::new()
@@ -34,10 +34,10 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
                 final_text = final_text.replace(&item, &scrubbed_url);
             }
         }
-        trace!(?text, ?final_text, "scrub_urls");
+        info!(?text, ?final_text, "scrub_urls");
         Some(final_text)
     } else {
-        trace!(message_id = %msg.id.0, "scrub_urls failed to find text");
+        error!(message_id = %msg.id.0, "scrub_urls failed to find text");
         None
     }
 }

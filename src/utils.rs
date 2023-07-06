@@ -1,20 +1,11 @@
 use once_cell::sync::Lazy;
 use reqwest::Url;
-use std::collections::HashMap;
-use std::sync::Mutex;
-use teloxide::types::{Message, MessageEntityKind, MessageId};
+use teloxide::types::{Message, MessageEntityKind};
 use tracing::trace;
-
-static URL_CACHE: Lazy<Mutex<HashMap<MessageId, Vec<String>>>> =
-    Lazy::new(|| Mutex::new(HashMap::new()));
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
     if let Some(entities) = msg.entities() && !entities.is_empty() && let Some(text) = msg.text() {
         if entities[0].kind == MessageEntityKind::BotCommand { return Vec::new(); };
-        let mut cache = URL_CACHE.lock().unwrap();
-        if cache.contains_key(&msg.id) {
-            return cache.get(&msg.id).unwrap().to_vec()
-        }
         let url_entities: Vec<_> = entities
             .iter()
             .filter(|entity| entity.kind == MessageEntityKind::Url)
@@ -28,7 +19,6 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
             urls.push(String::from_utf16_lossy(&utf16[entity.offset..entity.offset + entity.length]));
         }
         trace!(?entities, ?url_entities, ?urls, "get_urls_from_message");
-        cache.insert(msg.id, urls.clone());
         return urls;
     }
     Vec::new()

@@ -1,6 +1,6 @@
 [package]
 name = "linkleaner"
-version = "1.6.7"
+version = "1.7.0"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2021"
 license = "MIT/Apache-2.0"

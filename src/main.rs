@@ -92,8 +92,8 @@ async fn run() {
         })
         .endpoint(medium::handler),
     );
-    let handler = handler
-        .branch(dptree::filter(|msg: Message| {
+    let handler = handler.branch(
+        dptree::filter(|msg: Message| {
             threads::FILTER_ENABLED.load(Ordering::Relaxed)
                 && msg
                     .text()
@@ -101,8 +101,9 @@ async fn run() {
                         threads::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
                     })
                     .unwrap_or_default()
-        }))
-        .endpoint(threads::handler);
+        })
+        .endpoint(threads::handler),
+    );
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
 

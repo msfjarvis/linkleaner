@@ -44,7 +44,7 @@
 
       rustNightly = (import fenix {inherit pkgs;}).fromToolchainFile {
         file = ./rust-toolchain.toml;
-        sha256 = "sha256-0t+XYT0Om/dDfjsFljZLULbQNJ4hMysyvUnHEoAryAk=";
+        sha256 = "sha256-82DGbCq7ApCvuK50r13jEMPUqoOEQqQAysGnyvgANNg=";
       };
 
       craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;

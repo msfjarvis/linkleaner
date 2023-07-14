@@ -18,7 +18,7 @@ const HOST_MATCH_GROUP: &str = "host";
 pub static MATCH_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new("https://(?P<host>(?:www.)?threads.net)/t/[A-Za-z]+.*").unwrap());
 
-pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
+pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(false);
 
 pub async fn set_filter_state(
     bot: Bot,

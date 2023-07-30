@@ -8,7 +8,6 @@ mod instagram;
 mod logging;
 mod medium;
 mod message;
-mod threads;
 mod twitter;
 mod utils;
 mod youtube;
@@ -91,18 +90,6 @@ async fn run() {
                     .unwrap_or_default()
         })
         .endpoint(medium::handler),
-    );
-    let handler = handler.branch(
-        dptree::filter(|msg: Message| {
-            threads::FILTER_ENABLED.load(Ordering::Relaxed)
-                && msg
-                    .text()
-                    .map(|text| {
-                        threads::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
-                    })
-                    .unwrap_or_default()
-        })
-        .endpoint(threads::handler),
     );
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));

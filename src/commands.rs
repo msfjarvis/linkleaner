@@ -35,8 +35,6 @@ pub(crate) enum Command {
     Medium { filter_state: FilterState },
     #[command(description = "display this text.")]
     Start,
-    #[command(description = "toggle Threads link replacement")]
-    Threads { filter_state: FilterState },
     #[command(description = "generate a twitchtheater link for the given streamers")]
     Ttv { names: String },
     #[command(description = "toggle Twitter link replacement")]
@@ -97,28 +95,6 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::medium::set_filter_state(bot, message, filter_state).await?;
-                    }
-                    Err(error_message) => {
-                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                            .await?;
-                        bot.send_message(message.chat.id, error_message)
-                            .reply_to_message_id(message.id)
-                            .await?;
-                    }
-                }
-            }
-        }
-        Command::Threads { filter_state } => {
-            if let Some(from) = message.from() && from.id != *BOT_OWNER {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
-            } else {
-                match parse_bool(&filter_state) {
-                    Ok(filter_state) => {
-                        crate::threads::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_action(message.chat.id, ChatAction::Typing)

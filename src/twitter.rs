@@ -87,12 +87,17 @@ pub async fn handler(
 
 #[cfg(test)]
 mod test {
-    use super::{HOST_MATCH_GROUP, MATCH_REGEX};
+    use super::{HOST_MATCH_GROUP, MATCH_REGEX, ROOT_MATCH_GROUP};
 
     #[test]
     fn verify_regex() {
-        let hosts = ["mobile.twitter.com", "twitter.com", "mobile.x.com", "x.com"];
-        for host in hosts {
+        let hosts = [
+            ("mobile.twitter.com", "twitter"),
+            ("twitter.com", "twitter"),
+            ("mobile.x.com", "x"),
+            ("x.com", "x"),
+        ];
+        for (host, root) in hosts {
             let url = format!("https://{host}/Jack/status/20");
             assert!(MATCH_REGEX.is_match(&url), "{url} failed to match");
             assert!(
@@ -102,6 +107,7 @@ mod test {
             assert!(!MATCH_REGEX.is_match(&format!("https://{host}/Jack/")));
             let caps = MATCH_REGEX.captures(&url).unwrap();
             assert_eq!(&caps[HOST_MATCH_GROUP], host);
+            assert_eq!(&caps[ROOT_MATCH_GROUP], root);
         }
     }
 }

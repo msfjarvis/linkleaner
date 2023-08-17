@@ -14,9 +14,11 @@ use teloxide::{
 };
 
 const HOST_MATCH_GROUP: &str = "host";
+const ROOT_MATCH_GROUP: &str = "root";
 
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("https://(?P<host>(?:mobile.)?twitter.com)/.*/status/[0-9]+.*").unwrap()
+    Regex::new("https://(?P<host>(?:mobile.)?(?P<root>(twitter|x)).com)/.*/status/[0-9]+.*")
+        .unwrap()
 });
 
 pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
@@ -64,7 +66,14 @@ pub async fn handler(
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
     if let Some(text) = scrub_urls(&message) && let Some(user) = message.from() &&
         let Some(caps) = MATCH_REGEX.captures(&text) {
-        let text = text.replace(&caps[HOST_MATCH_GROUP], "vxtwitter.com");
+        let text = match &caps[ROOT_MATCH_GROUP] {
+            "twitter" => text.replace(&caps[HOST_MATCH_GROUP], "vxtwitter.com"),
+            "x" => text.replace(&caps[HOST_MATCH_GROUP], "fixupx.com"),
+            _ => {
+                tracing::trace!("No URL match found in {text}");
+                return Ok(())
+            },
+        };
         let text = format!(
             "{}: {}",
             link(user.url().as_str(), &user.full_name()),
@@ -82,25 +91,17 @@ mod test {
 
     #[test]
     fn verify_regex() {
-        let items = vec![
-            "https://twitter.com/Jack/status/20",
-            "https://mobile.twitter.com/Jack/status/20",
-        ];
-        for item in items {
-            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
+        let hosts = ["mobile.twitter.com", "twitter.com", "mobile.x.com", "x.com"];
+        for host in hosts {
+            let url = format!("https://{host}/Jack/status/20");
+            assert!(MATCH_REGEX.is_match(&url), "{url} failed to match");
             assert!(
-                MATCH_REGEX.is_match(&format!("Some leading text {item}")),
-                "{item} failed to match"
+                MATCH_REGEX.is_match(&format!("Some leading text {url}")),
+                "{url} failed to match"
             );
+            assert!(!MATCH_REGEX.is_match(&format!("https://{host}/Jack/")));
+            let caps = MATCH_REGEX.captures(&url).unwrap();
+            assert_eq!(&caps[HOST_MATCH_GROUP], host);
         }
-        assert!(!MATCH_REGEX.is_match("https://twitter.com/Jack/"));
-        let caps = MATCH_REGEX
-            .captures("https://twitter.com/Jack/status/20")
-            .unwrap();
-        assert_eq!(&caps[HOST_MATCH_GROUP], "twitter.com");
-        let caps = MATCH_REGEX
-            .captures("https://mobile.twitter.com/Jack/status/20")
-            .unwrap();
-        assert_eq!(&caps[HOST_MATCH_GROUP], "mobile.twitter.com");
     }
 }

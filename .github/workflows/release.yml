@@ -20,7 +20,7 @@ jobs:
       uses: superfly/flyctl-actions/setup-flyctl@master
 
     - name: Install Nix
-      uses: DeterminateSystems/nix-installer-action@07ebb8d2749aa2fac2baae7d1cfa011e4acfd8d1 # v5
+      uses: DeterminateSystems/nix-installer-action@bc7b19257469c8029b46f45ac99ecc11156c8b2d # v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         extra-conf: |

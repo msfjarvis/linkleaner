@@ -122,6 +122,7 @@
           flyctl
           nil
           rustNightly
+          stdenv.cc
         ];
       };
     });

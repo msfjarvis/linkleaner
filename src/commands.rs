@@ -58,12 +58,13 @@ pub(crate) async fn handler(
         Command::Ping => {
             bot.send_chat_action(message.chat.id, ChatAction::Typing)
                 .await?;
-            bot.send_message(message.chat.id, "Pong")
-                .await?;
-        },
+            bot.send_message(message.chat.id, "Pong").await?;
+        }
         #[cfg(feature = "ddinstagram")]
         Command::Instagram { filter_state } => {
-            if let Some(from) = message.from() && from.id != *BOT_OWNER {
+            if let Some(from) = message.from()
+                && from.id != *BOT_OWNER
+            {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
                 bot.send_message(message.chat.id, "You are not authorized for this action")
@@ -85,7 +86,9 @@ pub(crate) async fn handler(
             }
         }
         Command::Medium { filter_state } => {
-            if let Some(from) = message.from() && from.id != *BOT_OWNER {
+            if let Some(from) = message.from()
+                && from.id != *BOT_OWNER
+            {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
                 bot.send_message(message.chat.id, "You are not authorized for this action")
@@ -113,7 +116,9 @@ pub(crate) async fn handler(
                 .await?;
         }
         Command::Twitter { filter_state } => {
-            if let Some(from) = message.from() && from.id != *BOT_OWNER {
+            if let Some(from) = message.from()
+                && from.id != *BOT_OWNER
+            {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
                 bot.send_message(message.chat.id, "You are not authorized for this action")
@@ -135,7 +140,9 @@ pub(crate) async fn handler(
             }
         }
         Command::YouTube { filter_state } => {
-            if let Some(from) = message.from() && from.id != *BOT_OWNER {
+            if let Some(from) = message.from()
+                && from.id != *BOT_OWNER
+            {
                 bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
                 bot.send_message(message.chat.id, "You are not authorized for this action")

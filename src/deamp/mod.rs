@@ -17,7 +17,9 @@ pub async fn handler(
     bot: Bot,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    if let Some(text) = message.text() && let Some(user) = message.from() {
+    if let Some(text) = message.text()
+        && let Some(user) = message.from()
+    {
         let mut text = String::from_str(text)?;
         let urls = get_urls_from_message(&message);
         debug!(?urls);
@@ -34,11 +36,7 @@ pub async fn handler(
                 return Ok(());
             }
         }
-        let text = format!(
-            "{}: {}",
-            link(user.url().as_str(), &user.full_name()),
-            text
-        );
+        let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         let _del = bot.delete_message(message.chat.id, message.id).await;
         bot.try_reply(message, text).await?;
     }
@@ -53,7 +51,9 @@ pub fn is_amp(msg: Message) -> bool {
         return false;
     }
     urls.iter().flat_map(|url| Url::parse(url)).any(|url| {
-        if let Some(mut segments) = url.path_segments() && let Some(host) = url.host_str() {
+        if let Some(mut segments) = url.path_segments()
+            && let Some(host) = url.host_str()
+        {
             segments.any(|x| x == "amp") || host.ends_with(".cdn.ampproject.org")
         } else {
             false

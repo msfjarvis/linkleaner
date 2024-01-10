@@ -64,21 +64,19 @@ pub async fn handler(
     bot: Bot,
     message: Message,
 ) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    if let Some(text) = scrub_urls(&message) && let Some(user) = message.from() &&
-        let Some(caps) = MATCH_REGEX.captures(&text) {
+    if let Some(text) = scrub_urls(&message)
+        && let Some(user) = message.from()
+        && let Some(caps) = MATCH_REGEX.captures(&text)
+    {
         let text = match &caps[ROOT_MATCH_GROUP] {
             "twitter" => text.replace(&caps[HOST_MATCH_GROUP], "vxtwitter.com"),
             "x" => text.replace(&caps[HOST_MATCH_GROUP], "fixupx.com"),
             _ => {
                 tracing::trace!("No URL match found in {text}");
-                return Ok(())
-            },
+                return Ok(());
+            }
         };
-        let text = format!(
-            "{}: {}",
-            link(user.url().as_str(), &user.full_name()),
-            text
-        );
+        let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         let _del = bot.delete_message(message.chat.id, message.id).await;
         bot.try_reply(message, text).await?;
     }

@@ -4,8 +4,13 @@ use teloxide::types::{Message, MessageEntityKind};
 use tracing::{error, info};
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
-    if let Some(entities) = msg.entities() && !entities.is_empty() && let Some(text) = msg.text() {
-        if entities[0].kind == MessageEntityKind::BotCommand { return Vec::new(); };
+    if let Some(entities) = msg.entities()
+        && !entities.is_empty()
+        && let Some(text) = msg.text()
+    {
+        if entities[0].kind == MessageEntityKind::BotCommand {
+            return Vec::new();
+        };
         let url_entities: Vec<_> = entities
             .iter()
             .filter(|entity| entity.kind == MessageEntityKind::Url)
@@ -16,7 +21,9 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
         let utf16 = text.encode_utf16().collect::<Vec<u16>>();
         let mut urls = Vec::with_capacity(url_entities.len());
         for entity in &url_entities {
-            urls.push(String::from_utf16_lossy(&utf16[entity.offset..entity.offset + entity.length]));
+            urls.push(String::from_utf16_lossy(
+                &utf16[entity.offset..entity.offset + entity.length],
+            ));
         }
         info!(message_id = %msg.id.0, ?urls, "get_urls_from_message");
         return urls;
@@ -29,7 +36,9 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
         let urls = get_urls_from_message(msg);
         let mut final_text = text.to_owned();
         for item in urls {
-            if let Ok(url) = Url::parse(&item) && let Some(query_str) = url.query() {
+            if let Ok(url) = Url::parse(&item)
+                && let Some(query_str) = url.query()
+            {
                 let scrubbed_url = item.replace(&format!("?{query_str}"), "");
                 final_text = final_text.replace(&item, &scrubbed_url);
             }

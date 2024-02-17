@@ -15,10 +15,11 @@ use crate::logging::TeloxideLogger;
 use dotenvy::dotenv;
 use std::sync::{atomic::Ordering, Arc};
 use teloxide::{
-    dispatching::{update_listeners::Polling, HandlerExt, UpdateFilterExt},
+    dispatching::{HandlerExt, UpdateFilterExt},
     dptree,
     prelude::Dispatcher,
     types::{Message, Update},
+    update_listeners::Polling,
     Bot,
 };
 

@@ -84,11 +84,12 @@
       checks = {
         inherit
           linkleaner
-          linkleaner-audit
           linkleaner-clippy
           linkleaner-fmt
           linkleaner-nextest
           ;
+        # TODO: Re-enable once https://github.com/NixOS/nixpkgs/issues/288064 is fixed
+        # inherit linkleaner-audit;
       };
 
       packages.default = linkleaner;

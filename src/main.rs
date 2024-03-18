@@ -13,6 +13,7 @@ mod youtube;
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
 use dotenvy::dotenv;
+use sentry::ClientInitGuard;
 use std::sync::{atomic::Ordering, Arc};
 use teloxide::{
     dispatching::{HandlerExt, UpdateFilterExt},
@@ -102,7 +103,22 @@ async fn run() {
         .await;
 }
 
-#[tokio::main]
-async fn main() {
-    run().await;
+fn main() {
+    let _guard: Option<ClientInitGuard> = if let Ok(dsn) = std::env::var("SENTRY_DSN") {
+        Some(sentry::init((
+            dsn,
+            sentry::ClientOptions {
+                release: sentry::release_name!(),
+                ..Default::default()
+            },
+        )))
+    } else {
+        None
+    };
+
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async { run().await });
 }

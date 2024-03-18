@@ -1,10 +1,10 @@
-use crate::utils::parse_bool;
+use crate::{message::BotExt, utils::parse_bool};
 use once_cell::sync::Lazy;
 use std::{env, error::Error, marker::Send};
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, Message, UserId},
+    types::{Message, UserId},
     utils::command::BotCommands,
     Bot,
 };
@@ -50,37 +50,29 @@ pub(crate) async fn handler(
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     match command {
         Command::Help | Command::Start => {
-            bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                .await?;
-            bot.send_message(message.chat.id, Command::descriptions().to_string())
+            bot.send_chat_message(message, Command::descriptions().to_string())
                 .await?;
         }
         Command::Ping => {
-            bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                .await?;
-            bot.send_message(message.chat.id, "Pong").await?;
+            bot.send_chat_message(message, "Pong".to_string()).await?;
         }
         #[cfg(feature = "ddinstagram")]
         Command::Instagram { filter_state } => {
             if let Some(from) = message.from()
                 && from.id != *BOT_OWNER
             {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.send_chat_message(
+                    message,
+                    "You are not authorized for this action".to_string(),
+                )
+                .await?;
             } else {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::instagram::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                            .await?;
-                        bot.send_message(message.chat.id, error_message)
-                            .reply_to_message_id(message.id)
-                            .await?;
+                        bot.send_chat_message(message, error_message).await?;
                     }
                 }
             }
@@ -89,22 +81,18 @@ pub(crate) async fn handler(
             if let Some(from) = message.from()
                 && from.id != *BOT_OWNER
             {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.send_chat_message(
+                    message,
+                    "You are not authorized for this action".to_string(),
+                )
+                .await?;
             } else {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::medium::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                            .await?;
-                        bot.send_message(message.chat.id, error_message)
-                            .reply_to_message_id(message.id)
-                            .await?;
+                        bot.send_chat_message(message, error_message).await?;
                     }
                 }
             }
@@ -119,22 +107,18 @@ pub(crate) async fn handler(
             if let Some(from) = message.from()
                 && from.id != *BOT_OWNER
             {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.send_chat_message(
+                    message,
+                    "You are not authorized for this action".to_string(),
+                )
+                .await?;
             } else {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::twitter::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                            .await?;
-                        bot.send_message(message.chat.id, error_message)
-                            .reply_to_message_id(message.id)
-                            .await?;
+                        bot.send_chat_message(message, error_message).await?;
                     }
                 }
             }
@@ -143,22 +127,18 @@ pub(crate) async fn handler(
             if let Some(from) = message.from()
                 && from.id != *BOT_OWNER
             {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.send_chat_message(
+                    message,
+                    "You are not authorized for this action".to_string(),
+                )
+                .await?;
             } else {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         crate::youtube::set_filter_state(bot, message, filter_state).await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                            .await?;
-                        bot.send_message(message.chat.id, error_message)
-                            .reply_to_message_id(message.id)
-                            .await?;
+                        bot.send_chat_message(message, error_message).await?;
                     }
                 }
             }

@@ -1,6 +1,6 @@
 mod model;
 
-use crate::{message::TryReplyMessage, utils::get_urls_from_message};
+use crate::{message::BotExt, utils::get_urls_from_message};
 use model::AMPResponse;
 use reqwest::Url;
 use std::{error::Error, str::FromStr};

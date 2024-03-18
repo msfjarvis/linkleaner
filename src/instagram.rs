@@ -1,4 +1,4 @@
-use crate::{message::TryReplyMessage, utils::scrub_urls};
+use crate::{message::BotExt, utils::scrub_urls};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{

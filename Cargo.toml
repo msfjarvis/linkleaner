@@ -28,14 +28,6 @@ reqwest = { version = "*", default-features = false, features = [
   "json",
   "rustls-tls",
 ] }
-sentry = { version = "0.32.2", default-features = false, features = [
-  "anyhow",
-  "backtrace",
-  "contexts",
-  "panic",
-  "reqwest",
-  "rustls",
-] }
 serde = "*"
 serde_derive = "*"
 serde_json = "*"

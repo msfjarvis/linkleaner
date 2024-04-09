@@ -178,9 +178,9 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "bumpalo"
-version = "3.15.4"
+version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ff69b9dd49fd426c69a0db9fc04dd934cdb6645ff000864d98f7e2af8830eaa"
+checksum = "79296716171880943b8470b5f8d03aa55eb2e645a4874bdbb28adb49162e012c"
 
 [[package]]
 name = "byteorder"
@@ -196,9 +196,9 @@ checksum = "514de17de45fdb8dc022b1a7975556c53c86f9f0aa5f534b98977b171857c2c9"
 
 [[package]]
 name = "cc"
-version = "1.0.91"
+version = "1.0.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1fd97381a8cc6493395a5afc4c691c1084b3768db713b73aa215217aa245d153"
+checksum = "2678b2e3449475e95b0aa6f9b506a28e61b3dc8996592b983695e8ebb58a8b41"
 
 [[package]]
 name = "cfg-if"
@@ -508,9 +508,9 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.13"
+version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a06fddc2749e0528d2813f95e050e87e52c8cbbae56223b9babf73b3e53b0cc6"
+checksum = "94b22e06ecb0110981051723910cbf0b5f5e09a2062dd7663334ee79a9d1286c"
 dependencies = [
  "cfg-if",
  "libc",
@@ -1616,7 +1616,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.12.2"
-source = "git+https://github.com/teloxide/teloxide#2c7368825658abc10a927630d845ba179f6dafb6"
+source = "git+https://github.com/teloxide/teloxide#507ebe4008a47def0fc282cedf32ba0ae5f3b84d"
 dependencies = [
  "ahash",
  "aquamarine",
@@ -1642,7 +1642,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.9.1"
-source = "git+https://github.com/teloxide/teloxide#2c7368825658abc10a927630d845ba179f6dafb6"
+source = "git+https://github.com/teloxide/teloxide#507ebe4008a47def0fc282cedf32ba0ae5f3b84d"
 dependencies = [
  "bitflags",
  "bytes",
@@ -1671,7 +1671,7 @@ dependencies = [
 [[package]]
 name = "teloxide-macros"
 version = "0.7.1"
-source = "git+https://github.com/teloxide/teloxide#2c7368825658abc10a927630d845ba179f6dafb6"
+source = "git+https://github.com/teloxide/teloxide#507ebe4008a47def0fc282cedf32ba0ae5f3b84d"
 dependencies = [
  "heck",
  "proc-macro2",

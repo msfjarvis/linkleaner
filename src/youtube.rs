@@ -1,60 +1,12 @@
 use crate::{message::BotExt, utils::scrub_urls};
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::{
-    error::Error,
-    sync::atomic::{AtomicBool, Ordering},
-};
-use teloxide::{
-    payloads::SendMessageSetters,
-    prelude::Requester,
-    types::{ChatAction, Message},
-    utils::html::link,
-    Bot,
-};
+use std::error::Error;
+use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 
 pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-_]{11}.*").unwrap()
 });
-
-pub static FILTER_ENABLED: AtomicBool = AtomicBool::new(true);
-
-pub async fn set_filter_state(
-    bot: Bot,
-    message: Message,
-    filter_state: Option<bool>,
-) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
-    match filter_state {
-        None => {
-            let state = if FILTER_ENABLED.load(Ordering::Relaxed) {
-                "enabled"
-            } else {
-                "disabled"
-            };
-            bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                .await?;
-            bot.send_message(
-                message.chat.id,
-                format!("YouTube link replacement is {state}"),
-            )
-            .reply_to_message_id(message.id)
-            .await?;
-        }
-        Some(state) => {
-            FILTER_ENABLED.store(state, Ordering::Relaxed);
-            let state = if state { "enabled" } else { "disabled" };
-            bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                .await?;
-            bot.send_message(
-                message.chat.id,
-                format!("YouTube link replacement has been {state}"),
-            )
-            .reply_to_message_id(message.id)
-            .await?;
-        }
-    };
-    Ok(())
-}
 
 pub async fn handler(
     bot: Bot,

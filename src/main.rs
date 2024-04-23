@@ -12,17 +12,24 @@ mod youtube;
 
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
+use commands::FixerState;
 use dotenvy::dotenv;
-use std::sync::{atomic::Ordering, Arc};
+use once_cell::sync::Lazy;
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 use teloxide::{
-    dispatching::{HandlerExt, UpdateFilterExt},
+    dispatching::{dialogue::GetChatId, HandlerExt, UpdateFilterExt},
     dptree,
     prelude::Dispatcher,
-    types::{Message, Update},
+    types::{ChatId, Message, Update},
     update_listeners::Polling,
     Bot,
 };
 
+pub(crate) static FIXER_STATE: Lazy<Mutex<HashMap<ChatId, FixerState>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));
 const REPLACE_SKIP_TOKEN: &str = "#skip";
 
 async fn run() {
@@ -42,51 +49,77 @@ async fn run() {
         )
         .branch(
             dptree::filter(|msg: Message| {
-                twitter::FILTER_ENABLED.load(Ordering::Relaxed)
-                    && msg
-                        .text()
-                        .map(|text| {
-                            twitter::MATCH_REGEX.is_match(text)
-                                && !text.contains(REPLACE_SKIP_TOKEN)
-                        })
-                        .unwrap_or_default()
+                if let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                    && let Some(state) = map.get(&chat_id)
+                {
+                    return state.twitter
+                        && msg
+                            .text()
+                            .map(|text| {
+                                twitter::MATCH_REGEX.is_match(text)
+                                    && !text.contains(REPLACE_SKIP_TOKEN)
+                            })
+                            .unwrap_or_default();
+                }
+                false
             })
             .endpoint(twitter::handler),
         );
     #[cfg(feature = "ddinstagram")]
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            instagram::FILTER_ENABLED.load(Ordering::Relaxed)
-                && msg
-                    .text()
-                    .map(|text| {
-                        instagram::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
-                    })
-                    .unwrap_or_default()
+            if let Ok(ref mut map) = FIXER_STATE.try_lock()
+                && let Some(chat_id) = msg.chat_id()
+                && let Some(state) = map.get(&chat_id)
+            {
+                return state.instagram
+                    && msg
+                        .text()
+                        .map(|text| {
+                            instagram::MATCH_REGEX.is_match(text)
+                                && !text.contains(REPLACE_SKIP_TOKEN)
+                        })
+                        .unwrap_or_default();
+            }
+            false
         })
         .endpoint(instagram::handler),
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            youtube::FILTER_ENABLED.load(Ordering::Relaxed)
-                && msg
-                    .text()
-                    .map(|text| {
-                        youtube::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
-                    })
-                    .unwrap_or_default()
+            if let Ok(ref mut map) = FIXER_STATE.try_lock()
+                && let Some(chat_id) = msg.chat_id()
+                && let Some(state) = map.get(&chat_id)
+            {
+                return state.youtube
+                    && msg
+                        .text()
+                        .map(|text| {
+                            youtube::MATCH_REGEX.is_match(text)
+                                && !text.contains(REPLACE_SKIP_TOKEN)
+                        })
+                        .unwrap_or_default();
+            }
+            false
         })
         .endpoint(youtube::handler),
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            medium::FILTER_ENABLED.load(Ordering::Relaxed)
-                && msg
-                    .text()
-                    .map(|text| {
-                        medium::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
-                    })
-                    .unwrap_or_default()
+            if let Ok(ref mut map) = FIXER_STATE.try_lock()
+                && let Some(chat_id) = msg.chat_id()
+                && let Some(state) = map.get(&chat_id)
+            {
+                return state.medium
+                    && msg
+                        .text()
+                        .map(|text| {
+                            medium::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
+                        })
+                        .unwrap_or_default();
+            }
+            false
         })
         .endpoint(medium::handler),
     );

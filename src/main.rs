@@ -1,6 +1,7 @@
 #![feature(let_chains)]
 mod commands;
 mod deamp;
+mod fixer;
 #[cfg(feature = "ddinstagram")]
 mod instagram;
 mod logging;
@@ -12,8 +13,8 @@ mod youtube;
 
 use crate::commands::Command;
 use crate::logging::TeloxideLogger;
-use commands::FixerState;
 use dotenvy::dotenv;
+use fixer::FixerState;
 use once_cell::sync::Lazy;
 use std::{
     collections::HashMap,

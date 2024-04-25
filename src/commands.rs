@@ -56,6 +56,26 @@ async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncErr
     Ok(from.id == *BOT_OWNER || admins.contains(from))
 }
 
+fn update_fixer_state<F>(message: &Message, update_state: F)
+where
+    F: FnOnce(&mut FixerState) -> (),
+{
+    if let Ok(ref mut map) = FIXER_STATE.try_lock() {
+        let result = match map.get_mut(&message.chat.id) {
+            Some(state) => {
+                update_state(state);
+                *state
+            }
+            None => {
+                let mut state = FixerState::default();
+                update_state(&mut state);
+                state
+            }
+        };
+        map.insert(message.chat.id, result);
+    }
+}
+
 pub(crate) async fn handler(
     bot: Bot,
     message: Message,
@@ -74,16 +94,7 @@ pub(crate) async fn handler(
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
-                            && let Some(state) = map.get_mut(&message.chat.id)
-                        {
-                            *state.instagram(filter_state)
-                        } else {
-                            *FixerState::default().instagram(filter_state)
-                        };
-                        if let Ok(ref mut map) = FIXER_STATE.try_lock() {
-                            map.insert(message.chat.id, new_state);
-                        }
+                        update_fixer_state(&message, |x| x.instagram(filter_state));
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;
@@ -101,16 +112,7 @@ pub(crate) async fn handler(
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
-                            && let Some(state) = map.get_mut(&message.chat.id)
-                        {
-                            *state.medium(filter_state)
-                        } else {
-                            *FixerState::default().medium(filter_state)
-                        };
-                        if let Ok(ref mut map) = FIXER_STATE.try_lock() {
-                            map.insert(message.chat.id, new_state);
-                        }
+                        update_fixer_state(&message, |x| x.medium(filter_state));
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;
@@ -134,16 +136,7 @@ pub(crate) async fn handler(
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
-                            && let Some(state) = map.get_mut(&message.chat.id)
-                        {
-                            *state.twitter(filter_state)
-                        } else {
-                            *FixerState::default().twitter(filter_state)
-                        };
-                        if let Ok(ref mut map) = FIXER_STATE.try_lock() {
-                            map.insert(message.chat.id, new_state);
-                        }
+                        update_fixer_state(&message, |x| x.twitter(filter_state));
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;
@@ -161,16 +154,7 @@ pub(crate) async fn handler(
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
-                            && let Some(state) = map.get_mut(&message.chat.id)
-                        {
-                            *state.youtube(filter_state)
-                        } else {
-                            *FixerState::default().youtube(filter_state)
-                        };
-                        if let Ok(ref mut map) = FIXER_STATE.try_lock() {
-                            map.insert(message.chat.id, new_state);
-                        }
+                        update_fixer_state(&message, |x| x.youtube(filter_state));
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;

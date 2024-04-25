@@ -19,23 +19,19 @@ impl Default for FixerState {
 }
 
 impl FixerState {
-    pub(crate) fn instagram(&mut self, value: bool) -> &mut FixerState {
+    pub(crate) fn instagram(&mut self, value: bool) {
         self.instagram = value;
-        self
     }
 
-    pub(crate) fn medium(&mut self, value: bool) -> &mut FixerState {
+    pub(crate) fn medium(&mut self, value: bool) {
         self.medium = value;
-        self
     }
 
-    pub(crate) fn twitter(&mut self, value: bool) -> &mut FixerState {
+    pub(crate) fn twitter(&mut self, value: bool) {
         self.twitter = value;
-        self
     }
 
-    pub(crate) fn youtube(&mut self, value: bool) -> &mut FixerState {
+    pub(crate) fn youtube(&mut self, value: bool) {
         self.youtube = value;
-        self
     }
 }

@@ -1,9 +1,12 @@
 mod model;
 
-use crate::{message::BotExt, utils::get_urls_from_message};
+use crate::{
+    message::BotExt,
+    utils::{get_urls_from_message, AsyncError},
+};
 use model::AMPResponse;
 use reqwest::Url;
-use std::{error::Error, str::FromStr};
+use std::str::FromStr;
 use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 use tracing::debug;
 
@@ -13,10 +16,7 @@ fn deserialize_amp_response(text: &str) -> Result<AMPResponse, serde_json::Error
     serde_json::from_str(text)
 }
 
-pub async fn handler(
-    bot: Bot,
-    message: Message,
-) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
+pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = message.text()
         && let Some(user) = message.from()
     {

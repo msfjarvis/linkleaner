@@ -1,7 +1,9 @@
-use crate::{message::BotExt, utils::scrub_urls};
+use crate::{
+    message::BotExt,
+    utils::{scrub_urls, AsyncError},
+};
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::error::Error;
 use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 
 const HOST_MATCH_GROUP: &str = "host";
@@ -10,10 +12,7 @@ pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("https://(?:www.)?(?P<host>instagram.com)/(p|reel|tv)/[A-Za-z0-9]+.*/").unwrap()
 });
 
-pub async fn handler(
-    bot: Bot,
-    message: Message,
-) -> Result<(), Box<dyn Error + Sync + Send + 'static>> {
+pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = scrub_urls(&message)
         && let Some(user) = message.from()
         && let Some(caps) = MATCH_REGEX.captures(&text)

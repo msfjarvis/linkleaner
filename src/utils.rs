@@ -1,7 +1,10 @@
 use once_cell::sync::Lazy;
 use reqwest::Url;
+use std::error::Error;
 use teloxide::types::{Message, MessageEntityKind};
 use tracing::{error, info};
+
+pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
     if let Some(entities) = msg.entities()

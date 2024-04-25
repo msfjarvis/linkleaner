@@ -1,6 +1,11 @@
-use crate::{fixer::FixerState, message::BotExt, utils::parse_bool, FIXER_STATE};
+use crate::{
+    fixer::FixerState,
+    message::BotExt,
+    utils::{parse_bool, AsyncError},
+    FIXER_STATE,
+};
 use once_cell::sync::Lazy;
-use std::{env, error::Error, marker::Send};
+use std::env;
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
@@ -48,7 +53,7 @@ pub(crate) async fn handler(
     bot: Bot,
     message: Message,
     command: Command,
-) -> Result<(), Box<dyn Error + Send + Sync>> {
+) -> Result<(), AsyncError> {
     match command {
         Command::Help | Command::Start => {
             bot.send_chat_message(message, Command::descriptions().to_string())

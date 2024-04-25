@@ -49,6 +49,13 @@ pub(crate) enum Command {
     YouTube { filter_state: FilterState },
 }
 
+async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncError> {
+    let admins = bot.get_chat_administrators(message.chat.id).await?;
+    let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
+    let from = message.from().ok_or("No user found")?;
+    Ok(from.id == *BOT_OWNER || admins.contains(from))
+}
+
 pub(crate) async fn handler(
     bot: Bot,
     message: Message,
@@ -64,11 +71,7 @@ pub(crate) async fn handler(
         }
         #[cfg(feature = "ddinstagram")]
         Command::Instagram { filter_state } => {
-            let admins = bot.get_chat_administrators(message.chat.id).await?;
-            let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
-            if let Some(from) = message.from()
-                && (from.id != *BOT_OWNER || admins.contains(from))
-            {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
@@ -95,11 +98,7 @@ pub(crate) async fn handler(
             }
         }
         Command::Medium { filter_state } => {
-            let admins = bot.get_chat_administrators(message.chat.id).await?;
-            let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
-            if let Some(from) = message.from()
-                && (from.id != *BOT_OWNER || admins.contains(from))
-            {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
@@ -132,11 +131,7 @@ pub(crate) async fn handler(
                 .await?;
         }
         Command::Twitter { filter_state } => {
-            let admins = bot.get_chat_administrators(message.chat.id).await?;
-            let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
-            if let Some(from) = message.from()
-                && (from.id != *BOT_OWNER || admins.contains(from))
-            {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()
@@ -163,11 +158,7 @@ pub(crate) async fn handler(
             }
         }
         Command::YouTube { filter_state } => {
-            let admins = bot.get_chat_administrators(message.chat.id).await?;
-            let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
-            if let Some(from) = message.from()
-                && (from.id != *BOT_OWNER || admins.contains(from))
-            {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         let new_state = if let Ok(ref mut map) = FIXER_STATE.try_lock()

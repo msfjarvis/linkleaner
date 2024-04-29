@@ -50,15 +50,10 @@ pub(crate) enum Command {
 }
 
 async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncError> {
-    let admins = bot.get_chat_administrators(message.chat.id).await;
-    let admins = match admins {
-        Ok(admins) => admins,
-        Err(e) => {
-            return Ok(e
-                .to_string()
-                .contains("there are no administrators in the private chat"));
-        }
-    };
+    if message.chat.is_private() {
+        return Ok(true);
+    }
+    let admins = bot.get_chat_administrators(message.chat.id).await?;
     let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
     let from = message.from().ok_or("No user found")?;
     Ok(from.id == *BOT_OWNER || admins.contains(from))

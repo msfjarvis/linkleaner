@@ -61,7 +61,7 @@ async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncErr
 
 fn update_fixer_state<F>(message: &Message, update_state: F)
 where
-    F: FnOnce(&mut FixerState) -> () + Copy,
+    F: FnOnce(&mut FixerState) + Copy,
 {
     if let Ok(ref mut map) = FIXER_STATE.try_lock() {
         map.entry(message.chat.id)
@@ -87,6 +87,7 @@ where
     "disabled"
 }
 
+#[allow(clippy::too_many_lines)] // Problem for another day
 pub(crate) async fn handler(
     bot: Bot,
     message: Message,
@@ -109,7 +110,7 @@ pub(crate) async fn handler(
                         let state = if filter_state { "enabled" } else { "disabled" };
                         bot.send_chat_message(
                             &message,
-                            format!("Instagram link replacement is now {}", state),
+                            format!("Instagram link replacement is now {state}"),
                         )
                         .await?;
                     }
@@ -144,7 +145,7 @@ pub(crate) async fn handler(
                         let state = if filter_state { "enabled" } else { "disabled" };
                         bot.send_chat_message(
                             &message,
-                            format!("Medium link replacement is now {}", state),
+                            format!("Medium link replacement is now {state}"),
                         )
                         .await?;
                     }
@@ -185,7 +186,7 @@ pub(crate) async fn handler(
                         let state = if filter_state { "enabled" } else { "disabled" };
                         bot.send_chat_message(
                             &message,
-                            format!("Twitter link replacement is now {}", state),
+                            format!("Twitter link replacement is now {state}"),
                         )
                         .await?;
                     }
@@ -220,7 +221,7 @@ pub(crate) async fn handler(
                         let state = if filter_state { "enabled" } else { "disabled" };
                         bot.send_chat_message(
                             &message,
-                            format!("YouTube link replacement is now {}", state),
+                            format!("YouTube link replacement is now {state}"),
                         )
                         .await?;
                     }

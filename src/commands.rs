@@ -1,15 +1,21 @@
-use crate::{message::BotExt, utils::parse_bool};
+use crate::{
+    fixer::FixerState,
+    message::BotExt,
+    utils::{parse_bool, AsyncError},
+    FIXER_STATE,
+};
 use once_cell::sync::Lazy;
-use std::{env, error::Error, marker::Send};
+use std::env;
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{Message, UserId},
+    types::{ChatAction, Message, UserId},
     utils::command::BotCommands,
     Bot,
 };
 
 pub(crate) type FilterState = String;
+
 static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
     let value = env::var("BOT_OWNER_ID").expect("BOT_OWNER_ID must be defined");
     let id = value
@@ -43,58 +49,127 @@ pub(crate) enum Command {
     YouTube { filter_state: FilterState },
 }
 
+async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncError> {
+    if message.chat.is_private() {
+        return Ok(true);
+    }
+    let admins = bot.get_chat_administrators(message.chat.id).await?;
+    let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
+    let from = message.from().ok_or("No user found")?;
+    Ok(from.id == *BOT_OWNER || admins.contains(from))
+}
+
+fn update_fixer_state<F>(message: &Message, update_state: F)
+where
+    F: FnOnce(&mut FixerState) + Copy,
+{
+    if let Ok(ref mut map) = FIXER_STATE.try_lock() {
+        map.entry(message.chat.id)
+            .and_modify(update_state)
+            .or_insert_with(|| {
+                let mut state = FixerState::default();
+                update_state(&mut state);
+                state
+            });
+    }
+}
+
+fn get_fixer_state<F>(message: &Message, get_state: F) -> &str
+where
+    F: FnOnce(&FixerState) -> bool + Copy,
+{
+    if let Ok(ref mut map) = FIXER_STATE.try_lock() {
+        let state = map.entry(message.chat.id).or_insert(FixerState::default());
+        if get_state(state) {
+            return "enabled";
+        }
+    }
+    "disabled"
+}
+
+#[allow(clippy::too_many_lines)] // Problem for another day
 pub(crate) async fn handler(
     bot: Bot,
     message: Message,
     command: Command,
-) -> Result<(), Box<dyn Error + Send + Sync>> {
+) -> Result<(), AsyncError> {
     match command {
         Command::Help | Command::Start => {
-            bot.send_chat_message(message, Command::descriptions().to_string())
+            bot.send_chat_message(&message, Command::descriptions().to_string())
                 .await?;
         }
         Command::Ping => {
-            bot.send_chat_message(message, "Pong".to_string()).await?;
+            bot.send_chat_message(&message, "Pong".to_string()).await?;
         }
         #[cfg(feature = "ddinstagram")]
         Command::Instagram { filter_state } => {
-            if let Some(from) = message.from()
-                && from.id != *BOT_OWNER
-            {
-                bot.send_chat_message(
-                    message,
-                    "You are not authorized for this action".to_string(),
-                )
-                .await?;
-            } else {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        crate::instagram::set_filter_state(bot, message, filter_state).await?;
+                        update_fixer_state(&message, |x| x.instagram(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            &message,
+                            format!("Instagram link replacement is now {state}"),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "Instagram link replacement is {}",
+                                    get_fixer_state(&message, |x| x.instagram)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
+            } else {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
             }
         }
         Command::Medium { filter_state } => {
-            if let Some(from) = message.from()
-                && from.id != *BOT_OWNER
-            {
-                bot.send_chat_message(
-                    message,
-                    "You are not authorized for this action".to_string(),
-                )
-                .await?;
-            } else {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        crate::medium::set_filter_state(bot, message, filter_state).await?;
+                        update_fixer_state(&message, |x| x.medium(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            &message,
+                            format!("Medium link replacement is now {state}"),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "Medium link replacement is {}",
+                                    get_fixer_state(&message, |x| x.medium)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
+            } else {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
             }
         }
         Command::Ttv { names } => {
@@ -104,43 +179,73 @@ pub(crate) async fn handler(
                 .await?;
         }
         Command::Twitter { filter_state } => {
-            if let Some(from) = message.from()
-                && from.id != *BOT_OWNER
-            {
-                bot.send_chat_message(
-                    message,
-                    "You are not authorized for this action".to_string(),
-                )
-                .await?;
-            } else {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        crate::twitter::set_filter_state(bot, message, filter_state).await?;
+                        update_fixer_state(&message, |x| x.twitter(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            &message,
+                            format!("Twitter link replacement is now {state}"),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "Twitter link replacement is {}",
+                                    get_fixer_state(&message, |x| x.twitter)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
+            } else {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
             }
         }
         Command::YouTube { filter_state } => {
-            if let Some(from) = message.from()
-                && from.id != *BOT_OWNER
-            {
-                bot.send_chat_message(
-                    message,
-                    "You are not authorized for this action".to_string(),
-                )
-                .await?;
-            } else {
+            if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
-                        crate::youtube::set_filter_state(bot, message, filter_state).await?;
+                        update_fixer_state(&message, |x| x.youtube(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            &message,
+                            format!("YouTube link replacement is now {state}"),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "YouTube link replacement is {}",
+                                    get_fixer_state(&message, |x| x.youtube)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
+            } else {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
             }
         }
     };

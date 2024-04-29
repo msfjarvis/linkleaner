@@ -1,7 +1,10 @@
 use once_cell::sync::Lazy;
 use reqwest::Url;
+use std::error::Error;
 use teloxide::types::{Message, MessageEntityKind};
 use tracing::{error, info};
+
+pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
     if let Some(entities) = msg.entities()
@@ -51,7 +54,7 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
     }
 }
 
-pub(crate) fn parse_bool(input: &str) -> Result<Option<bool>, String> {
+pub(crate) fn parse_bool(input: &str) -> Result<bool, String> {
     const TRUE_VALUES: [&str; 4] = ["true", "on", "yes", "enable"];
     const FALSE_VALUES: [&str; 4] = ["false", "off", "no", "disable"];
     static EXPECTED_VALUES: Lazy<String> = Lazy::new(|| {
@@ -72,9 +75,8 @@ pub(crate) fn parse_bool(input: &str) -> Result<Option<bool>, String> {
     }
 
     match input[0].to_lowercase().as_str() {
-        arg if TRUE_VALUES.contains(&arg) => Ok(Some(true)),
-        arg if FALSE_VALUES.contains(&arg) => Ok(Some(false)),
-        "" => Ok(None),
+        arg if TRUE_VALUES.contains(&arg) => Ok(true),
+        arg if FALSE_VALUES.contains(&arg) => Ok(false),
         arg => {
             let message = format!(
                 "Unexpected argument '{arg}'. Expected one of: {}.",

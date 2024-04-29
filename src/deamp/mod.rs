@@ -38,7 +38,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         }
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.try_reply(message, text).await?;
+        bot.try_reply(&message, text).await?;
     }
     Ok(())
 }

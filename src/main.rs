@@ -52,8 +52,8 @@ async fn run() {
             dptree::filter(|msg: Message| {
                 if let Ok(ref mut map) = FIXER_STATE.try_lock()
                     && let Some(chat_id) = msg.chat_id()
-                    && let Some(state) = map.get(&chat_id)
                 {
+                    let state = map.entry(chat_id).or_insert(FixerState::default());
                     return state.twitter
                         && msg
                             .text()
@@ -72,8 +72,8 @@ async fn run() {
         dptree::filter(|msg: Message| {
             if let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
-                && let Some(state) = map.get(&chat_id)
             {
+                let state = map.entry(chat_id).or_insert(FixerState::default());
                 return state.instagram
                     && msg
                         .text()
@@ -91,8 +91,8 @@ async fn run() {
         dptree::filter(|msg: Message| {
             if let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
-                && let Some(state) = map.get(&chat_id)
             {
+                let state = map.entry(chat_id).or_insert(FixerState::default());
                 return state.youtube
                     && msg
                         .text()
@@ -110,8 +110,8 @@ async fn run() {
         dptree::filter(|msg: Message| {
             if let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
-                && let Some(state) = map.get(&chat_id)
             {
+                let state = map.entry(chat_id).or_insert(FixerState::default());
                 return state.medium
                     && msg
                         .text()

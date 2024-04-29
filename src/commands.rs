@@ -58,21 +58,16 @@ async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncErr
 
 fn update_fixer_state<F>(message: &Message, update_state: F)
 where
-    F: FnOnce(&mut FixerState) -> (),
+    F: FnOnce(&mut FixerState) -> () + Copy,
 {
     if let Ok(ref mut map) = FIXER_STATE.try_lock() {
-        let result = match map.get_mut(&message.chat.id) {
-            Some(state) => {
-                update_state(state);
-                *state
-            }
-            None => {
+        map.entry(message.chat.id)
+            .and_modify(update_state)
+            .or_insert_with(|| {
                 let mut state = FixerState::default();
                 update_state(&mut state);
                 state
-            }
-        };
-        map.insert(message.chat.id, result);
+            });
     }
 }
 

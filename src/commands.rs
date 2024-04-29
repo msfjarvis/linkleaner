@@ -98,6 +98,12 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.instagram(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            message,
+                            format!("Instagram link replacement is now {}", state),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;
@@ -116,6 +122,12 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.medium(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            message,
+                            format!("Medium link replacement is now {}", state),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;
@@ -140,6 +152,12 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.twitter(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            message,
+                            format!("Twitter link replacement is now {}", state),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;
@@ -158,6 +176,12 @@ pub(crate) async fn handler(
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.youtube(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.send_chat_message(
+                            message,
+                            format!("YouTube link replacement is now {}", state),
+                        )
+                        .await?;
                     }
                     Err(error_message) => {
                         bot.send_chat_message(message, error_message).await?;

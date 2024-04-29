@@ -79,6 +79,19 @@ where
     }
 }
 
+fn get_fixer_state<F>(message: &Message, get_state: F) -> &str
+where
+    F: FnOnce(&FixerState) -> bool + Copy,
+{
+    if let Ok(ref mut map) = FIXER_STATE.try_lock() {
+        let state = map.entry(message.chat.id).or_insert(FixerState::default());
+        if get_state(state) {
+            return "enabled";
+        }
+    }
+    "disabled"
+}
+
 pub(crate) async fn handler(
     bot: Bot,
     message: Message,
@@ -106,7 +119,18 @@ pub(crate) async fn handler(
                         .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(&message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "Instagram link replacement is {}",
+                                    get_fixer_state(&message, |x| x.instagram)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
             } else {
@@ -130,7 +154,18 @@ pub(crate) async fn handler(
                         .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(&message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "Medium link replacement is {}",
+                                    get_fixer_state(&message, |x| x.medium)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
             } else {
@@ -160,7 +195,18 @@ pub(crate) async fn handler(
                         .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(&message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "Twitter link replacement is {}",
+                                    get_fixer_state(&message, |x| x.twitter)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
             } else {
@@ -184,7 +230,18 @@ pub(crate) async fn handler(
                         .await?;
                     }
                     Err(error_message) => {
-                        bot.send_chat_message(&message, error_message).await?;
+                        if filter_state.is_empty() {
+                            bot.send_chat_message(
+                                &message,
+                                format!(
+                                    "YouTube link replacement is {}",
+                                    get_fixer_state(&message, |x| x.youtube)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.send_chat_message(&message, error_message).await?;
+                        }
                     }
                 }
             } else {

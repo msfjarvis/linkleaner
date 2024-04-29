@@ -40,8 +40,3 @@ jobs:
       run: |
         flyctl auth docker
         flyctl deploy
-
-    - name: Trigger package bump in dotfiles repo
-      run: gh api repos/msfjarvis/dotfiles/dispatches --field event_type="package-bump" --field client_payload[package_name]="linkleaner"
-      env:
-        GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}

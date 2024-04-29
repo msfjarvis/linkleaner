@@ -62,11 +62,11 @@
         });
       linkleaner-clippy = craneLib.cargoClippy (commonArgs
         // {
-          cargoArtifacts = linkleaner-fmt;
+          inherit cargoArtifacts;
         });
       linkleaner = craneLib.buildPackage (commonArgs
         // {
-          cargoArtifacts = linkleaner-clippy;
+          inherit cargoArtifacts;
           doCheck = false;
         });
       linkleaner-nextest = craneLib.cargoNextest (commonArgs
@@ -77,8 +77,7 @@
         });
       linkleaner-audit = craneLib.cargoAudit (commonArgs
         // {
-          inherit advisory-db;
-          cargoArtifacts = linkleaner;
+          inherit advisory-db cargoArtifacts;
         });
     in {
       checks = {

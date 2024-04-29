@@ -96,6 +96,12 @@
         };
         config.Cmd = ["${linkleaner}/bin/linkleaner"];
       };
+      packages.ghContainer = pkgs.dockerTools.buildLayeredImage {
+        name = "ghcr.io/msfjarvis/linkleaner";
+        tag = "latest";
+        created = "now";
+        config.Cmd = ["${linkleaner}/bin/linkleaner"];
+      };
 
       apps.default = flake-utils.lib.mkApp {drv = linkleaner;};
 

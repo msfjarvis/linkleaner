@@ -8,6 +8,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}
 
+permissions:
+  packages: write
+
 jobs:
   deploy:
     name: Deploy app
@@ -33,10 +36,31 @@ jobs:
         nix build .#container
         docker load < result
 
-    - name: Publish image and deploy
+    - name: Deploy to fly.io
       shell: bash
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |
         flyctl auth docker
         flyctl deploy
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and publish image to GitHub Container Registry
+      shell: bash
+      run: |
+        # Get image details
+        IMAGE_NAME="$(nix eval --raw .#packages.x86_64-linux.ghContainer.imageName)"
+        IMAGE_TAG="$(nix eval --raw .#packages.x86_64-linux.ghContainer.imageTag)"
+
+        # Build and load the image
+        nix build .#ghContainer
+        docker load < ./result
+
+        # Push image to ghcr.io
+        docker push "${IMAGE_NAME}":"${IMAGE_TAG}"

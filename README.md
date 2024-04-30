@@ -6,7 +6,7 @@ Telegram bot to replace social media links with their improved preview variants.
 |-----------|---------------|
 | [Accelerated Mobile Pages (AMP)](https://amp.dev) | [AmputatorBot](https://www.amputatorbot.com/) |
 | [Instagram](https://instagram.com) | [InstaFix](https://github.com/Wikidepia/InstaFix) |
-| [Medium](https://medium.com) | [Scribe](https://sr.ht/~edwardloveall/Scribe/) |
+| [Medium](https://medium.com) | [LibMedium](https://git.batsense.net/realaravinth/libmedium) |
 | [Twitter](https://twitter.com) / [X](https://x.com) | [TweetFix](https://github.com/FixTweet/FixTweet) |
 | [YouTube Shorts](https://www.youtube.com/shorts) | Rewrite URL to normal YouTube player
 

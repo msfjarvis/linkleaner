@@ -5,7 +5,6 @@ use crate::{
     utils::{get_urls_from_message, AsyncError},
 };
 use model::AMPResponse;
-use reqwest::Url;
 use std::str::FromStr;
 use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 use tracing::debug;
@@ -31,7 +30,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
             debug!(?resp, "{url}");
             let resp = deserialize_amp_response(&resp)?;
             if let AMPResponse::Success(ok) = resp {
-                text = text.replace(url, &ok[0].canonical.url);
+                text = text.replace(url.as_str(), &ok[0].canonical.url);
             } else {
                 return Ok(());
             }
@@ -50,7 +49,7 @@ pub fn is_amp(msg: Message) -> bool {
     if urls.is_empty() {
         return false;
     }
-    urls.iter().flat_map(|url| Url::parse(url)).any(|url| {
+    urls.iter().any(|url| {
         if let Some(mut segments) = url.path_segments()
             && let Some(host) = url.host_str()
         {

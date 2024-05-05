@@ -6,7 +6,7 @@ use tracing::{error, info};
 
 pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
-pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
+pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
     if let Some(entities) = msg.entities()
         && !entities.is_empty()
         && let Some(text) = msg.text()
@@ -24,9 +24,11 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<String> {
         let utf16 = text.encode_utf16().collect::<Vec<u16>>();
         let mut urls = Vec::with_capacity(url_entities.len());
         for entity in &url_entities {
-            urls.push(String::from_utf16_lossy(
+            if let Ok(url) = Url::parse(&String::from_utf16_lossy(
                 &utf16[entity.offset..entity.offset + entity.length],
-            ));
+            )) {
+                urls.push(url);
+            }
         }
         info!(message_id = %msg.id.0, ?urls, "get_urls_from_message");
         return urls;
@@ -38,12 +40,10 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
     if let Some(text) = msg.text() {
         let urls = get_urls_from_message(msg);
         let mut final_text = text.to_owned();
-        for item in urls {
-            if let Ok(url) = Url::parse(&item)
-                && let Some(query_str) = url.query()
-            {
-                let scrubbed_url = item.replace(&format!("?{query_str}"), "");
-                final_text = final_text.replace(&item, &scrubbed_url);
+        for url in urls {
+            if let Some(query_str) = url.query() {
+                let scrubbed_url = url.as_str().replace(&format!("?{query_str}"), "");
+                final_text = final_text.replace(url.as_str(), &scrubbed_url);
             }
         }
         info!(?text, ?final_text, "scrub_urls");

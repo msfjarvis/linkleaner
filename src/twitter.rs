@@ -9,7 +9,8 @@ use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 const HOST_MATCH_GROUP: &str = "host";
 const ROOT_MATCH_GROUP: &str = "root";
 
-pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+pub const DOMAINS: [&str; 2] = ["twitter.com", "x.com"];
+static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("https://(?P<host>(?:mobile.)?(?P<root>(twitter|x)).com)/.*/status/[0-9]+.*")
         .unwrap()
 });

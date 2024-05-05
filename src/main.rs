@@ -28,6 +28,7 @@ use teloxide::{
     update_listeners::Polling,
     Bot,
 };
+use utils::has_matching_urls;
 
 pub(crate) static FIXER_STATE: Lazy<Mutex<HashMap<ChatId, FixerState>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
@@ -50,18 +51,13 @@ async fn run() {
         )
         .branch(
             dptree::filter(|msg: Message| {
-                if let Ok(ref mut map) = FIXER_STATE.try_lock()
+                let should_match = has_matching_urls(&msg, &twitter::DOMAINS)
+                    && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+                if should_match
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
                     && let Some(chat_id) = msg.chat_id()
                 {
-                    let state = map.entry(chat_id).or_insert(FixerState::default());
-                    return state.twitter
-                        && msg
-                            .text()
-                            .map(|text| {
-                                twitter::MATCH_REGEX.is_match(text)
-                                    && !text.contains(REPLACE_SKIP_TOKEN)
-                            })
-                            .unwrap_or_default();
+                    return map.entry(chat_id).or_insert(FixerState::default()).twitter;
                 }
                 false
             })
@@ -70,18 +66,16 @@ async fn run() {
     #[cfg(feature = "ddinstagram")]
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            if let Ok(ref mut map) = FIXER_STATE.try_lock()
+            let should_match = has_matching_urls(&msg, &instagram::DOMAINS)
+                && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if should_match
+                && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
             {
-                let state = map.entry(chat_id).or_insert(FixerState::default());
-                return state.instagram
-                    && msg
-                        .text()
-                        .map(|text| {
-                            instagram::MATCH_REGEX.is_match(text)
-                                && !text.contains(REPLACE_SKIP_TOKEN)
-                        })
-                        .unwrap_or_default();
+                return map
+                    .entry(chat_id)
+                    .or_insert(FixerState::default())
+                    .instagram;
             }
             false
         })
@@ -89,18 +83,13 @@ async fn run() {
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            if let Ok(ref mut map) = FIXER_STATE.try_lock()
+            let should_match = has_matching_urls(&msg, &youtube::DOMAINS)
+                && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if should_match
+                && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
             {
-                let state = map.entry(chat_id).or_insert(FixerState::default());
-                return state.youtube
-                    && msg
-                        .text()
-                        .map(|text| {
-                            youtube::MATCH_REGEX.is_match(text)
-                                && !text.contains(REPLACE_SKIP_TOKEN)
-                        })
-                        .unwrap_or_default();
+                return map.entry(chat_id).or_insert(FixerState::default()).youtube;
             }
             false
         })
@@ -108,17 +97,14 @@ async fn run() {
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            if let Ok(ref mut map) = FIXER_STATE.try_lock()
+            let should_match = has_matching_urls(&msg, &medium::DOMAINS);
+            let should_match =
+                should_match && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if should_match
+                && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
             {
-                let state = map.entry(chat_id).or_insert(FixerState::default());
-                return state.medium
-                    && msg
-                        .text()
-                        .map(|text| {
-                            medium::MATCH_REGEX.is_match(text) && !text.contains(REPLACE_SKIP_TOKEN)
-                        })
-                        .unwrap_or_default();
+                return map.entry(chat_id).or_insert(FixerState::default()).medium;
             }
             false
         })

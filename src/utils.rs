@@ -30,10 +30,20 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
                 urls.push(url);
             }
         }
-        info!(message_id = %msg.id.0, ?urls, "get_urls_from_message");
+        let url_str = urls.iter().map(reqwest::Url::as_str).collect::<Vec<&str>>();
+        info!(message_id = %msg.id.0, urls = ?url_str, "get_urls_from_message");
         return urls;
     }
     Vec::new()
+}
+
+pub(crate) fn has_matching_urls(msg: &Message, domains: &[&str]) -> bool {
+    get_urls_from_message(msg).iter().any(|url| {
+        if let Some(host) = url.host_str() {
+            return domains.iter().any(|domain| host.ends_with(domain));
+        }
+        false
+    })
 }
 
 pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {

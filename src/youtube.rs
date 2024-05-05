@@ -6,7 +6,8 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
 
-pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+pub const DOMAINS: [&str; 1] = ["youtube.com"];
+static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-_]{11}.*").unwrap()
 });
 

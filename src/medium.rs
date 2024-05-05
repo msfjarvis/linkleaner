@@ -11,7 +11,8 @@ const HOST_MATCH_GROUP: &str = "host";
 const PATH_MATCH_GROUP: &str = "path";
 const USER_MATCH_GROUP: &str = "user";
 
-pub static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+pub const DOMAINS: [&str; 1] = ["medium.com"];
+static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("https://(?<user>[a-zA-Z0-9]*)?.?(?<host>medium.com)/(?<path>.*)").unwrap()
 });
 

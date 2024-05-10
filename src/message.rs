@@ -16,6 +16,8 @@ pub(crate) trait BotExt {
 
 impl BotExt for Bot {
     async fn try_reply(&self, message: &Message, text: String) -> Result<Message, RequestError> {
+        self.send_chat_action(message.chat.id, ChatAction::Typing)
+            .await?;
         if let Some(reply) = message.reply_to_message() {
             self.send_message(message.chat.id, text)
                 .reply_to_message_id(reply.id)

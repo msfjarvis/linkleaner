@@ -257,7 +257,11 @@ pub(crate) async fn handler(
         Command::Dice { size } => match extract_dice_count(&size, 6) {
             Ok(size) => {
                 let roll = rand::random::<u8>() % size + 1;
-                bot.try_reply(&message, format!("You roll a <b>D{}</b> and get a <b>{}</b>.", size, roll)).await?;
+                bot.try_reply(
+                    &message,
+                    format!("You roll a <b>D{}</b> and get a <b>{}</b>.", size, roll),
+                )
+                .await?;
             }
             Err(error_message) => {
                 bot.send_chat_message(&message, error_message).await?;

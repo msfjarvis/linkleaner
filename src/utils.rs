@@ -96,3 +96,27 @@ pub(crate) fn parse_bool(input: &str) -> Result<bool, String> {
         }
     }
 }
+
+pub(crate) fn extract_dice_count(input: &str, default: u8) -> Result<u8, String> {
+    if input.is_empty() {
+        return Ok(default);
+    }
+
+    let input = input.split(' ').collect::<Vec<_>>();
+    if input.len() > 1 {
+        return Err(String::from(
+            "Unexpected number of arguments. Expected a numeric value from 1-255.",
+        ));
+    }
+
+    match input[0].parse::<u8>() {
+        Ok(value) => Ok(value),
+        Err(_) => {
+            let message = format!(
+                "Unexpected argument '{}'. Expected a number from 1-255.",
+                input[0]
+            );
+            Err(message)
+        }
+    }
+}

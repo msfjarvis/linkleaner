@@ -1,7 +1,7 @@
 use crate::{
     fixer::FixerState,
     message::BotExt,
-    utils::{parse_bool, AsyncError},
+    utils::{extract_dice_count, parse_bool, AsyncError},
     FIXER_STATE,
 };
 use once_cell::sync::Lazy;
@@ -9,7 +9,7 @@ use std::env;
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, Message, UserId},
+    types::{ChatAction, Message, ParseMode, UserId},
     utils::command::BotCommands,
     Bot,
 };
@@ -47,6 +47,12 @@ pub(crate) enum Command {
     Twitter { filter_state: FilterState },
     #[command(description = "toggle YouTube link replacement")]
     YouTube { filter_state: FilterState },
+    #[command(
+        description = "let the bot decide your fate; pass a number argument to roll dice with a custom number of sides",
+        parse_with = "split",
+        aliases = ["roll", "d"]
+    )]
+    Dice { size: String },
 }
 
 async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncError> {
@@ -246,6 +252,25 @@ pub(crate) async fn handler(
                 bot.send_message(message.chat.id, "You are not authorized for this action")
                     .reply_to_message_id(message.id)
                     .await?;
+            }
+        }
+        Command::Dice { size } => {
+            match extract_dice_count(&size, 6) {
+                Ok(size) => {
+                    let roll = rand::random::<u8>() % size + 1;
+                    bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                        .await?;
+                    bot.send_message(
+                        message.chat.id,
+                        format!("You roll a <b>D{}</b> and get a <b>{}</b>.", size, roll),
+                    )
+                    .reply_to_message_id(message.id)
+                    .parse_mode(ParseMode::Html)
+                    .await?;
+                }
+                Err(error_message) => {
+                    bot.send_chat_message(&message, error_message).await?;
+                }
             }
         }
     };

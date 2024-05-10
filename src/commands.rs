@@ -254,25 +254,23 @@ pub(crate) async fn handler(
                     .await?;
             }
         }
-        Command::Dice { size } => {
-            match extract_dice_count(&size, 6) {
-                Ok(size) => {
-                    let roll = rand::random::<u8>() % size + 1;
-                    bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                        .await?;
-                    bot.send_message(
-                        message.chat.id,
-                        format!("You roll a <b>D{}</b> and get a <b>{}</b>.", size, roll),
-                    )
-                    .reply_to_message_id(message.id)
-                    .parse_mode(ParseMode::Html)
+        Command::Dice { size } => match extract_dice_count(&size, 6) {
+            Ok(size) => {
+                let roll = rand::random::<u8>() % size + 1;
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
                     .await?;
-                }
-                Err(error_message) => {
-                    bot.send_chat_message(&message, error_message).await?;
-                }
+                bot.send_message(
+                    message.chat.id,
+                    format!("You roll a <b>D{}</b> and get a <b>{}</b>.", size, roll),
+                )
+                .reply_to_message_id(message.id)
+                .parse_mode(ParseMode::Html)
+                .await?;
             }
-        }
+            Err(error_message) => {
+                bot.send_chat_message(&message, error_message).await?;
+            }
+        },
     };
     Ok(())
 }

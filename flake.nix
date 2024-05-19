@@ -8,7 +8,7 @@
   inputs.advisory-db.url = "github:rustsec/advisory-db";
   inputs.advisory-db.flake = false;
 
-  inputs.crane.url = "github:ipetkov/crane?rev=27025ab71bdca30e7ed0a16c88fd74c5970fc7f5";
+  inputs.crane.url = "github:ipetkov/crane";
   inputs.crane.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs.devshell.url = "github:numtide/devshell";

@@ -1,6 +1,7 @@
 #![feature(let_chains)]
 mod commands;
 mod deamp;
+mod dice;
 mod fixer;
 #[cfg(feature = "ddinstagram")]
 mod instagram;
@@ -116,6 +117,10 @@ async fn run() {
         })
         .endpoint(medium::handler),
     );
+
+    let handler = handler
+        .branch(dptree::filter(dice::is_die_roll))
+        .endpoint(dice::handler);
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
 

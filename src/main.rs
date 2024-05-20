@@ -50,8 +50,10 @@ async fn run() {
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            let should_match = has_matching_urls(&msg, &twitter::DOMAINS)
-                && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN) {
+                return false;
+            }
+            let should_match = has_matching_urls(&msg, &twitter::DOMAINS);
             if should_match
                 && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
@@ -65,8 +67,10 @@ async fn run() {
     #[cfg(feature = "ddinstagram")]
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            let should_match = has_matching_urls(&msg, &instagram::DOMAINS)
-                && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN) {
+                return false;
+            }
+            let should_match = has_matching_urls(&msg, &instagram::DOMAINS);
             if should_match
                 && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
@@ -82,8 +86,10 @@ async fn run() {
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
-            let should_match = has_matching_urls(&msg, &youtube::DOMAINS)
-                && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN) {
+                return false;
+            }
+            let should_match = has_matching_urls(&msg, &youtube::DOMAINS);
             if should_match
                 && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()
@@ -96,9 +102,10 @@ async fn run() {
     );
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
+            if msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN) {
+                return false;
+            }
             let should_match = has_matching_urls(&msg, &medium::DOMAINS);
-            let should_match =
-                should_match && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
             if should_match
                 && let Ok(ref mut map) = FIXER_STATE.try_lock()
                 && let Some(chat_id) = msg.chat_id()

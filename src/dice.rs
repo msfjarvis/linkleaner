@@ -17,11 +17,11 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && let Ok(count) = extract_dice_count(count.as_str(), 6)
         && let Ok(sides) = sides.as_str().parse::<u8>()
     {
-        let mut text = format!("Rolled {count} die(s) with {sides} sides\n");
-        for i in 1..=count {
-            let roll = roll_die(sides);
-            text.push_str(&format!("Roll {i}: {roll}\n"));
-        }
+        let mut total = 0;
+        for _ in 1..=count  {
+            total += roll_die(sides);
+        };
+        let text = format!("Rolled {count} die(s) with {sides} sides. Total: {total}");
         bot.try_reply(&message, text).await?;
     }
     Ok(())

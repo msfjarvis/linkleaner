@@ -43,26 +43,25 @@ async fn run() {
 
     let bot = Bot::from_env();
 
-    let handler = Update::filter_message()
-        .branch(
-            dptree::entry()
-                .filter_command::<Command>()
-                .endpoint(commands::handler),
-        )
-        .branch(
-            dptree::filter(|msg: Message| {
-                let should_match = has_matching_urls(&msg, &twitter::DOMAINS)
-                    && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
-                if should_match
-                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                    && let Some(chat_id) = msg.chat_id()
-                {
-                    return map.entry(chat_id).or_insert(FixerState::default()).twitter;
-                }
-                false
-            })
-            .endpoint(twitter::handler),
-        );
+    let handler = Update::filter_message().branch(
+        dptree::entry()
+            .filter_command::<Command>()
+            .endpoint(commands::handler),
+    );
+    let handler = handler.branch(
+        dptree::filter(|msg: Message| {
+            let should_match = has_matching_urls(&msg, &twitter::DOMAINS)
+                && !msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN);
+            if should_match
+                && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                && let Some(chat_id) = msg.chat_id()
+            {
+                return map.entry(chat_id).or_insert(FixerState::default()).twitter;
+            }
+            false
+        })
+        .endpoint(twitter::handler),
+    );
     #[cfg(feature = "ddinstagram")]
     let handler = handler.branch(
         dptree::filter(|msg: Message| {

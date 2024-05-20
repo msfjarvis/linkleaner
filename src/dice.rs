@@ -18,9 +18,9 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && let Ok(sides) = sides.as_str().parse::<u8>()
     {
         let mut total = 0;
-        for _ in 1..=count  {
+        for _ in 1..=count {
             total += roll_die(sides);
-        };
+        }
         let text = format!("Rolled {count} die(s) with {sides} sides. Total: {total}");
         bot.try_reply(&message, text).await?;
     }

@@ -109,14 +109,13 @@ pub(crate) fn extract_dice_count(input: &str, default: u8) -> Result<u8, String>
         ));
     }
 
-    match input[0].parse::<u8>() {
-        Ok(value) => Ok(value),
-        Err(_) => {
-            let message = format!(
-                "Unexpected argument '{}'. Expected a number from 1-255.",
-                input[0]
-            );
-            Err(message)
-        }
+    if let Ok(value) = input[0].parse::<u8>() {
+        Ok(value)
+    } else {
+        let message = format!(
+            "Unexpected argument '{}'. Expected a number from 1-255.",
+            input[0]
+        );
+        Err(message)
     }
 }

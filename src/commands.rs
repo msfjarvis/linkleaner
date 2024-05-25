@@ -260,7 +260,7 @@ pub(crate) async fn handler(
                 let roll = roll_die(size);
                 bot.try_reply(
                     &message,
-                    format!("You roll a <b>D{}</b> and get a <b>{}</b>.", size, roll),
+                    format!("You roll a <b>D{size}</b> and get a <b>{roll}</b>."),
                 )
                 .await?;
             }

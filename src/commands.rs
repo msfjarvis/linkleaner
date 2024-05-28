@@ -35,7 +35,6 @@ pub(crate) enum Command {
     Help,
     #[command(description = "Pong?")]
     Ping,
-    #[cfg(feature = "ddinstagram")]
     #[command(description = "toggle Instagram link replacement")]
     Instagram { filter_state: FilterState },
     #[command(description = "toggle Medium link replacement")]
@@ -108,7 +107,6 @@ pub(crate) async fn handler(
         Command::Ping => {
             bot.send_chat_message(&message, "Pong".to_string()).await?;
         }
-        #[cfg(feature = "ddinstagram")]
         Command::Instagram { filter_state } => {
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {

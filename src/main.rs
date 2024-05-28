@@ -3,7 +3,6 @@ mod commands;
 mod deamp;
 mod dice;
 mod fixer;
-#[cfg(feature = "ddinstagram")]
 mod instagram;
 mod logging;
 mod medium;
@@ -65,7 +64,6 @@ async fn run() {
         })
         .endpoint(twitter::handler),
     );
-    #[cfg(feature = "ddinstagram")]
     let handler = handler.branch(
         dptree::filter(|msg: Message| {
             if msg.text().unwrap_or_default().contains(REPLACE_SKIP_TOKEN) {

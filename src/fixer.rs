@@ -10,7 +10,7 @@ pub(crate) struct FixerState {
 impl Default for FixerState {
     fn default() -> Self {
         Self {
-            instagram: true,
+            instagram: false,
             medium: true,
             twitter: true,
             youtube: true,

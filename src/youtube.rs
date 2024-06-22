@@ -4,7 +4,7 @@ use crate::{
 };
 use once_cell::sync::Lazy;
 use regex::Regex;
-use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
+use teloxide::{types::Message, utils::html::link, Bot};
 
 pub const DOMAINS: [&str; 1] = ["youtube.com"];
 static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
@@ -18,8 +18,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     {
         let text = text.replace(&caps["shorts"], "watch?v=");
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.try_reply(&message, text).await?;
+        bot.replace_chat_message(&message, &text).await?;
     }
     Ok(())
 }

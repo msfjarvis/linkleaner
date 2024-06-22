@@ -22,7 +22,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
             total += roll_die(sides);
         }
         let text = format!("Rolled {count} die(s) with {sides} sides. Total: {total}");
-        bot.try_reply(&message, text).await?;
+        bot.try_reply(&message, &text).await?;
     }
     Ok(())
 }

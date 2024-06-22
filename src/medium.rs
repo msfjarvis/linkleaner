@@ -4,7 +4,7 @@ use crate::{
 };
 use once_cell::sync::Lazy;
 use regex::Regex;
-use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
+use teloxide::{types::Message, utils::html::link, Bot};
 
 #[allow(dead_code)] // This is used in the tests
 const HOST_MATCH_GROUP: &str = "host";
@@ -24,8 +24,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     {
         let text = text.replace(full_url.as_str(), &build_url(&caps));
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.try_reply(&message, text).await?;
+        bot.replace_chat_message(&message, &text).await?;
     }
     Ok(())
 }

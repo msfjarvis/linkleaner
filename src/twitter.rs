@@ -4,7 +4,7 @@ use crate::{
 };
 use once_cell::sync::Lazy;
 use regex::Regex;
-use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
+use teloxide::{types::Message, utils::html::link, Bot};
 
 const HOST_MATCH_GROUP: &str = "host";
 const ROOT_MATCH_GROUP: &str = "root";
@@ -29,8 +29,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
             }
         };
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.try_reply(&message, text).await?;
+        bot.replace_chat_message(&message, &text).await?;
     }
     Ok(())
 }

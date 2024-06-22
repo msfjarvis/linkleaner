@@ -6,16 +6,16 @@ use teloxide::{
 };
 
 pub(crate) trait BotExt {
-    async fn try_reply(&self, message: &Message, text: String) -> Result<Message, RequestError>;
-    async fn send_chat_message(
+    async fn try_reply(&self, message: &Message, text: &str) -> Result<Message, RequestError>;
+    async fn replace_chat_message(
         &self,
         message: &Message,
-        text: String,
+        text: &str,
     ) -> Result<Message, RequestError>;
 }
 
 impl BotExt for Bot {
-    async fn try_reply(&self, message: &Message, text: String) -> Result<Message, RequestError> {
+    async fn try_reply(&self, message: &Message, text: &str) -> Result<Message, RequestError> {
         self.send_chat_action(message.chat.id, ChatAction::Typing)
             .await?;
         if let Some(reply) = message.reply_to_message() {
@@ -30,13 +30,12 @@ impl BotExt for Bot {
         }
     }
 
-    async fn send_chat_message(
+    async fn replace_chat_message(
         &self,
         message: &Message,
-        text: String,
+        text: &str,
     ) -> Result<Message, RequestError> {
-        self.send_chat_action(message.chat.id, ChatAction::Typing)
-            .await?;
+        let _del = self.delete_message(message.chat.id, message.id).await;
         self.send_message(message.chat.id, text).await
     }
 }

@@ -6,7 +6,7 @@ use crate::{
 };
 use model::AMPResponse;
 use std::str::FromStr;
-use teloxide::{prelude::Requester, types::Message, utils::html::link, Bot};
+use teloxide::{types::Message, utils::html::link, Bot};
 use tracing::debug;
 
 const BASE_URL: &str = "https://www.amputatorbot.com/api/v1/convert?gac=true&md=3&q=";
@@ -36,8 +36,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
             }
         }
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        let _del = bot.delete_message(message.chat.id, message.id).await;
-        bot.try_reply(&message, text).await?;
+        bot.replace_chat_message(&message, &text).await?;
     }
     Ok(())
 }

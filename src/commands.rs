@@ -101,11 +101,11 @@ pub(crate) async fn handler(
 ) -> Result<(), AsyncError> {
     match command {
         Command::Help | Command::Start => {
-            bot.send_chat_message(&message, Command::descriptions().to_string())
+            bot.try_reply(&message, &Command::descriptions().to_string())
                 .await?;
         }
         Command::Ping => {
-            bot.send_chat_message(&message, "Pong".to_string()).await?;
+            bot.try_reply(&message, "Pong").await?;
         }
         Command::Instagram { filter_state } => {
             if check_authorized(&bot, &message).await? {
@@ -113,24 +113,24 @@ pub(crate) async fn handler(
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.instagram(filter_state));
                         let state = if filter_state { "enabled" } else { "disabled" };
-                        bot.send_chat_message(
+                        bot.try_reply(
                             &message,
-                            format!("Instagram link replacement is now {state}"),
+                            &format!("Instagram link replacement is now {state}"),
                         )
                         .await?;
                     }
                     Err(error_message) => {
                         if filter_state.is_empty() {
-                            bot.send_chat_message(
+                            bot.try_reply(
                                 &message,
-                                format!(
+                                &format!(
                                     "Instagram link replacement is {}",
                                     get_fixer_state(&message, |x| x.instagram)
                                 ),
                             )
                             .await?;
                         } else {
-                            bot.send_chat_message(&message, error_message).await?;
+                            bot.try_reply(&message, &error_message).await?;
                         }
                     }
                 }
@@ -148,24 +148,21 @@ pub(crate) async fn handler(
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.medium(filter_state));
                         let state = if filter_state { "enabled" } else { "disabled" };
-                        bot.send_chat_message(
-                            &message,
-                            format!("Medium link replacement is now {state}"),
-                        )
-                        .await?;
+                        bot.try_reply(&message, &format!("Medium link replacement is now {state}"))
+                            .await?;
                     }
                     Err(error_message) => {
                         if filter_state.is_empty() {
-                            bot.send_chat_message(
+                            bot.try_reply(
                                 &message,
-                                format!(
+                                &format!(
                                     "Medium link replacement is {}",
                                     get_fixer_state(&message, |x| x.medium)
                                 ),
                             )
                             .await?;
                         } else {
-                            bot.send_chat_message(&message, error_message).await?;
+                            bot.try_reply(&message, &error_message).await?;
                         }
                     }
                 }
@@ -189,24 +186,24 @@ pub(crate) async fn handler(
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.twitter(filter_state));
                         let state = if filter_state { "enabled" } else { "disabled" };
-                        bot.send_chat_message(
+                        bot.try_reply(
                             &message,
-                            format!("Twitter link replacement is now {state}"),
+                            &format!("Twitter link replacement is now {state}"),
                         )
                         .await?;
                     }
                     Err(error_message) => {
                         if filter_state.is_empty() {
-                            bot.send_chat_message(
+                            bot.try_reply(
                                 &message,
-                                format!(
+                                &format!(
                                     "Twitter link replacement is {}",
                                     get_fixer_state(&message, |x| x.twitter)
                                 ),
                             )
                             .await?;
                         } else {
-                            bot.send_chat_message(&message, error_message).await?;
+                            bot.try_reply(&message, &error_message).await?;
                         }
                     }
                 }
@@ -224,24 +221,24 @@ pub(crate) async fn handler(
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.youtube(filter_state));
                         let state = if filter_state { "enabled" } else { "disabled" };
-                        bot.send_chat_message(
+                        bot.try_reply(
                             &message,
-                            format!("YouTube link replacement is now {state}"),
+                            &format!("YouTube link replacement is now {state}"),
                         )
                         .await?;
                     }
                     Err(error_message) => {
                         if filter_state.is_empty() {
-                            bot.send_chat_message(
+                            bot.try_reply(
                                 &message,
-                                format!(
+                                &format!(
                                     "YouTube link replacement is {}",
                                     get_fixer_state(&message, |x| x.youtube)
                                 ),
                             )
                             .await?;
                         } else {
-                            bot.send_chat_message(&message, error_message).await?;
+                            bot.try_reply(&message, &error_message).await?;
                         }
                     }
                 }
@@ -258,12 +255,12 @@ pub(crate) async fn handler(
                 let roll = roll_die(size);
                 bot.try_reply(
                     &message,
-                    format!("You roll a <b>D{size}</b> and get a <b>{roll}</b>."),
+                    &format!("You roll a <b>D{size}</b> and get a <b>{roll}</b>."),
                 )
                 .await?;
             }
             Err(error_message) => {
-                bot.send_chat_message(&message, error_message).await?;
+                bot.try_reply(&message, &error_message).await?;
             }
         },
     };

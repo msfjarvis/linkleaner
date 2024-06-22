@@ -52,10 +52,7 @@
         nativeBuildInputs = [];
         cargoClippyExtraArgs = "--all-targets -- --deny warnings";
       };
-      cargoArtifacts = craneLib.buildDepsOnly (commonArgs
-        // {
-          pname = "linkleaner-deps";
-        });
+      cargoArtifacts = craneLib.buildDepsOnly commonArgs;
       linkleaner-fmt = craneLib.cargoFmt (commonArgs
         // {
           inherit cargoArtifacts;

@@ -36,6 +36,6 @@ impl BotExt for Bot {
         text: &str,
     ) -> Result<Message, RequestError> {
         let _del = self.delete_message(message.chat.id, message.id).await;
-        self.send_message(message.chat.id, text).await
+        self.send_message(message.chat.id, text).parse_mode(ParseMode::Html).await
     }
 }

@@ -115,7 +115,6 @@
         packages = with pkgs; [
           cargo-nextest
           cargo-release
-          fenix.packages.${system}.rust-analyzer
           flyctl
           nil
           rustNightly

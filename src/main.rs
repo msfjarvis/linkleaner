@@ -7,6 +7,7 @@ mod instagram;
 mod logging;
 mod medium;
 mod message;
+mod reddit;
 mod twitter;
 mod utils;
 mod youtube;
@@ -103,6 +104,19 @@ async fn run() {
     let handler = handler
         .branch(dptree::filter(dice::is_die_roll))
         .endpoint(dice::handler);
+
+    let handler = handler.branch(
+        dptree::filter(|msg| {
+            if should_match(&msg, &reddit::DOMAINS)
+                && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                && let Some(chat_id) = msg.chat_id()
+            {
+                return map.entry(chat_id).or_insert(FixerState::default()).reddit;
+            }
+            false
+        })
+        .endpoint(reddit::handler),
+    );
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
 

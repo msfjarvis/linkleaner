@@ -39,6 +39,8 @@ pub(crate) enum Command {
     Instagram { filter_state: FilterState },
     #[command(description = "toggle Medium link replacement")]
     Medium { filter_state: FilterState },
+    #[command(description = "toggle Reddit link replacement")]
+    Reddit { filter_state: FilterState },
     #[command(description = "display this text.")]
     Start,
     #[command(description = "generate a twitchtheater link for the given streamers")]
@@ -158,6 +160,38 @@ pub(crate) async fn handler(
                                 &format!(
                                     "Medium link replacement is {}",
                                     get_fixer_state(&message, |x| x.medium)
+                                ),
+                            )
+                            .await?;
+                        } else {
+                            bot.try_reply(&message, &error_message).await?;
+                        }
+                    }
+                }
+            } else {
+                bot.send_chat_action(message.chat.id, ChatAction::Typing)
+                    .await?;
+                bot.send_message(message.chat.id, "You are not authorized for this action")
+                    .reply_to_message_id(message.id)
+                    .await?;
+            }
+        }
+        Command::Reddit { filter_state } => {
+            if check_authorized(&bot, &message).await? {
+                match parse_bool(&filter_state) {
+                    Ok(filter_state) => {
+                        update_fixer_state(&message, |x| x.reddit(filter_state));
+                        let state = if filter_state { "enabled" } else { "disabled" };
+                        bot.try_reply(&message, &format!("Reddit link replacement is now {state}"))
+                            .await?;
+                    }
+                    Err(error_message) => {
+                        if filter_state.is_empty() {
+                            bot.try_reply(
+                                &message,
+                                &format!(
+                                    "Reddit link replacement is {}",
+                                    get_fixer_state(&message, |x| x.reddit)
                                 ),
                             )
                             .await?;

@@ -8,14 +8,15 @@ use crate::{
 use once_cell::sync::Lazy;
 use std::env;
 use teloxide::{
-    payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, Message, UserId},
+    types::{Message, UserId},
     utils::command::BotCommands,
     Bot,
 };
 
 pub(crate) type FilterState = String;
+
+const NOT_AUTHORIZED: &str = "You are not authorized for this action";
 
 static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
     let value = env::var("BOT_OWNER_ID").expect("BOT_OWNER_ID must be defined");
@@ -137,11 +138,7 @@ pub(crate) async fn handler(
                     }
                 }
             } else {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.try_reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::Medium { filter_state } => {
@@ -169,11 +166,7 @@ pub(crate) async fn handler(
                     }
                 }
             } else {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.try_reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::Reddit { filter_state } => {
@@ -201,18 +194,12 @@ pub(crate) async fn handler(
                     }
                 }
             } else {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.try_reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::Ttv { names } => {
             let text = format!("https://twitchtheater.tv/{}", names.replace(' ', "/"));
-            bot.send_message(message.chat.id, text)
-                .reply_to_message_id(message.id)
-                .await?;
+            bot.try_reply(&message, &text).await?;
         }
         Command::Twitter { filter_state } => {
             if check_authorized(&bot, &message).await? {
@@ -242,11 +229,7 @@ pub(crate) async fn handler(
                     }
                 }
             } else {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.try_reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::YouTube { filter_state } => {
@@ -277,11 +260,7 @@ pub(crate) async fn handler(
                     }
                 }
             } else {
-                bot.send_chat_action(message.chat.id, ChatAction::Typing)
-                    .await?;
-                bot.send_message(message.chat.id, "You are not authorized for this action")
-                    .reply_to_message_id(message.id)
-                    .await?;
+                bot.try_reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::Dice { size } => match extract_dice_count(&size, 6) {

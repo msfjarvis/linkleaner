@@ -10,7 +10,7 @@ const HOST_MATCH_GROUP: &str = "host";
 
 pub const DOMAINS: [&str; 1] = ["instagram.com"];
 static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new("https://(?:www.)?(?P<host>instagram.com)/(p|reel|tv)/[A-Za-z0-9]+.*/").unwrap()
+    Regex::new("https://(?:www.)?(?P<host>instagram.com)/(.*/)?(p|reel|tv)/[A-Za-z0-9]+.*/").unwrap()
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
@@ -29,6 +29,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 mod test {
     use super::{HOST_MATCH_GROUP, MATCH_REGEX};
 
+    // https://regex101.com/r/pOizaT/1
     #[test]
     fn verify_regex() {
         let items = vec![
@@ -36,6 +37,7 @@ mod test {
             "https://instagram.com/p/CgJESh6hxsS/",
             "https://www.instagram.com/reel/CgHIG0Ih3XF/",
             "https://www.instagram.com/tv/CgHIG0Ih3XF/",
+            "https://www.instagram.com/zuck/reel/C9AbmIYp3Js/",
         ];
         for item in items {
             assert!(MATCH_REGEX.is_match(item), "{item} failed to match");

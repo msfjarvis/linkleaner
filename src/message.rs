@@ -6,6 +6,7 @@ use teloxide::{
 };
 
 pub(crate) trait BotExt {
+    async fn reply(&self, message: &Message, text: &str) -> Result<Message, RequestError>;
     async fn try_reply(&self, message: &Message, text: &str) -> Result<Message, RequestError>;
     async fn try_reply_silent(
         &self,
@@ -20,6 +21,13 @@ pub(crate) trait BotExt {
 }
 
 impl BotExt for Bot {
+    async fn reply(&self, message: &Message, text: &str) -> Result<Message, RequestError> {
+        self.send_message(message.chat.id, text)
+            .reply_to_message_id(message.id)
+            .parse_mode(ParseMode::Html)
+            .await
+    }
+
     async fn try_reply(&self, message: &Message, text: &str) -> Result<Message, RequestError> {
         self.send_chat_action(message.chat.id, ChatAction::Typing)
             .await?;

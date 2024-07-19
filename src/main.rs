@@ -29,7 +29,7 @@ use teloxide::{
     update_listeners::Polling,
     Bot,
 };
-use utils::has_matching_urls;
+use utils::{get_urls_from_message, has_matching_urls};
 
 pub(crate) static FIXER_STATE: Lazy<Mutex<HashMap<ChatId, FixerState>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
@@ -114,7 +114,17 @@ async fn run() {
         .endpoint(reddit::handler),
     );
 
-    let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
+    let handler = handler.branch(
+        dptree::filter(|msg| {
+            let urls = get_urls_from_message(&msg);
+            if urls.is_empty() {
+                false
+            } else {
+                return urls.iter().any(deamp::is_amp);
+            }
+        })
+        .endpoint(deamp::handler),
+    );
 
     let handler = handler.branch(dptree::filter(dice::is_die_roll).endpoint(dice::handler));
 

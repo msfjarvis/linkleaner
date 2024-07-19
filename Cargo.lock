@@ -1537,6 +1537,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_with"
+version = "1.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "678b5a069e50bf00ecd22d0cd8ddf7c236f68581b03db652061ed5eb13a312ff"
+dependencies = [
+ "serde",
+ "serde_with_macros",
+]
+
+[[package]]
 name = "serde_with_macros"
 version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1679,7 +1689,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.12.2"
-source = "git+https://github.com/teloxide/teloxide#391fdc80dcae3054f9bf670b157887f5cd9d88e8"
+source = "git+https://github.com/teloxide/teloxide#959ce390eac136371a41497de422222b6fd89d73"
 dependencies = [
  "ahash",
  "aquamarine",
@@ -1705,7 +1715,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.9.1"
-source = "git+https://github.com/teloxide/teloxide#391fdc80dcae3054f9bf670b157887f5cd9d88e8"
+source = "git+https://github.com/teloxide/teloxide#959ce390eac136371a41497de422222b6fd89d73"
 dependencies = [
  "bitflags",
  "bytes",
@@ -1721,7 +1731,7 @@ dependencies = [
  "reqwest 0.11.27",
  "serde",
  "serde_json",
- "serde_with_macros",
+ "serde_with",
  "take_mut",
  "takecell",
  "thiserror",
@@ -1734,7 +1744,7 @@ dependencies = [
 [[package]]
 name = "teloxide-macros"
 version = "0.7.1"
-source = "git+https://github.com/teloxide/teloxide#391fdc80dcae3054f9bf670b157887f5cd9d88e8"
+source = "git+https://github.com/teloxide/teloxide#959ce390eac136371a41497de422222b6fd89d73"
 dependencies = [
  "heck",
  "proc-macro2",

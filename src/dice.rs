@@ -23,6 +23,12 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         }
         let text = format!("Rolled {count} die(s) with {sides} sides. Total: {total}");
         bot.try_reply(&message, &text).await?;
+    } else {
+        bot.try_reply(
+            &message,
+            "Invalid die roll format. Use /<count>d<sides>, for example /1d6 rolls 1 die with 6 sides.",
+        )
+        .await?;
     }
     Ok(())
 }

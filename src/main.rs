@@ -101,10 +101,6 @@ async fn run() {
         .endpoint(medium::handler),
     );
 
-    let handler = handler
-        .branch(dptree::filter(dice::is_die_roll))
-        .endpoint(dice::handler);
-
     let handler = handler.branch(
         dptree::filter(|msg| {
             if should_match(&msg, &reddit::DOMAINS)
@@ -119,6 +115,8 @@ async fn run() {
     );
 
     let handler = handler.branch(dptree::filter(deamp::is_amp).endpoint(deamp::handler));
+
+    let handler = handler.branch(dptree::filter(dice::is_die_roll).endpoint(dice::handler));
 
     let error_handler = Arc::new(TeloxideLogger::default());
     let listener = Polling::builder(bot.clone()).drop_pending_updates().build();

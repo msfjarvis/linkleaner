@@ -2,7 +2,7 @@ use once_cell::sync::Lazy;
 use reqwest::Url;
 use std::error::Error;
 use teloxide::types::{Message, MessageEntityKind};
-use tracing::{error, info};
+use tracing::{error, trace};
 
 pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
@@ -31,7 +31,7 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
             }
         }
         let url_str = urls.iter().map(reqwest::Url::as_str).collect::<Vec<&str>>();
-        info!(message_id = %msg.id.0, urls = ?url_str, "get_urls_from_message");
+        trace!(message_id = %msg.id.0, urls = ?url_str, "get_urls_from_message");
         return urls;
     }
     Vec::new()
@@ -56,7 +56,7 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
                 final_text = final_text.replace(url.as_str(), &scrubbed_url);
             }
         }
-        info!(?text, ?final_text, "scrub_urls");
+        trace!(?text, ?final_text, "scrub_urls");
         Some(final_text)
     } else {
         error!(message_id = %msg.id.0, "scrub_urls failed to find text");

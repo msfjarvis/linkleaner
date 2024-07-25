@@ -5,7 +5,8 @@ use crate::{
     utils::{extract_dice_count, parse_bool, AsyncError},
     FIXER_STATE,
 };
-use std::{cell::LazyCell, env};
+use once_cell::sync::Lazy;
+use std::env;
 use teloxide::{
     prelude::Requester,
     types::{Message, UserId},
@@ -17,7 +18,7 @@ pub(crate) type FilterState = String;
 
 const NOT_AUTHORIZED: &str = "You are not authorized for this action";
 
-static BOT_OWNER: LazyCell<UserId> = LazyCell::new(|| {
+static BOT_OWNER: Lazy<UserId> = Lazy::new(|| {
     let value = env::var("BOT_OWNER_ID").expect("BOT_OWNER_ID must be defined");
     let id = value
         .parse::<u64>()

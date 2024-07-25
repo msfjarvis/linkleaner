@@ -2,14 +2,14 @@ use crate::{
     message::BotExt,
     utils::{scrub_urls, AsyncError},
 };
+use once_cell::sync::Lazy;
 use regex::Regex;
-use std::cell::LazyCell;
 use teloxide::{types::Message, utils::html::link, Bot};
 
 const HOST_MATCH_GROUP: &str = "host";
 
 pub const DOMAINS: [&str; 1] = ["instagram.com"];
-static MATCH_REGEX: LazyCell<Regex> = LazyCell::new(|| {
+static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new("https://(?:www.)?(?P<host>instagram.com)/(.*/)?(p|reel|tv)/[A-Za-z0-9]+.*/")
         .unwrap()
 });

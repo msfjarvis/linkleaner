@@ -1,6 +1,5 @@
-use once_cell::sync::Lazy;
 use reqwest::Url;
-use std::error::Error;
+use std::{cell::LazyCell, error::Error};
 use teloxide::types::{Message, MessageEntityKind};
 use tracing::{error, trace};
 
@@ -64,18 +63,18 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
     }
 }
 
-pub(crate) fn parse_bool(input: &str) -> Result<bool, String> {
-    const TRUE_VALUES: [&str; 4] = ["true", "on", "yes", "enable"];
-    const FALSE_VALUES: [&str; 4] = ["false", "off", "no", "disable"];
-    static EXPECTED_VALUES: Lazy<String> = Lazy::new(|| {
-        [TRUE_VALUES, FALSE_VALUES]
-            .concat()
-            .iter()
-            .map(|item| format!("'{item}'"))
-            .collect::<Vec<_>>()
-            .join(", ")
-    });
+const TRUE_VALUES: [&str; 4] = ["true", "on", "yes", "enable"];
+const FALSE_VALUES: [&str; 4] = ["false", "off", "no", "disable"];
+static EXPECTED_VALUES: LazyCell<String> = LazyCell::new(|| {
+    [TRUE_VALUES, FALSE_VALUES]
+        .concat()
+        .iter()
+        .map(|item| format!("'{item}'"))
+        .collect::<Vec<_>>()
+        .join(", ")
+});
 
+pub(crate) fn parse_bool(input: &str) -> Result<bool, String> {
     let input = input.split(' ').collect::<Vec<_>>();
     if input.len() > 1 {
         return Err(format!(

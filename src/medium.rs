@@ -2,8 +2,8 @@ use crate::{
     message::BotExt,
     utils::{scrub_urls, AsyncError},
 };
-use once_cell::sync::Lazy;
 use regex::Regex;
+use std::cell::LazyCell;
 use teloxide::{types::Message, utils::html::link, Bot};
 
 #[allow(dead_code)] // This is used in the tests
@@ -12,7 +12,7 @@ const PATH_MATCH_GROUP: &str = "path";
 const USER_MATCH_GROUP: &str = "user";
 
 pub const DOMAINS: [&str; 1] = ["medium.com"];
-static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+static MATCH_REGEX: LazyCell<Regex> = LazyCell::new(|| {
     Regex::new("https://(?<user>[a-zA-Z0-9]*)?.?(?<host>medium.com)/(?<path>.*)").unwrap()
 });
 

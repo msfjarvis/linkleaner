@@ -18,7 +18,7 @@ static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = scrub_urls(&message)
-        && let Some(user) = message.from()
+        && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
         && let Some(full_url) = caps.get(0)
     {

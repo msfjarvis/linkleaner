@@ -16,7 +16,7 @@ static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = scrub_urls(&message)
-        && let Some(user) = message.from()
+        && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
     {
         let text = text.replace(&caps[HOST_MATCH_GROUP], "ddinstagram.com");

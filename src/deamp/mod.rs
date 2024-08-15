@@ -18,7 +18,7 @@ fn deserialize_amp_response(text: &str) -> Result<AMPResponse, serde_json::Error
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = message.text()
-        && let Some(user) = message.from()
+        && let Some(ref user) = message.from
     {
         let mut text = String::from_str(text)?;
         let urls = get_urls_from_message(&message);

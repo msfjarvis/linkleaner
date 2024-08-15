@@ -1,7 +1,7 @@
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, Message, ParseMode},
+    types::{ChatAction, Message, ParseMode, ReplyParameters},
     Bot, RequestError,
 };
 
@@ -23,7 +23,7 @@ pub(crate) trait BotExt {
 impl BotExt for Bot {
     async fn reply(&self, message: &Message, text: &str) -> Result<Message, RequestError> {
         self.send_message(message.chat.id, text)
-            .reply_to_message_id(message.id)
+            .reply_parameters(ReplyParameters::new(message.id))
             .parse_mode(ParseMode::Html)
             .await
     }
@@ -41,7 +41,7 @@ impl BotExt for Bot {
     ) -> Result<Message, RequestError> {
         if let Some(reply) = message.reply_to_message() {
             self.send_message(message.chat.id, text)
-                .reply_to_message_id(reply.id)
+                .reply_parameters(ReplyParameters::new(reply.id))
                 .parse_mode(ParseMode::Html)
                 .await
         } else {

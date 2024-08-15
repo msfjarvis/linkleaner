@@ -8,7 +8,7 @@ pub const DOMAINS: [&str; 1] = ["reddit.com"];
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = scrub_urls(&message)
-        && let Some(user) = message.from()
+        && let Some(ref user) = message.from
     {
         let text = text.replace("reddit.com", "rxddit.com");
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);

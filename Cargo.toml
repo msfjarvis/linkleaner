@@ -31,7 +31,7 @@ reqwest = { version = "*", default-features = false, features = [
 serde = "*"
 serde_derive = "*"
 serde_json = "*"
-teloxide = { git = "https://github.com/teloxide/teloxide", features = [
+teloxide = { version = "0.13.0", features = [
   "cache-me",
   "ctrlc_handler",
   "macros",

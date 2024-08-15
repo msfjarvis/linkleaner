@@ -64,7 +64,7 @@ async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncErr
     }
     let admins = bot.get_chat_administrators(message.chat.id).await?;
     let admins = admins.iter().map(|c| c.user.clone()).collect::<Vec<_>>();
-    let from = message.from().ok_or("No user found")?;
+    let from = message.from.as_ref().ok_or("No user found")?;
     Ok(from.id == *BOT_OWNER || admins.contains(from))
 }
 

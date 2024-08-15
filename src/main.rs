@@ -130,11 +130,13 @@ async fn run() {
 
     let error_handler = Arc::new(TeloxideLogger::default());
     let listener = Polling::builder(bot.clone()).drop_pending_updates().build();
-    Dispatcher::builder(bot, handler)
-        .enable_ctrlc_handler()
-        .build()
-        .dispatch_with_listener(listener, error_handler)
-        .await;
+    Box::pin(
+        Dispatcher::builder(bot, handler)
+            .enable_ctrlc_handler()
+            .build()
+            .dispatch_with_listener(listener, error_handler),
+    )
+    .await;
 }
 
 fn should_match(msg: &Message, domains: &[&str]) -> bool {
@@ -146,5 +148,5 @@ fn should_match(msg: &Message, domains: &[&str]) -> bool {
 
 #[tokio::main]
 async fn main() {
-    run().await;
+    Box::pin(run()).await;
 }

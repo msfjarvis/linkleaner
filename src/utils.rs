@@ -38,12 +38,17 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
 }
 
 pub(crate) fn has_matching_urls(msg: &Message, domains: &[&str]) -> bool {
-    get_urls_from_message(msg).iter().any(|url| {
-        if let Some(host) = url.host_str() {
-            return domains.iter().any(|domain| host.ends_with(domain));
-        }
-        false
-    })
+    get_urls_from_message(msg)
+        .iter()
+        .any(|url| check_matches_domain(url, domains))
+}
+
+fn check_matches_domain(url: &Url, domains: &[&str]) -> bool {
+    if let Some(host) = url.host_str() {
+        let host = host.trim_start_matches("www.");
+        return domains.iter().any(|domain| host == *domain);
+    }
+    false
 }
 
 pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
@@ -117,5 +122,26 @@ pub(crate) fn extract_dice_count(input: &str, default: u8) -> Result<u8, String>
             input[0]
         );
         Err(message)
+    }
+}
+
+#[cfg(test)]
+mod check_matches_domain_tests {
+    use super::check_matches_domain;
+
+    #[test]
+    fn ignores_www() {
+        let url = "https://www.example.com";
+        let domains = ["example.com"];
+        let url = reqwest::Url::parse(url).unwrap();
+        assert!(check_matches_domain(&url, &domains));
+    }
+
+    #[test]
+    fn ignores_substring_match() {
+        let url = "https://www.ddinstagram.com";
+        let domains = ["instagram.com"];
+        let url = reqwest::Url::parse(url).unwrap();
+        assert!(!check_matches_domain(&url, &domains));
     }
 }

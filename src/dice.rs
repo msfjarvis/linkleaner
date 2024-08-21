@@ -1,13 +1,12 @@
-use once_cell::sync::Lazy;
-use regex::Regex;
-use teloxide::{types::Message, Bot};
-
 use crate::{
     message::BotExt,
     utils::{extract_dice_count, AsyncError},
 };
+use regex::Regex;
+use std::sync::LazyLock;
+use teloxide::{types::Message, Bot};
 
-static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^/(\d*)d(\d*)").unwrap());
+static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^/(\d*)d(\d*)").unwrap());
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = message.text()

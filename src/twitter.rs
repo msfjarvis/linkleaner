@@ -2,15 +2,15 @@ use crate::{
     message::BotExt,
     utils::{scrub_urls, AsyncError},
 };
-use once_cell::sync::Lazy;
 use regex::Regex;
+use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
 
 const HOST_MATCH_GROUP: &str = "host";
 const ROOT_MATCH_GROUP: &str = "root";
 
 pub const DOMAINS: [&str; 2] = ["twitter.com", "x.com"];
-static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new("https://(?P<host>(?:mobile.)?(?P<root>(twitter|x)).com)/.*/status/[0-9]+.*")
         .unwrap()
 });

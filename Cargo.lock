@@ -895,7 +895,6 @@ dependencies = [
  "console-subscriber",
  "dotenvy",
  "futures",
- "once_cell",
  "rand",
  "regex",
  "reqwest 0.12.7",

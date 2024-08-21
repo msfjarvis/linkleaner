@@ -16,10 +16,9 @@ use crate::commands::Command;
 use crate::logging::TeloxideLogger;
 use dotenvy::dotenv;
 use fixer::FixerState;
-use once_cell::sync::Lazy;
 use std::{
     collections::HashMap,
-    sync::{Arc, Mutex},
+    sync::{Arc, LazyLock, Mutex},
 };
 use teloxide::{
     dispatching::{dialogue::GetChatId, HandlerExt, UpdateFilterExt},
@@ -31,8 +30,8 @@ use teloxide::{
 };
 use utils::{get_urls_from_message, has_matching_urls};
 
-pub(crate) static FIXER_STATE: Lazy<Mutex<HashMap<ChatId, FixerState>>> =
-    Lazy::new(|| Mutex::new(HashMap::new()));
+pub(crate) static FIXER_STATE: LazyLock<Mutex<HashMap<ChatId, FixerState>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
 const REPLACE_SKIP_TOKEN: &str = "#skip";
 
 async fn run() {

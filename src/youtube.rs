@@ -2,12 +2,12 @@ use crate::{
     message::BotExt,
     utils::{scrub_urls, AsyncError},
 };
-use once_cell::sync::Lazy;
 use regex::Regex;
+use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
 
 pub const DOMAINS: [&str; 1] = ["youtube.com"];
-static MATCH_REGEX: Lazy<Regex> = Lazy::new(|| {
+static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new("https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-_]{11}.*").unwrap()
 });
 

@@ -1,0 +1,16 @@
+on:
+  push:
+    branches:
+      - main
+      - renovate/**
+  pull_request:
+    branches:
+      - main
+
+name: Check Rust code
+jobs:
+  check:
+    uses: msfjarvis/shared-workflows/.github/workflows/test-flakes-project.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      cachix-token: ${{ secrets.CACHIX_AUTH_TOKEN }}

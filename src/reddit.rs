@@ -1,13 +1,12 @@
-use crate::{
-    message::BotExt,
-    utils::{scrub_urls, AsyncError},
-};
+use crate::{message::BotExt, utils::AsyncError};
 use teloxide::{types::Message, utils::html::link, Bot};
 
 pub const DOMAINS: [&str; 1] = ["reddit.com"];
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    if let Some(text) = scrub_urls(&message)
+    // We ideally run text through utils::scrub_urls to drop query parameters
+    // but this breaks Reddit media URLs.
+    if let Some(text) = message.text()
         && let Some(ref user) = message.from
     {
         let text = text.replace("reddit.com", "rxddit.com");

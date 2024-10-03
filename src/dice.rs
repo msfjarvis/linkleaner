@@ -6,7 +6,7 @@ use regex::Regex;
 use std::sync::LazyLock;
 use teloxide::{types::Message, Bot};
 
-static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^/(\d*)d(\d*)").unwrap());
+static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^/(\d+)d(\d*)").unwrap());
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = message.text()
@@ -58,6 +58,10 @@ mod test {
         assert!(MATCH_REGEX.is_match("/1d20"));
         assert!(MATCH_REGEX.is_match("/2d20"));
         assert!(MATCH_REGEX.is_match("/10d20"));
+        assert!(MATCH_REGEX.is_match("/1d6 rolling for sadness"));
+        assert!(!MATCH_REGEX.is_match("/disk"));
+        // Ideally we would allow this, but it causes false-positives that are hard to fix
+        assert!(!MATCH_REGEX.is_match("/d"));
         assert_eq!(
             "10",
             MATCH_REGEX

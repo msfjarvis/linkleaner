@@ -9,7 +9,7 @@ use teloxide::{types::Message, utils::html::link, Bot};
 const HOST_MATCH_GROUP: &str = "host";
 const ROOT_MATCH_GROUP: &str = "root";
 
-pub const DOMAINS: [&str; 2] = ["twitter.com", "x.com"];
+pub const DOMAINS: [&str; 4] = ["twitter.com", "mobile.twitter.com", "x.com", "mobile.x.com"];
 static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new("https://(?P<host>(?:mobile.)?(?P<root>(twitter|x)).com)/.*/status/[0-9]+.*")
         .unwrap()

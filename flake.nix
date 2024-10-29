@@ -111,6 +111,7 @@
         ];
 
         packages = with pkgs; [
+          bacon
           cargo-nextest
           cargo-release
           fenix.packages.${system}.rust-analyzer

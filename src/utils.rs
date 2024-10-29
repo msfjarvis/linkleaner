@@ -42,6 +42,12 @@ pub(crate) fn has_matching_urls(msg: &Message, domains: &[&str]) -> bool {
         .any(|url| check_matches_domain(url, domains))
 }
 
+pub(crate) fn get_preview_url(msg: &Message, from: &str, to: &str) -> Option<String> {
+    get_urls_from_message(msg)
+        .first()
+        .map(|url| String::from(url.clone()).replace(from, to))
+}
+
 fn check_matches_domain(url: &Url, domains: &[&str]) -> bool {
     if let Some(host) = url.host_str() {
         let host = host.trim_start_matches("www.");

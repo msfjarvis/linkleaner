@@ -30,18 +30,24 @@ jobs:
           trusted-substituters = https://cache.nixos.org https://nix-community.cachix.org https://cache.garnix.io
           trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=    
 
-    - name: Build and load container image
+    - name: Build container image
       shell: bash
       run: |
         nix build .#container
-        docker load < result
 
     - name: Deploy to fly.io
       shell: bash
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |
-        flyctl auth docker
+        # We manually publish the image to avoid having to rewrite the tag
+        nix run nixpkgs#skopeo -- \
+          --insecure-policy \
+          copy \
+          docker-archive:./result \
+          docker://registry.fly.io/linkleaner:latest \
+          --dest-creds x:"$FLY_API_TOKEN" \
+          --format v2s2
         flyctl deploy
 
     - name: Log in to GitHub Container Registry

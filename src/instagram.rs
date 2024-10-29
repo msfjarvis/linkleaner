@@ -1,13 +1,12 @@
 use crate::{
     message::BotExt,
-    utils::{scrub_urls, AsyncError},
+    utils::{get_preview_url, scrub_urls, AsyncError},
 };
 use regex::Regex;
 use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
 
 const HOST_MATCH_GROUP: &str = "host";
-
 pub const DOMAINS: [&str; 1] = ["instagram.com"];
 static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new("https://(?:www.)?(?P<host>instagram.com)/(.*/)?(p|reel|tv)/[A-Za-z0-9]+.*/")
@@ -19,9 +18,11 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
     {
-        let text = text.replace(&caps[HOST_MATCH_GROUP], "ddinstagram.com");
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        bot.replace_chat_message(&message, &text).await?;
+        bot.send_preview(&message, &text, |msg| {
+            get_preview_url(msg, &caps[HOST_MATCH_GROUP], "ddinstagram.com")
+        })
+        .await?;
     }
     Ok(())
 }

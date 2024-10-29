@@ -1,10 +1,11 @@
 use crate::{
     message::BotExt,
-    utils::{scrub_urls, AsyncError},
+    utils::{get_preview_url, scrub_urls, AsyncError},
 };
 use regex::Regex;
 use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
+use tracing::trace;
 
 const HOST_MATCH_GROUP: &str = "host";
 const ROOT_MATCH_GROUP: &str = "root";
@@ -20,16 +21,16 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
     {
-        let text = match &caps[ROOT_MATCH_GROUP] {
-            "twitter" => text.replace(&caps[HOST_MATCH_GROUP], "vxtwitter.com"),
-            "x" => text.replace(&caps[HOST_MATCH_GROUP], "fixupx.com"),
-            _ => {
-                tracing::trace!("No URL match found in {text}");
-                return Ok(());
-            }
-        };
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        bot.replace_chat_message(&message, &text).await?;
+        bot.send_preview(&message, &text, |msg| match &caps[ROOT_MATCH_GROUP] {
+            "twitter" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "vxtwitter.com"),
+            "x" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "fixupx.com"),
+            _ => {
+                trace!("No URL match found in {text}");
+                None
+            }
+        })
+        .await?;
     }
     Ok(())
 }

@@ -1,4 +1,7 @@
-use crate::{message::BotExt, utils::AsyncError};
+use crate::{
+    message::BotExt,
+    utils::{get_preview_url, AsyncError},
+};
 use teloxide::{types::Message, utils::html::link, Bot};
 
 pub const DOMAINS: [&str; 1] = ["reddit.com"];
@@ -9,9 +12,11 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = message.text()
         && let Some(ref user) = message.from
     {
-        let text = text.replace("reddit.com", "rxddit.com");
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        bot.replace_chat_message(&message, &text).await?;
+        bot.send_preview(&message, &text, |msg| {
+            get_preview_url(msg, "reddit.com", "rxddit.com")
+        })
+        .await?;
     }
     Ok(())
 }

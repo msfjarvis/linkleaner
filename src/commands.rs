@@ -110,6 +110,17 @@ pub(crate) async fn handler(
             bot.reply(&message, "Pong").await?;
         }
         Command::Instagram { filter_state } => {
+            if filter_state.is_empty() {
+                bot.reply(
+                    &message,
+                    &format!(
+                        "Instagram link replacement is {}",
+                        get_fixer_state(&message, |x| x.instagram)
+                    ),
+                )
+                .await?;
+                return Ok(());
+            }
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
@@ -119,79 +130,62 @@ pub(crate) async fn handler(
                             &message,
                             &format!("Instagram link replacement is now {state}"),
                         )
-                        .await?;
+                        .await?
                     }
-                    Err(error_message) => {
-                        if filter_state.is_empty() {
-                            bot.reply(
-                                &message,
-                                &format!(
-                                    "Instagram link replacement is {}",
-                                    get_fixer_state(&message, |x| x.instagram)
-                                ),
-                            )
-                            .await?;
-                        } else {
-                            bot.reply(&message, &error_message).await?;
-                        }
-                    }
-                }
+                    Err(error_message) => bot.reply(&message, &error_message).await?,
+                };
             } else {
                 bot.reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::Medium { filter_state } => {
+            if filter_state.is_empty() {
+                bot.reply(
+                    &message,
+                    &format!(
+                        "Medium link replacement is {}",
+                        get_fixer_state(&message, |x| x.medium)
+                    ),
+                )
+                .await?;
+                return Ok(());
+            }
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.medium(filter_state));
                         let state = if filter_state { "enabled" } else { "disabled" };
                         bot.reply(&message, &format!("Medium link replacement is now {state}"))
-                            .await?;
+                            .await?
                     }
-                    Err(error_message) => {
-                        if filter_state.is_empty() {
-                            bot.reply(
-                                &message,
-                                &format!(
-                                    "Medium link replacement is {}",
-                                    get_fixer_state(&message, |x| x.medium)
-                                ),
-                            )
-                            .await?;
-                        } else {
-                            bot.reply(&message, &error_message).await?;
-                        }
-                    }
-                }
+                    Err(error_message) => bot.reply(&message, &error_message).await?,
+                };
             } else {
                 bot.reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::Reddit { filter_state } => {
+            if filter_state.is_empty() {
+                bot.reply(
+                    &message,
+                    &format!(
+                        "Reddit link replacement is {}",
+                        get_fixer_state(&message, |x| x.reddit)
+                    ),
+                )
+                .await?;
+                return Ok(());
+            }
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
                         update_fixer_state(&message, |x| x.reddit(filter_state));
                         let state = if filter_state { "enabled" } else { "disabled" };
                         bot.reply(&message, &format!("Reddit link replacement is now {state}"))
-                            .await?;
+                            .await?
                     }
-                    Err(error_message) => {
-                        if filter_state.is_empty() {
-                            bot.reply(
-                                &message,
-                                &format!(
-                                    "Reddit link replacement is {}",
-                                    get_fixer_state(&message, |x| x.reddit)
-                                ),
-                            )
-                            .await?;
-                        } else {
-                            bot.reply(&message, &error_message).await?;
-                        }
-                    }
-                }
+                    Err(error_message) => bot.reply(&message, &error_message).await?,
+                };
             } else {
                 bot.reply(&message, NOT_AUTHORIZED).await?;
             }
@@ -201,6 +195,17 @@ pub(crate) async fn handler(
             bot.reply(&message, &text).await?;
         }
         Command::Twitter { filter_state } => {
+            if filter_state.is_empty() {
+                bot.reply(
+                    &message,
+                    &format!(
+                        "Twitter link replacement is {}",
+                        get_fixer_state(&message, |x| x.twitter)
+                    ),
+                )
+                .await?;
+                return Ok(());
+            }
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
@@ -210,28 +215,26 @@ pub(crate) async fn handler(
                             &message,
                             &format!("Twitter link replacement is now {state}"),
                         )
-                        .await?;
+                        .await?
                     }
-                    Err(error_message) => {
-                        if filter_state.is_empty() {
-                            bot.reply(
-                                &message,
-                                &format!(
-                                    "Twitter link replacement is {}",
-                                    get_fixer_state(&message, |x| x.twitter)
-                                ),
-                            )
-                            .await?;
-                        } else {
-                            bot.reply(&message, &error_message).await?;
-                        }
-                    }
-                }
+                    Err(error_message) => bot.reply(&message, &error_message).await?,
+                };
             } else {
                 bot.reply(&message, NOT_AUTHORIZED).await?;
             }
         }
         Command::YouTube { filter_state } => {
+            if filter_state.is_empty() {
+                bot.reply(
+                    &message,
+                    &format!(
+                        "YouTube link replacement is {}",
+                        get_fixer_state(&message, |x| x.youtube)
+                    ),
+                )
+                .await?;
+                return Ok(());
+            }
             if check_authorized(&bot, &message).await? {
                 match parse_bool(&filter_state) {
                     Ok(filter_state) => {
@@ -241,23 +244,10 @@ pub(crate) async fn handler(
                             &message,
                             &format!("YouTube link replacement is now {state}"),
                         )
-                        .await?;
+                        .await?
                     }
-                    Err(error_message) => {
-                        if filter_state.is_empty() {
-                            bot.reply(
-                                &message,
-                                &format!(
-                                    "YouTube link replacement is {}",
-                                    get_fixer_state(&message, |x| x.youtube)
-                                ),
-                            )
-                            .await?;
-                        } else {
-                            bot.reply(&message, &error_message).await?;
-                        }
-                    }
-                }
+                    Err(error_message) => bot.reply(&message, &error_message).await?,
+                };
             } else {
                 bot.reply(&message, NOT_AUTHORIZED).await?;
             }

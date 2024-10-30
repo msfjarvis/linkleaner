@@ -79,6 +79,8 @@
         inherit linkleaner linkleaner-audit linkleaner-clippy linkleaner-fmt linkleaner-nextest;
       };
 
+      # Expose the skopeo package for use in CI
+      packages.skopeo = pkgs.skopeo;
       packages.default = linkleaner;
       packages.container = pkgs.dockerTools.buildImage {
         name = "registry.fly.io/linkleaner";

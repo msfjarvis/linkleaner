@@ -41,7 +41,7 @@ jobs:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |
         # We manually publish the image to avoid having to rewrite the tag
-        nix run nixpkgs#skopeo -- \
+        nix run .#skopeo -- \
           --insecure-policy \
           copy \
           docker-archive:./result \

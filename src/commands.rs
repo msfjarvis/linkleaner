@@ -67,10 +67,7 @@ async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncErr
     Ok(from.id == *BOT_OWNER || admins.contains(from))
 }
 
-fn update_fixer_state<F>(message: &Message, update_state: F)
-where
-    F: FnOnce(&mut FixerState) + Copy,
-{
+fn update_fixer_state(message: &Message, update_state: impl FnOnce(&mut FixerState) + Copy) {
     if let Ok(ref mut map) = FIXER_STATE.try_lock() {
         map.entry(message.chat.id)
             .and_modify(update_state)
@@ -82,10 +79,7 @@ where
     }
 }
 
-fn get_fixer_state<F>(message: &Message, get_state: F) -> &str
-where
-    F: FnOnce(&FixerState) -> bool,
-{
+fn get_fixer_state(message: &Message, get_state: impl FnOnce(&FixerState) -> bool) -> &str {
     if let Ok(ref mut map) = FIXER_STATE.try_lock() {
         let state = map.entry(message.chat.id).or_insert(FixerState::default());
         if get_state(state) {

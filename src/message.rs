@@ -18,14 +18,12 @@ pub(crate) trait BotExt {
         message: &Message,
         text: &str,
     ) -> Result<Message, RequestError>;
-    async fn send_preview<PreviewFn>(
+    async fn send_preview(
         &self,
         message: &Message,
         text: &str,
-        get_preview_url: PreviewFn,
-    ) -> Result<Message, RequestError>
-    where
-        PreviewFn: Fn(&Message) -> Option<String>;
+        get_preview_url: impl Fn(&Message) -> Option<String>,
+    ) -> Result<Message, RequestError>;
 }
 
 impl BotExt for Bot {
@@ -68,15 +66,12 @@ impl BotExt for Bot {
         self.try_reply_silent(message, text).await
     }
 
-    async fn send_preview<PreviewFn>(
+    async fn send_preview(
         &self,
         message: &Message,
         text: &str,
-        get_preview_url: PreviewFn,
-    ) -> Result<Message, RequestError>
-    where
-        PreviewFn: Fn(&Message) -> Option<String>,
-    {
+        get_preview_url: impl Fn(&Message) -> Option<String>,
+    ) -> Result<Message, RequestError> {
         let preview_options = LinkPreviewOptions {
             is_disabled: false,
             url: get_preview_url(message),

@@ -21,6 +21,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
         && let Some(full_url) = caps.get(0)
+        && !bot.is_self_message(&message)
     {
         let text = text.replace(full_url.as_str(), &build_url(&caps));
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);

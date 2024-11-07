@@ -15,6 +15,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     if let Some(text) = scrub_urls(&message)
         && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
+        && !bot.is_self_message(&message)
     {
         let text = text.replace(&caps["shorts"], "watch?v=");
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);

@@ -1,9 +1,19 @@
+use std::sync::LazyLock;
+
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, LinkPreviewOptions, Message, ParseMode, ReplyParameters},
+    types::{ChatAction, LinkPreviewOptions, Message, ParseMode, ReplyParameters, UserId},
     Bot, RequestError,
 };
+
+static BOT_ID: LazyLock<UserId> = LazyLock::new(|| {
+    let value = std::env::var("BOT_ID").expect("BOT_ID must be defined");
+    let id = value
+        .parse::<u64>()
+        .expect("BOT_ID must be a valid integer");
+    UserId(id)
+});
 
 pub(crate) trait BotExt {
     async fn reply(&self, message: &Message, text: &str) -> Result<Message, RequestError>;
@@ -24,6 +34,7 @@ pub(crate) trait BotExt {
         text: &str,
         get_preview_url: impl Fn(&Message) -> Option<String>,
     ) -> Result<Message, RequestError>;
+    fn is_self_message(&self, message: &Message) -> bool;
 }
 
 impl BotExt for Bot {
@@ -92,5 +103,16 @@ impl BotExt for Bot {
                 .link_preview_options(preview_options)
                 .await
         }
+    }
+
+    fn is_self_message(&self, message: &Message) -> bool {
+        return if let Some(forwarder) = message.forward_from_user() {
+            forwarder.id == *BOT_ID
+        } else {
+            message
+                .from
+                .as_ref()
+                .map_or(false, |from| from.id.0 == BOT_ID.0)
+        };
     }
 }

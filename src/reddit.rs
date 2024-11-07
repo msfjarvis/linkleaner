@@ -11,6 +11,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     // but this breaks Reddit media URLs.
     if let Some(text) = message.text()
         && let Some(ref user) = message.from
+        && !bot.is_self_message(&message)
     {
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         bot.send_preview(&message, &text, |msg| {

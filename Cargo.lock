@@ -197,9 +197,9 @@ checksum = "9ac0150caa2ae65ca5bd83f25c7de183dea78d4d366469f148435e2acfbad0da"
 
 [[package]]
 name = "cc"
-version = "1.1.37"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40545c26d092346d8a8dab71ee48e7685a7a9cba76e634790c215b41a4a7b4cf"
+checksum = "1aeb932158bd710538c73702db6945cb68a8fb08c519e6e12706b94263b36db8"
 dependencies = [
  "shlex",
 ]
@@ -1298,7 +1298,7 @@ checksum = "b544ef1b4eac5dc2db33ea63606ae9ffcfac26c1416a2806ae0bf5f56b201191"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-automata 0.4.8",
+ "regex-automata 0.4.9",
  "regex-syntax 0.8.5",
 ]
 
@@ -1313,9 +1313,9 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "368758f23274712b504848e9d5a6f010445cc8b87a7cdb4d7cbee666c1288da3"
+checksum = "809e8dc61f6de73b46c85f4c96486310fe304c434cfa43669d7b40f711150908"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -1690,7 +1690,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.13.0"
-source = "git+https://github.com/teloxide/teloxide#fb405bd427ec03d68048f314cd918390695f2b11"
+source = "git+https://github.com/teloxide/teloxide#94db1757dc96116f4756a586fcbce3ac5ebd0c59"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1715,7 +1715,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.10.1"
-source = "git+https://github.com/teloxide/teloxide#fb405bd427ec03d68048f314cd918390695f2b11"
+source = "git+https://github.com/teloxide/teloxide#94db1757dc96116f4756a586fcbce3ac5ebd0c59"
 dependencies = [
  "bitflags",
  "bytes",

@@ -1,9 +1,13 @@
 use std::sync::LazyLock;
 
+use reqwest::Url;
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
-    types::{ChatAction, LinkPreviewOptions, Message, ParseMode, ReplyParameters, UserId},
+    types::{
+        ChatAction, InlineKeyboardButton, InlineKeyboardMarkup, LinkPreviewOptions, Message,
+        ParseMode, ReplyParameters, UserId,
+    },
     Bot, RequestError,
 };
 
@@ -33,6 +37,7 @@ pub(crate) trait BotExt {
         message: &Message,
         text: &str,
         get_preview_url: impl Fn(&Message) -> Option<String>,
+        get_button_data: impl Fn(&Message) -> Option<(&str, Url)>,
     ) -> Result<Message, RequestError>;
     fn is_self_message(&self, message: &Message) -> bool;
 }
@@ -82,7 +87,15 @@ impl BotExt for Bot {
         message: &Message,
         text: &str,
         get_preview_url: impl Fn(&Message) -> Option<String>,
+        get_button_data: impl Fn(&Message) -> Option<(&str, Url)>,
     ) -> Result<Message, RequestError> {
+        let reply_button = if let Some((label, url)) = get_button_data(message) {
+            Some(InlineKeyboardMarkup::new(vec![vec![
+                InlineKeyboardButton::url(label, url),
+            ]]))
+        } else {
+            None
+        };
         let preview_options = LinkPreviewOptions {
             is_disabled: false,
             url: get_preview_url(message),
@@ -92,16 +105,28 @@ impl BotExt for Bot {
         };
         let _del = self.delete_message(message.chat.id, message.id).await;
         if let Some(reply) = message.reply_to_message() {
-            self.send_message(message.chat.id, text)
+            let send_message = self
+                .send_message(message.chat.id, text)
                 .reply_parameters(ReplyParameters::new(reply.id))
                 .link_preview_options(preview_options)
-                .parse_mode(ParseMode::Html)
-                .await
+                .parse_mode(ParseMode::Html);
+            let send_message = if let Some(reply_button) = reply_button {
+                send_message.reply_markup(reply_button)
+            } else {
+                send_message
+            };
+            send_message.await
         } else {
-            self.send_message(message.chat.id, text)
+            let send_message = self
+                .send_message(message.chat.id, text)
                 .parse_mode(ParseMode::Html)
-                .link_preview_options(preview_options)
-                .await
+                .link_preview_options(preview_options);
+            let send_message = if let Some(reply_button) = reply_button {
+                send_message.reply_markup(reply_button)
+            } else {
+                send_message
+            };
+            send_message.await
         }
     }
 

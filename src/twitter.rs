@@ -3,6 +3,7 @@ use crate::{
     utils::{get_preview_url, scrub_urls, AsyncError},
 };
 use regex::Regex;
+use reqwest::Url;
 use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
 use tracing::trace;
@@ -23,14 +24,27 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && !bot.is_self_message(&message)
     {
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        bot.send_preview(&message, &text, |msg| match &caps[ROOT_MATCH_GROUP] {
-            "twitter" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "vxtwitter.com"),
-            "x" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "fixupx.com"),
-            _ => {
-                trace!("No URL match found in {text}");
-                None
-            }
-        })
+        bot.send_preview(
+            &message,
+            &text,
+            |msg| match &caps[ROOT_MATCH_GROUP] {
+                "twitter" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "vxtwitter.com"),
+                "x" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "fixupx.com"),
+                _ => {
+                    trace!("No URL match found in {text}");
+                    None
+                }
+            },
+            |msg| {
+                if let Some(url) = get_preview_url(msg, &caps[HOST_MATCH_GROUP], "xcancel.com")
+                    && let Ok(url) = Url::parse(url.as_str())
+                {
+                    Some(("View on Nitter", url))
+                } else {
+                    None
+                }
+            },
+        )
         .await?;
     }
     Ok(())

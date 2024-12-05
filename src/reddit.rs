@@ -14,9 +14,12 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && !bot.is_self_message(&message)
     {
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        bot.send_preview(&message, &text, |msg| {
-            get_preview_url(msg, "reddit.com", "rxddit.com")
-        })
+        bot.send_preview(
+            &message,
+            &text,
+            |msg| get_preview_url(msg, "reddit.com", "rxddit.com"),
+            |_| None,
+        )
         .await?;
     }
     Ok(())

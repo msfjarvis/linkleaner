@@ -1,6 +1,0 @@
-{
-    "recommendations": [
-        "arrterian.nix-env-selector",
-        "rust-lang.rust-analyzer"
-    ]
-}

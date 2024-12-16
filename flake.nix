@@ -22,107 +22,130 @@
   inputs.flake-compat.url = "github:nix-community/flake-compat";
   inputs.flake-compat.flake = false;
 
-  outputs = {
-    self,
-    nixpkgs,
-    advisory-db,
-    crane,
-    devshell,
-    fenix,
-    flake-utils,
-    ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [devshell.overlays.default];
-      };
-
-      rustNightly = (import fenix {inherit pkgs;}).fromToolchainFile {
-        file = ./rust-toolchain.toml;
-        sha256 = "sha256-XPGNBesOSwZJCXgynlavqa5QdsTAnodTmbx6t6XUWsY=";
-      };
-
-      craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;
-      commonArgs = {
-        src = craneLib.cleanCargoSource ./.;
-        buildInputs = [];
-        nativeBuildInputs = [];
-        cargoClippyExtraArgs = "--all-targets -- --deny warnings";
-      };
-      cargoArtifacts = craneLib.buildDepsOnly commonArgs;
-      linkleaner-fmt = craneLib.cargoFmt (commonArgs
-        // {
-          inherit cargoArtifacts;
-        });
-      linkleaner-clippy = craneLib.cargoClippy (commonArgs
-        // {
-          inherit cargoArtifacts;
-        });
-      linkleaner = craneLib.buildPackage (commonArgs
-        // {
-          inherit cargoArtifacts;
-          doCheck = false;
-        });
-      linkleaner-nextest = craneLib.cargoNextest (commonArgs
-        // {
-          cargoArtifacts = linkleaner;
-          partitions = 1;
-          partitionType = "count";
-        });
-      linkleaner-audit = craneLib.cargoAudit (commonArgs
-        // {
-          inherit advisory-db cargoArtifacts;
-        });
-    in {
-      checks = {
-        inherit linkleaner linkleaner-audit linkleaner-clippy linkleaner-fmt linkleaner-nextest;
-      };
-
-      # Expose the skopeo package for use in CI
-      packages.skopeo = pkgs.skopeo;
-      packages.default = linkleaner;
-      packages.container = pkgs.dockerTools.buildImage {
-        name = "registry.fly.io/linkleaner";
-        tag = "latest";
-        created = "now";
-        copyToRoot = pkgs.buildEnv {
-          name = "linkleaner";
-          paths = [linkleaner];
-          pathsToLink = ["/bin"];
+  outputs =
+    {
+      self,
+      nixpkgs,
+      advisory-db,
+      crane,
+      devshell,
+      fenix,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ devshell.overlays.default ];
         };
-        config.Cmd = ["${linkleaner}/bin/linkleaner"];
-      };
-      packages.ghContainer = pkgs.dockerTools.buildLayeredImage {
-        name = "ghcr.io/msfjarvis/linkleaner";
-        tag = "latest";
-        created = "now";
-        config.Cmd = ["${linkleaner}/bin/linkleaner"];
-      };
 
-      apps.default = flake-utils.lib.mkApp {drv = linkleaner;};
+        rustNightly = (import fenix { inherit pkgs; }).fromToolchainFile {
+          file = ./rust-toolchain.toml;
+          sha256 = "sha256-XPGNBesOSwZJCXgynlavqa5QdsTAnodTmbx6t6XUWsY=";
+        };
 
-      devShells.default = pkgs.devshell.mkShell {
-        bash = {interactive = "";};
-
-        env = [
-          {
-            name = "DEVSHELL_NO_MOTD";
-            value = 1;
+        craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;
+        commonArgs = {
+          src = craneLib.cleanCargoSource ./.;
+          buildInputs = [ ];
+          nativeBuildInputs = [ ];
+          cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+        };
+        cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+        linkleaner-fmt = craneLib.cargoFmt (
+          commonArgs
+          // {
+            inherit cargoArtifacts;
           }
-        ];
+        );
+        linkleaner-clippy = craneLib.cargoClippy (
+          commonArgs
+          // {
+            inherit cargoArtifacts;
+          }
+        );
+        linkleaner = craneLib.buildPackage (
+          commonArgs
+          // {
+            inherit cargoArtifacts;
+            doCheck = false;
+          }
+        );
+        linkleaner-nextest = craneLib.cargoNextest (
+          commonArgs
+          // {
+            cargoArtifacts = linkleaner;
+            partitions = 1;
+            partitionType = "count";
+          }
+        );
+        linkleaner-audit = craneLib.cargoAudit (
+          commonArgs
+          // {
+            inherit advisory-db cargoArtifacts;
+          }
+        );
+      in
+      {
+        checks = {
+          inherit
+            linkleaner
+            linkleaner-audit
+            linkleaner-clippy
+            linkleaner-fmt
+            linkleaner-nextest
+            ;
+        };
 
-        packages = with pkgs; [
-          bacon
-          cargo-nextest
-          cargo-release
-          fenix.packages.${system}.rust-analyzer
-          flyctl
-          nil
-          rustNightly
-          skopeo
-          stdenv.cc
-        ];
-      };
-    });
+        # Expose the skopeo package for use in CI
+        packages.skopeo = pkgs.skopeo;
+        packages.default = linkleaner;
+        packages.container = pkgs.dockerTools.buildImage {
+          name = "registry.fly.io/linkleaner";
+          tag = "latest";
+          created = "now";
+          copyToRoot = pkgs.buildEnv {
+            name = "linkleaner";
+            paths = [ linkleaner ];
+            pathsToLink = [ "/bin" ];
+          };
+          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+        };
+        packages.ghContainer = pkgs.dockerTools.buildLayeredImage {
+          name = "ghcr.io/msfjarvis/linkleaner";
+          tag = "latest";
+          created = "now";
+          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+        };
+
+        apps.default = flake-utils.lib.mkApp { drv = linkleaner; };
+
+        devShells.default = pkgs.devshell.mkShell {
+          bash = {
+            interactive = "";
+          };
+
+          env = [
+            {
+              name = "DEVSHELL_NO_MOTD";
+              value = 1;
+            }
+          ];
+
+          packages = with pkgs; [
+            bacon
+            cargo-nextest
+            cargo-release
+            fenix.packages.${system}.rust-analyzer
+            flyctl
+            nil
+            rustNightly
+            skopeo
+            stdenv.cc
+          ];
+        };
+      }
+    );
 }

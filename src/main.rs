@@ -119,7 +119,7 @@ async fn run() {
             if urls.is_empty() {
                 false
             } else {
-                return urls.iter().any(deamp::is_amp);
+                urls.iter().any(deamp::is_amp)
             }
         })
         .endpoint(deamp::handler),

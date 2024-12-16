@@ -79,7 +79,7 @@ fn update_fixer_state(message: &Message, update_state: impl FnOnce(&mut FixerSta
     }
 }
 
-fn get_fixer_state(message: &Message, get_state: impl FnOnce(&FixerState) -> bool) -> &str {
+fn get_fixer_state(message: &Message, get_state: impl FnOnce(&FixerState) -> bool) -> &'static str {
     if let Ok(ref mut map) = FIXER_STATE.try_lock() {
         let state = map.entry(message.chat.id).or_insert(FixerState::default());
         if get_state(state) {

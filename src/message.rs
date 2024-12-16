@@ -131,13 +131,13 @@ impl BotExt for Bot {
     }
 
     fn is_self_message(&self, message: &Message) -> bool {
-        return if let Some(forwarder) = message.forward_from_user() {
+        if let Some(forwarder) = message.forward_from_user() {
             forwarder.id == *BOT_ID
         } else {
             message
                 .from
                 .as_ref()
-                .map_or(false, |from| from.id.0 == BOT_ID.0)
-        };
+                .is_some_and(|from| from.id.0 == BOT_ID.0)
+        }
     }
 }

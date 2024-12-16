@@ -49,7 +49,7 @@ pub fn is_amp(url: &Url) -> bool {
     {
         segments.any(|x| x == "amp")
             || host.ends_with(".cdn.ampproject.org")
-            || url.query().map_or(false, |query| query.contains("amp"))
+            || url.query().is_some_and(|query| query.contains("amp"))
     } else {
         false
     }

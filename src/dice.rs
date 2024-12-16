@@ -35,11 +35,11 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 // The dptree handler requires this to be a move
 #[allow(clippy::needless_pass_by_value)]
 pub fn is_die_roll(message: Message) -> bool {
-    return if let Some(text) = message.text() {
+    if let Some(text) = message.text() {
         MATCH_REGEX.is_match(text)
     } else {
         false
-    };
+    }
 }
 
 pub fn roll_die(sides: u8) -> u8 {

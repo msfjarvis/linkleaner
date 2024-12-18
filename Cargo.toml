@@ -20,17 +20,17 @@ journald = ["tracing-journald"]
 [dependencies]
 console-subscriber = { version = "0.4.0", optional = true }
 dotenvy = "0.15.7"
-futures = "*"
-matchit = "0.8.5"
+futures = "0.3"
+matchit = "0.7"
 rand = "0.8.5"
 regex = "1.10.4"
 reqwest = { version = "*", default-features = false, features = [
   "json",
   "rustls-tls",
 ] }
-serde = "*"
-serde_derive = "*"
-serde_json = "*"
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
 teloxide = { git = "https://github.com/teloxide/teloxide", features = [
   "cache-me",
   "ctrlc_handler",

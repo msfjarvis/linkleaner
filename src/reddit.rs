@@ -47,7 +47,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 }
 
 #[cfg(test)]
-mod tests {
+mod test {
     use url::Url;
     const URLS: [&str; 6] = [
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today/jxnkq4g",

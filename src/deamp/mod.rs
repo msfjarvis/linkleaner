@@ -56,7 +56,7 @@ pub fn is_amp(url: &Url) -> bool {
 }
 
 #[cfg(test)]
-mod tests {
+mod test {
     use super::is_amp;
     use url::Url;
 

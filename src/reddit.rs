@@ -20,7 +20,7 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     router
 });
 
-pub const DOMAINS: [&str; 1] = ["reddit.com"];
+pub const DOMAINS: [&str; 2] = ["reddit.com", "redd.it"];
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     let urls = get_urls_from_message(&message);
@@ -49,12 +49,13 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 #[cfg(test)]
 mod tests {
     use url::Url;
-    const URLS: [&str; 5] = [
+    const URLS: [&str; 6] = [
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today/jxnkq4g",
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today",
         "https://reddit.com/r/shittymoviedetails/comments/160onpq",
         "https://reddit.com/r/MemePiece/s/15w6vzg82W",
         "https://reddit.com/160onpq",
+        "https://redd.it/160onpq",
     ];
 
     #[test]

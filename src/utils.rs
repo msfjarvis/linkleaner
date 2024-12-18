@@ -1,7 +1,7 @@
-use reqwest::Url;
 use std::{error::Error, sync::LazyLock};
 use teloxide::types::{Message, MessageEntityKind};
 use tracing::{error, trace};
+use url::Url;
 
 pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
@@ -29,7 +29,7 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
                 urls.push(url);
             }
         }
-        let url_str = urls.iter().map(reqwest::Url::as_str).collect::<Vec<&str>>();
+        let url_str = urls.iter().map(Url::as_str).collect::<Vec<&str>>();
         trace!(message_id = %msg.id.0, urls = ?url_str, "get_urls_from_message");
         return urls;
     }
@@ -133,12 +133,13 @@ pub(crate) fn extract_dice_count(input: &str, default: u8) -> Result<u8, String>
 #[cfg(test)]
 mod check_matches_domain_tests {
     use super::check_matches_domain;
+    use url::Url;
 
     #[test]
     fn ignores_www() {
         let url = "https://www.example.com";
         let domains = ["example.com"];
-        let url = reqwest::Url::parse(url).unwrap();
+        let url = Url::parse(url).unwrap();
         assert!(check_matches_domain(&url, &domains));
     }
 
@@ -146,7 +147,7 @@ mod check_matches_domain_tests {
     fn ignores_substring_match() {
         let url = "https://www.ddinstagram.com";
         let domains = ["instagram.com"];
-        let url = reqwest::Url::parse(url).unwrap();
+        let url = Url::parse(url).unwrap();
         assert!(!check_matches_domain(&url, &domains));
     }
 }

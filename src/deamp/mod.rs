@@ -5,10 +5,10 @@ use crate::{
     utils::{get_urls_from_message, AsyncError},
 };
 use model::AMPResponse;
-use reqwest::Url;
 use std::str::FromStr;
 use teloxide::{types::Message, utils::html::link, Bot};
 use tracing::debug;
+use url::Url;
 
 const BASE_URL: &str = "https://www.amputatorbot.com/api/v1/convert?gac=true&md=3&q=";
 
@@ -58,7 +58,8 @@ pub fn is_amp(url: &Url) -> bool {
 #[cfg(test)]
 mod tests {
     use super::is_amp;
-    use reqwest::Url;
+    use url::Url;
+
     const DATA: [(bool, &str); 4] = [
         (true, "https://www.google.com/amp/s/m.gsmarena.com/samsung_galaxy_tab_s9-ampp-12439.php"),
         (true, "https://www.google.com/amp/s/news.abplive.com/news/india/microsoft-server-outage-multiple-airports-hit-by-web-check-in-server-glitch-1703909/amp"),

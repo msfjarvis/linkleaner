@@ -1,6 +1,4 @@
 use std::sync::LazyLock;
-
-use reqwest::Url;
 use teloxide::{
     payloads::SendMessageSetters,
     prelude::Requester,
@@ -10,6 +8,7 @@ use teloxide::{
     },
     Bot, RequestError,
 };
+use url::Url;
 
 static BOT_ID: LazyLock<UserId> = LazyLock::new(|| {
     let value = std::env::var("BOT_ID").expect("BOT_ID must be defined");

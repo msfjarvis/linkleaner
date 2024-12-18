@@ -3,10 +3,10 @@ use crate::{
     utils::{get_preview_url, scrub_urls, AsyncError},
 };
 use regex::Regex;
-use reqwest::Url;
 use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
 use tracing::trace;
+use url::Url;
 
 const HOST_MATCH_GROUP: &str = "host";
 const ROOT_MATCH_GROUP: &str = "root";

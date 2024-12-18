@@ -3,6 +3,7 @@ use crate::{
     utils::{get_preview_url, AsyncError},
 };
 use teloxide::{types::Message, utils::html::link, Bot};
+use url;
 
 pub const DOMAINS: [&str; 1] = ["reddit.com"];
 

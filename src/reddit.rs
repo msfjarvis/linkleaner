@@ -38,7 +38,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         bot.send_preview(
             &message,
             &text,
-            |msg| get_preview_url(msg, "reddit.com", "rxddit.com"),
+            |msg| get_preview_url(msg, domain, "rxddit.com"),
             |_| None,
         )
         .await?;

@@ -1,10 +1,10 @@
 use crate::{
     message::BotExt,
-    utils::{scrub_urls, AsyncError},
+    utils::{AsyncError, scrub_urls},
 };
 use regex::Regex;
 use std::sync::LazyLock;
-use teloxide::{types::Message, utils::html::link, Bot};
+use teloxide::{Bot, types::Message, utils::html::link};
 
 pub const DOMAINS: [&str; 1] = ["youtube.com"];
 static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {

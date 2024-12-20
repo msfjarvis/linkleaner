@@ -1,10 +1,10 @@
 use crate::{
     message::BotExt,
-    utils::{get_preview_url, scrub_urls, AsyncError},
+    utils::{AsyncError, get_preview_url, scrub_urls},
 };
 use regex::Regex;
 use std::sync::LazyLock;
-use teloxide::{types::Message, utils::html::link, Bot};
+use teloxide::{Bot, types::Message, utils::html::link};
 use tracing::trace;
 use url::Url;
 

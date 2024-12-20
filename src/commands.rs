@@ -1,16 +1,16 @@
 use crate::{
+    FIXER_STATE,
     dice::roll_die,
     fixer::FixerState,
     message::BotExt,
-    utils::{extract_dice_count, parse_bool, AsyncError},
-    FIXER_STATE,
+    utils::{AsyncError, extract_dice_count, parse_bool},
 };
 use std::{env, sync::LazyLock};
 use teloxide::{
+    Bot,
     prelude::Requester,
     types::{Message, UserId},
     utils::command::BotCommands,
-    Bot,
 };
 
 pub(crate) type FilterState = String;

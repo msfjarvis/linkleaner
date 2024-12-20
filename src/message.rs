@@ -1,12 +1,12 @@
 use std::sync::LazyLock;
 use teloxide::{
+    Bot, RequestError,
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{
         ChatAction, InlineKeyboardButton, InlineKeyboardMarkup, LinkPreviewOptions, Message,
         ParseMode, ReplyParameters, UserId,
     },
-    Bot, RequestError,
 };
 use url::Url;
 
@@ -88,12 +88,11 @@ impl BotExt for Bot {
         get_preview_url: impl Fn(&Message) -> Option<String>,
         get_button_data: impl Fn(&Message) -> Option<(&str, Url)>,
     ) -> Result<Message, RequestError> {
-        let reply_button = if let Some((label, url)) = get_button_data(message) {
-            Some(InlineKeyboardMarkup::new(vec![vec![
+        let reply_button = match get_button_data(message) {
+            Some((label, url)) => Some(InlineKeyboardMarkup::new(vec![vec![
                 InlineKeyboardButton::url(label, url),
-            ]]))
-        } else {
-            None
+            ]])),
+            _ => None,
         };
         let preview_options = LinkPreviewOptions {
             is_disabled: false,

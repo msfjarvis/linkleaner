@@ -1,10 +1,10 @@
 use crate::{
     message::BotExt,
-    utils::{scrub_urls, AsyncError},
+    utils::{AsyncError, scrub_urls},
 };
 use regex::Regex;
 use std::sync::LazyLock;
-use teloxide::{types::Message, utils::html::link, Bot};
+use teloxide::{Bot, types::Message, utils::html::link};
 
 #[allow(dead_code)] // This is used in the tests
 const HOST_MATCH_GROUP: &str = "host";
@@ -43,7 +43,7 @@ fn build_url(caps: &regex::Captures) -> String {
 
 #[cfg(test)]
 mod test {
-    use super::{build_url, HOST_MATCH_GROUP, MATCH_REGEX, PATH_MATCH_GROUP, USER_MATCH_GROUP};
+    use super::{HOST_MATCH_GROUP, MATCH_REGEX, PATH_MATCH_GROUP, USER_MATCH_GROUP, build_url};
 
     const URLS: [&str; 3] = [
         "https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5",
@@ -54,11 +54,20 @@ mod test {
     #[test]
     fn verify_builder() {
         let caps = MATCH_REGEX.captures(URLS[0]).unwrap();
-        assert_eq!(build_url(&caps), "https://md.vern.cc/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5");
+        assert_eq!(
+            build_url(&caps),
+            "https://md.vern.cc/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5"
+        );
         let caps = MATCH_REGEX.captures(URLS[1]).unwrap();
-        assert_eq!(build_url(&caps), "https://md.vern.cc/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5");
+        assert_eq!(
+            build_url(&caps),
+            "https://md.vern.cc/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5"
+        );
         let caps = MATCH_REGEX.captures(URLS[2]).unwrap();
-        assert_eq!(build_url(&caps), "https://md.vern.cc/@Aaron0928/30-year-old-code-killed-microsoft-rewrites-windows-kernel-with-180-000-lines-of-rust-f891c95959f2");
+        assert_eq!(
+            build_url(&caps),
+            "https://md.vern.cc/@Aaron0928/30-year-old-code-killed-microsoft-rewrites-windows-kernel-with-180-000-lines-of-rust-f891c95959f2"
+        );
     }
 
     #[test]

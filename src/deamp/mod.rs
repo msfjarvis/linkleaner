@@ -2,11 +2,11 @@ mod model;
 
 use crate::{
     message::BotExt,
-    utils::{get_urls_from_message, AsyncError},
+    utils::{AsyncError, get_urls_from_message},
 };
 use model::AMPResponse;
 use std::str::FromStr;
-use teloxide::{types::Message, utils::html::link, Bot};
+use teloxide::{Bot, types::Message, utils::html::link};
 use tracing::debug;
 use url::Url;
 
@@ -61,8 +61,14 @@ mod test {
     use url::Url;
 
     const DATA: [(bool, &str); 4] = [
-        (true, "https://www.google.com/amp/s/m.gsmarena.com/samsung_galaxy_tab_s9-ampp-12439.php"),
-        (true, "https://www.google.com/amp/s/news.abplive.com/news/india/microsoft-server-outage-multiple-airports-hit-by-web-check-in-server-glitch-1703909/amp"),
+        (
+            true,
+            "https://www.google.com/amp/s/m.gsmarena.com/samsung_galaxy_tab_s9-ampp-12439.php",
+        ),
+        (
+            true,
+            "https://www.google.com/amp/s/news.abplive.com/news/india/microsoft-server-outage-multiple-airports-hit-by-web-check-in-server-glitch-1703909/amp",
+        ),
         (false, "https://github.com"),
         (true, "https://josysnavi.jp/2024/blog-00058?amp"),
     ];

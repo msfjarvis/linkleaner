@@ -1,5 +1,5 @@
 use crate::{
-    message::BotExt,
+    bot_ext::BotExt,
     utils::{AsyncError, extract_dice_count},
 };
 use regex::Regex;

@@ -1,4 +1,5 @@
 #![feature(let_chains)]
+mod bot_ext;
 mod commands;
 mod deamp;
 mod dice;
@@ -6,7 +7,6 @@ mod fixer;
 mod instagram;
 mod logging;
 mod medium;
-mod message;
 mod reddit;
 mod twitter;
 mod utils;

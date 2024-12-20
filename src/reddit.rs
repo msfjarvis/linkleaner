@@ -1,5 +1,5 @@
 use crate::{
-    message::BotExt,
+    bot_ext::BotExt,
     utils::{AsyncError, get_preview_url, get_urls_from_message, scrub_urls},
 };
 use matchit::Router;

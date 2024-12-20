@@ -1,5 +1,5 @@
 use crate::{
-    message::BotExt,
+    bot_ext::BotExt,
     utils::{AsyncError, scrub_urls},
 };
 use regex::Regex;

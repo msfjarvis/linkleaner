@@ -1,8 +1,8 @@
 use crate::{
     FIXER_STATE,
+    bot_ext::BotExt,
     dice::roll_die,
     fixer::FixerState,
-    message::BotExt,
     utils::{AsyncError, extract_dice_count, parse_bool},
 };
 use std::{env, sync::LazyLock};

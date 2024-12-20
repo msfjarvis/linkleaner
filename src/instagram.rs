@@ -1,61 +1,56 @@
 use crate::{
     message::BotExt,
-    utils::{AsyncError, get_preview_url, scrub_urls},
+    utils::{AsyncError, get_preview_url, get_urls_from_message, scrub_urls},
 };
-use regex::Regex;
+use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};
+use url::Host;
 
-const HOST_MATCH_GROUP: &str = "host";
-pub const DOMAINS: [&str; 1] = ["instagram.com"];
-static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new("https://(?:www.)?(?P<host>instagram.com)/(.*/)?(p|reel|tv)/[A-Za-z0-9]+.*/")
-        .unwrap()
+pub const DOMAINS: [&str; 2] = ["instagram.com", "www.instagram.com"];
+static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
+    let mut router = Router::new();
+    router.insert("/p/{id}/", ()).unwrap();
+    router.insert("/reel/{id}/", ()).unwrap();
+    router.insert("/tv/{id}/", ()).unwrap();
+    router.insert("/{username}/reel/{id}/", ()).unwrap();
+    router
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    if let Some(text) = scrub_urls(&message)
+    let urls = get_urls_from_message(&message);
+    if !bot.is_self_message(&message)
+        && let Some(text) = scrub_urls(&message)
         && let Some(ref user) = message.from
-        && let Some(caps) = MATCH_REGEX.captures(&text)
-        && !bot.is_self_message(&message)
+        && let Some(url) = urls.first()
+        && let Some(host) = url.host()
+        && let Host::Domain(domain) = host
+        && let Ok(_) = URL_MATCHER.at(url.path())
     {
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         bot.send_preview(
             &message,
             &text,
-            |msg| get_preview_url(msg, &caps[HOST_MATCH_GROUP], "ddinstagram.com"),
+            |msg| get_preview_url(msg, domain, "ddinstagram.com"),
             |_| None,
         )
         .await?;
-    }
+    };
     Ok(())
 }
 
 #[cfg(test)]
 mod test {
-    use super::{HOST_MATCH_GROUP, MATCH_REGEX};
+    const URLS: [&str; 5] = [
+        "https://www.instagram.com/p/CgJESh6hxsS/",
+        "https://instagram.com/p/CgJESh6hxsS/",
+        "https://www.instagram.com/reel/CgHIG0Ih3XF/",
+        "https://www.instagram.com/tv/CgHIG0Ih3XF/",
+        "https://www.instagram.com/zuck/reel/C9AbmIYp3Js/",
+    ];
 
-    // https://regex101.com/r/pOizaT/1
     #[test]
-    fn verify_regex() {
-        let items = vec![
-            "https://www.instagram.com/p/CgJESh6hxsS/",
-            "https://instagram.com/p/CgJESh6hxsS/",
-            "https://www.instagram.com/reel/CgHIG0Ih3XF/",
-            "https://www.instagram.com/tv/CgHIG0Ih3XF/",
-            "https://www.instagram.com/zuck/reel/C9AbmIYp3Js/",
-        ];
-        for item in items {
-            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
-            assert!(
-                MATCH_REGEX.is_match(&format!("Some leading text {item}")),
-                "{item} failed to match"
-            );
-        }
-        assert!(!MATCH_REGEX.is_match("https://www.instagram.com/starsmitten_/"));
-        let caps = MATCH_REGEX
-            .captures("https://www.instagram.com/p/CfZdFVUJyQG/")
-            .unwrap();
-        assert_eq!(&caps[HOST_MATCH_GROUP], "instagram.com");
+    fn test_url_matcher() {
+        crate::utils::verify_url_matcher(&URLS, &super::URL_MATCHER);
     }
 }

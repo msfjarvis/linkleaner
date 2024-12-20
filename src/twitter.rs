@@ -1,48 +1,38 @@
 use crate::{
     message::BotExt,
-    utils::{AsyncError, get_preview_url, scrub_urls},
+    utils::{AsyncError, get_preview_url, get_urls_from_message, scrub_urls},
 };
-use regex::Regex;
+use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};
-use tracing::trace;
-use url::Url;
-
-const HOST_MATCH_GROUP: &str = "host";
-const ROOT_MATCH_GROUP: &str = "root";
+use url::Host;
 
 pub const DOMAINS: [&str; 4] = ["twitter.com", "mobile.twitter.com", "x.com", "mobile.x.com"];
-static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new("https://(?P<host>(?:mobile.)?(?P<root>(twitter|x)).com)/.*/status/[0-9]+.*")
-        .unwrap()
+static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
+    let mut router = Router::new();
+    router.insert("/{user}/status/{tweet_id}", ()).unwrap();
+    router
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    if let Some(text) = scrub_urls(&message)
+    let urls = get_urls_from_message(&message);
+    if !bot.is_self_message(&message)
+        && let Some(text) = scrub_urls(&message)
         && let Some(ref user) = message.from
-        && let Some(caps) = MATCH_REGEX.captures(&text)
-        && !bot.is_self_message(&message)
+        && let Some(url) = urls.first()
+        && let Some(host) = url.host()
+        && let Host::Domain(domain) = host
+        && let Ok(_) = URL_MATCHER.at(url.path())
     {
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         bot.send_preview(
             &message,
             &text,
-            |msg| match &caps[ROOT_MATCH_GROUP] {
-                "twitter" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "vxtwitter.com"),
-                "x" => get_preview_url(msg, &caps[HOST_MATCH_GROUP], "fixupx.com"),
-                _ => {
-                    trace!("No URL match found in {text}");
-                    None
-                }
-            },
-            |msg| {
-                if let Some(url) = get_preview_url(msg, &caps[HOST_MATCH_GROUP], "xcancel.com")
-                    && let Ok(url) = Url::parse(url.as_str())
-                {
-                    Some(("View on Nitter", url))
-                } else {
-                    None
-                }
+            |msg| get_preview_url(msg, domain, "fixupx.com"),
+            |_| {
+                let mut button_url = url.clone();
+                button_url.set_host(Some("xcancel.com")).unwrap();
+                Some(("View on Nitter", button_url))
             },
         )
         .await?;
@@ -52,27 +42,15 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 
 #[cfg(test)]
 mod test {
-    use super::{HOST_MATCH_GROUP, MATCH_REGEX, ROOT_MATCH_GROUP};
+    const URLS: [&str; 4] = [
+        "https://mobile.twitter.com/Jack/status/20",
+        "https://twitter.com/Jack/status/20",
+        "https://mobile.x.com/Jack/status/20",
+        "https://x.com/Jack/status/20",
+    ];
 
     #[test]
-    fn verify_regex() {
-        let hosts = [
-            ("mobile.twitter.com", "twitter"),
-            ("twitter.com", "twitter"),
-            ("mobile.x.com", "x"),
-            ("x.com", "x"),
-        ];
-        for (host, root) in hosts {
-            let url = format!("https://{host}/Jack/status/20");
-            assert!(MATCH_REGEX.is_match(&url), "{url} failed to match");
-            assert!(
-                MATCH_REGEX.is_match(&format!("Some leading text {url}")),
-                "{url} failed to match"
-            );
-            assert!(!MATCH_REGEX.is_match(&format!("https://{host}/Jack/")));
-            let caps = MATCH_REGEX.captures(&url).unwrap();
-            assert_eq!(&caps[HOST_MATCH_GROUP], host);
-            assert_eq!(&caps[ROOT_MATCH_GROUP], root);
-        }
+    fn test_url_matcher() {
+        crate::utils::verify_url_matcher(&URLS, &super::URL_MATCHER);
     }
 }

@@ -25,14 +25,12 @@ pub const DOMAINS: [&str; 3] = ["reddit.com", "redd.it", "www.reddit.com"];
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     let urls = get_urls_from_message(&message);
-    if let Some(text) = scrub_urls(&message)
+    if !bot.is_self_message(&message)
+        && let Some(text) = scrub_urls(&message)
         && let Some(ref user) = message.from
-        && !bot.is_self_message(&message)
-        && !urls.is_empty()
         && let Some(url) = urls.first()
         && let Some(host) = url.host()
         && let Host::Domain(domain) = host
-        && DOMAINS.contains(&domain)
         && let Ok(_) = URL_MATCHER.at(url.path())
     {
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);

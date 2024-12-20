@@ -24,7 +24,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       advisory-db,
       crane,
@@ -99,8 +98,8 @@
             ;
         };
 
-        # Expose the skopeo package for use in CI
-        packages.skopeo = pkgs.skopeo;
+        # Expose the flyctl and skopeo packages for use in CI
+        packages = { inherit (pkgs) flyctl skopeo; };
         packages.default = linkleaner;
         packages.container = pkgs.dockerTools.buildImage {
           name = "registry.fly.io/linkleaner";

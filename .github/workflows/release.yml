@@ -19,9 +19,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-    - name: Set up flyctl
-      uses: superfly/flyctl-actions/setup-flyctl@master
-
     - name: Install Nix
       uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
       with:
@@ -59,7 +56,7 @@ jobs:
           docker://registry.fly.io/linkleaner:latest \
           --dest-creds x:"$FLY_API_TOKEN" \
           --format v2s2
-        flyctl deploy
+        nix run .#flyctl deploy
 
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3

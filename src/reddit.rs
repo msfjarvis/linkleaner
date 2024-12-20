@@ -5,6 +5,7 @@ use crate::{
 use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
+use url::Host;
 
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
@@ -20,7 +21,7 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     router
 });
 
-pub const DOMAINS: [&str; 2] = ["reddit.com", "redd.it"];
+pub const DOMAINS: [&str; 3] = ["reddit.com", "redd.it", "www.reddit.com"];
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     let urls = get_urls_from_message(&message);
@@ -30,7 +31,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
         && !urls.is_empty()
         && let Some(url) = urls.first()
         && let Some(host) = url.host()
-        && let url::Host::Domain(domain) = host
+        && let Host::Domain(domain) = host
         && DOMAINS.contains(&domain)
         && let Ok(_) = URL_MATCHER.at(url.path())
     {
@@ -49,13 +50,14 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 #[cfg(test)]
 mod test {
     use url::Url;
-    const URLS: [&str; 6] = [
+    const URLS: [&str; 7] = [
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today/jxnkq4g",
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today",
         "https://reddit.com/r/shittymoviedetails/comments/160onpq",
         "https://reddit.com/r/MemePiece/s/15w6vzg82W",
         "https://reddit.com/160onpq",
         "https://redd.it/160onpq",
+        "https://www.reddit.com/r/VALORANT/s/MTu577P105",
     ];
 
     #[test]

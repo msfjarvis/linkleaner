@@ -9,15 +9,19 @@ mod logging;
 mod medium;
 mod reddit;
 mod twitter;
-mod utils;
+mod url;
 mod youtube;
 
-use crate::commands::Command;
-use crate::logging::TeloxideLogger;
+use crate::{
+    commands::Command,
+    logging::TeloxideLogger,
+    url::{get_urls_from_message, has_matching_urls},
+};
 use dotenvy::dotenv;
 use fixer::FixerState;
 use std::{
     collections::HashMap,
+    error::Error,
     sync::{Arc, LazyLock, Mutex},
 };
 use teloxide::{
@@ -28,7 +32,8 @@ use teloxide::{
     types::{ChatId, Message, Update},
     update_listeners::Polling,
 };
-use utils::{get_urls_from_message, has_matching_urls};
+
+pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
 pub(crate) static FIXER_STATE: LazyLock<Mutex<HashMap<ChatId, FixerState>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));

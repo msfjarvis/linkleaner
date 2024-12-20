@@ -1,9 +1,8 @@
 use crate::{
-    FIXER_STATE,
+    AsyncError, FIXER_STATE,
     bot_ext::BotExt,
-    dice::roll_die,
+    dice::{extract_dice_count, roll_die},
     fixer::FixerState,
-    utils::{AsyncError, extract_dice_count, parse_bool},
 };
 use std::{env, sync::LazyLock};
 use teloxide::{
@@ -187,6 +186,38 @@ async fn flip_filter_state(
     current_state: impl Fn(&FixerState) -> bool,
     update_state: impl FnOnce(&mut FixerState, bool) + Copy,
 ) -> Result<(), AsyncError> {
+    const TRUE_VALUES: [&str; 4] = ["true", "on", "yes", "enable"];
+    const FALSE_VALUES: [&str; 4] = ["false", "off", "no", "disable"];
+    static EXPECTED_VALUES: LazyLock<String> = LazyLock::new(|| {
+        [TRUE_VALUES, FALSE_VALUES]
+            .concat()
+            .iter()
+            .map(|item| format!("'{item}'"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    });
+
+    fn parse_bool(input: &str) -> Result<bool, String> {
+        let input = input.split(' ').collect::<Vec<_>>();
+        if input.len() > 1 {
+            return Err(format!(
+                "Unexpected number of arguments. Expected one of: {}.",
+                *EXPECTED_VALUES
+            ));
+        }
+
+        match input[0].to_lowercase().as_str() {
+            arg if TRUE_VALUES.contains(&arg) => Ok(true),
+            arg if FALSE_VALUES.contains(&arg) => Ok(false),
+            arg => {
+                let message = format!(
+                    "Unexpected argument '{arg}'. Expected one of: {}.",
+                    *EXPECTED_VALUES
+                );
+                Err(message)
+            }
+        }
+    }
     if filter_state.is_empty() {
         bot.reply(
             message,

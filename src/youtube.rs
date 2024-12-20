@@ -1,7 +1,4 @@
-use crate::{
-    bot_ext::BotExt,
-    utils::{AsyncError, get_urls_from_message},
-};
+use crate::{AsyncError, bot_ext::BotExt, url::get_urls_from_message};
 use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};
@@ -46,6 +43,6 @@ mod test {
 
     #[test]
     fn test_url_matcher() {
-        crate::utils::verify_url_matcher(&URLS, &super::URL_MATCHER);
+        crate::url::verify_url_matcher(&URLS, &super::URL_MATCHER);
     }
 }

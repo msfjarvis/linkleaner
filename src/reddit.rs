@@ -1,6 +1,7 @@
 use crate::{
+    AsyncError,
     bot_ext::BotExt,
-    utils::{AsyncError, get_preview_url, get_urls_from_message, scrub_urls},
+    url::{get_preview_url, get_urls_from_message, scrub_urls},
 };
 use matchit::Router;
 use std::sync::LazyLock;
@@ -59,6 +60,6 @@ mod test {
 
     #[test]
     fn test_url_matcher() {
-        crate::utils::verify_url_matcher(&URLS, &super::URL_MATCHER);
+        crate::url::verify_url_matcher(&URLS, &super::URL_MATCHER);
     }
 }

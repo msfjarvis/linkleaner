@@ -1,9 +1,6 @@
-use std::{error::Error, sync::LazyLock};
 use teloxide::types::{Message, MessageEntityKind};
 use tracing::{error, trace};
 use url::Url;
-
-pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;
 
 pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
     if let Some(entities) = msg.entities()
@@ -74,62 +71,6 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
     }
 }
 
-const TRUE_VALUES: [&str; 4] = ["true", "on", "yes", "enable"];
-const FALSE_VALUES: [&str; 4] = ["false", "off", "no", "disable"];
-static EXPECTED_VALUES: LazyLock<String> = LazyLock::new(|| {
-    [TRUE_VALUES, FALSE_VALUES]
-        .concat()
-        .iter()
-        .map(|item| format!("'{item}'"))
-        .collect::<Vec<_>>()
-        .join(", ")
-});
-
-pub(crate) fn parse_bool(input: &str) -> Result<bool, String> {
-    let input = input.split(' ').collect::<Vec<_>>();
-    if input.len() > 1 {
-        return Err(format!(
-            "Unexpected number of arguments. Expected one of: {}.",
-            *EXPECTED_VALUES
-        ));
-    }
-
-    match input[0].to_lowercase().as_str() {
-        arg if TRUE_VALUES.contains(&arg) => Ok(true),
-        arg if FALSE_VALUES.contains(&arg) => Ok(false),
-        arg => {
-            let message = format!(
-                "Unexpected argument '{arg}'. Expected one of: {}.",
-                *EXPECTED_VALUES
-            );
-            Err(message)
-        }
-    }
-}
-
-pub(crate) fn extract_dice_count(input: &str, default: u8) -> Result<u8, String> {
-    if input.is_empty() {
-        return Ok(default);
-    }
-
-    let input = input.split(' ').collect::<Vec<_>>();
-    if input.len() > 1 {
-        return Err(String::from(
-            "Unexpected number of arguments. Expected a numeric value from 1-255.",
-        ));
-    }
-
-    if let Ok(value) = input[0].parse::<u8>() {
-        Ok(value)
-    } else {
-        let message = format!(
-            "Unexpected argument '{}'. Expected a number from 1-255.",
-            input[0]
-        );
-        Err(message)
-    }
-}
-
 #[cfg(test)]
 pub fn verify_url_matcher(urls: &[&str], router: &matchit::Router<()>) {
     use url::Url;
@@ -142,7 +83,7 @@ pub fn verify_url_matcher(urls: &[&str], router: &matchit::Router<()>) {
 }
 
 #[cfg(test)]
-mod check_matches_domain_tests {
+mod test {
     use super::check_matches_domain;
     use url::Url;
 

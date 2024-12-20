@@ -1,7 +1,4 @@
-use crate::{
-    bot_ext::BotExt,
-    utils::{AsyncError, extract_dice_count},
-};
+use crate::{AsyncError, bot_ext::BotExt};
 use regex::Regex;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message};
@@ -44,6 +41,29 @@ pub fn is_die_roll(message: Message) -> bool {
 
 pub fn roll_die(sides: u8) -> u8 {
     rand::random::<u8>() % sides + 1
+}
+
+pub fn extract_dice_count(input: &str, default: u8) -> Result<u8, String> {
+    if input.is_empty() {
+        return Ok(default);
+    }
+
+    let input = input.split(' ').collect::<Vec<_>>();
+    if input.len() > 1 {
+        return Err(String::from(
+            "Unexpected number of arguments. Expected a numeric value from 1-255.",
+        ));
+    }
+
+    if let Ok(value) = input[0].parse::<u8>() {
+        Ok(value)
+    } else {
+        let message = format!(
+            "Unexpected argument '{}'. Expected a number from 1-255.",
+            input[0]
+        );
+        Err(message)
+    }
 }
 
 #[cfg(test)]

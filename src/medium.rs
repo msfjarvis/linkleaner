@@ -1,7 +1,4 @@
-use crate::{
-    bot_ext::BotExt,
-    utils::{AsyncError, scrub_urls},
-};
+use crate::{AsyncError, bot_ext::BotExt, url::scrub_urls};
 use regex::Regex;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};

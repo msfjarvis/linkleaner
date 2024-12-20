@@ -131,6 +131,17 @@ pub(crate) fn extract_dice_count(input: &str, default: u8) -> Result<u8, String>
 }
 
 #[cfg(test)]
+pub fn verify_url_matcher(urls: &[&str], router: &matchit::Router<()>) {
+    use url::Url;
+    urls.iter()
+        .flat_map(|url| Url::parse(url))
+        .map(|url| url.path().to_string())
+        .for_each(|path| {
+            assert!(router.at(&path).is_ok(), "Failed to match URL: {path}");
+        });
+}
+
+#[cfg(test)]
 mod check_matches_domain_tests {
     use super::check_matches_domain;
     use url::Url;

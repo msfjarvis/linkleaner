@@ -47,7 +47,6 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 
 #[cfg(test)]
 mod test {
-    use url::Url;
     const URLS: [&str; 7] = [
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today/jxnkq4g",
         "https://reddit.com/r/shittymoviedetails/comments/160onpq/breaking_actor_from_home_alone_2_arrested_today",
@@ -60,14 +59,6 @@ mod test {
 
     #[test]
     fn test_url_matcher() {
-        URLS.iter()
-            .flat_map(|url| Url::parse(url))
-            .map(|url| url.path().to_string())
-            .for_each(|path| {
-                assert!(
-                    super::URL_MATCHER.at(&path).is_ok(),
-                    "Failed to match URL: {path}"
-                );
-            });
+        crate::utils::verify_url_matcher(&URLS, &super::URL_MATCHER);
     }
 }

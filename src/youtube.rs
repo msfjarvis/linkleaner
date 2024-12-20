@@ -1,23 +1,33 @@
 use crate::{
     message::BotExt,
-    utils::{AsyncError, scrub_urls},
+    utils::{AsyncError, get_urls_from_message},
 };
-use regex::Regex;
+use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};
+use url::Host;
 
-pub const DOMAINS: [&str; 1] = ["youtube.com"];
-static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new("https://(?:www.)?youtube.com/(?P<shorts>shorts/)[A-Za-z0-9-_]{11}.*").unwrap()
+pub const DOMAINS: [&str; 2] = ["youtube.com", "www.youtube.com"];
+static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
+    let mut router = Router::new();
+    router.insert("/shorts/{id}", ()).unwrap();
+    router
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    if let Some(text) = scrub_urls(&message)
+    let urls = get_urls_from_message(&message);
+    if !bot.is_self_message(&message)
+        // This would usually use `scrub_urls` but we reconstruct it manually later
+        // and we need the original text to replace the URL.
+        && let Some(text) = message.text()
         && let Some(ref user) = message.from
-        && let Some(caps) = MATCH_REGEX.captures(&text)
-        && !bot.is_self_message(&message)
+        && let Some(url) = urls.first()
+        && let Some(host) = url.host()
+        && let Host::Domain(domain) = host
+        && let Ok(result) = URL_MATCHER.at(url.path())
+        && let Some(id) = result.params.get("id")
     {
-        let text = text.replace(&caps["shorts"], "watch?v=");
+        let text = text.replace(url.as_str(), &(format!("https://{domain}/watch?v={id}")));
         let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
         bot.replace_chat_message(&message, &text).await?;
     }
@@ -26,24 +36,16 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 
 #[cfg(test)]
 mod test {
-    use super::MATCH_REGEX;
+    const URLS: [&str; 5] = [
+        "https://www.youtube.com/shorts/SqjNixegPKk",
+        "https://www.youtube.com/shorts/SqjNixegPKk?feature=share",
+        "https://youtube.com/shorts/SqjNixegPKk",
+        "https://youtube.com/shorts/JY55-UBtlf8?feature=share",
+        "https://youtube.com/shorts/afHFjnPy_vk?feature=share",
+    ];
 
     #[test]
-    fn verify_regex() {
-        let items = vec![
-            "https://www.youtube.com/shorts/SqjNixegPKk",
-            "https://www.youtube.com/shorts/SqjNixegPKk?feature=share",
-            "https://youtube.com/shorts/SqjNixegPKk",
-            "https://youtube.com/shorts/JY55-UBtlf8?feature=share",
-            "https://youtube.com/shorts/afHFjnPy_vk?feature=share",
-        ];
-        for item in items {
-            assert!(MATCH_REGEX.is_match(item), "{item} failed to match");
-            assert!(
-                MATCH_REGEX.is_match(&format!("Some leading text {item}")),
-                "{item} failed to match"
-            );
-        }
-        assert!(!MATCH_REGEX.is_match("https://youtube.com/watch?v=SqjNixegPKk"));
+    fn test_url_matcher() {
+        crate::utils::verify_url_matcher(&URLS, &super::URL_MATCHER);
     }
 }

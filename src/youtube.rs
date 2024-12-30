@@ -1,4 +1,4 @@
-use crate::{AsyncError, bot_ext::BotExt, url::get_urls_from_message};
+use crate::{AsyncError, bot_ext::BotExt, router_ext::add_route, url::get_urls_from_message};
 use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};
@@ -7,7 +7,7 @@ use url::Host;
 pub const DOMAINS: [&str; 2] = ["youtube.com", "www.youtube.com"];
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
-    router.insert("/shorts/{id}", ()).unwrap();
+    add_route!(router, "/shorts/{id}");
     router
 });
 

@@ -1,6 +1,7 @@
 use crate::{
     AsyncError,
     bot_ext::BotExt,
+    router_ext::add_route,
     url::{get_preview_url, get_urls_from_message, scrub_urls},
 };
 use matchit::Router;
@@ -11,7 +12,7 @@ use url::Host;
 pub const DOMAINS: [&str; 4] = ["twitter.com", "mobile.twitter.com", "x.com", "mobile.x.com"];
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
-    router.insert("/{user}/status/{tweet_id}", ()).unwrap();
+    add_route!(router, "/{user}/status/{tweet_id}");
     router
 });
 

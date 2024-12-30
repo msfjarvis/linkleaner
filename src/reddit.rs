@@ -1,6 +1,7 @@
 use crate::{
     AsyncError,
     bot_ext::BotExt,
+    router_ext::add_route,
     url::{get_preview_url, get_urls_from_message, scrub_urls},
 };
 use matchit::Router;
@@ -10,15 +11,11 @@ use url::Host;
 
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
-    router
-        .insert("/r/{subreddit}/comments/{id}/{slug}/{comment}", ())
-        .unwrap();
-    router
-        .insert("/r/{subreddit}/comments/{id}/{slug}", ())
-        .unwrap();
-    router.insert("/r/{subreddit}/comments/{id}", ()).unwrap();
-    router.insert("/r/{subreddit}/s/{id}", ()).unwrap();
-    router.insert("/{id}", ()).unwrap();
+    add_route!(router, "/r/{subreddit}/comments/{id}/{slug}/{comment}");
+    add_route!(router, "/r/{subreddit}/comments/{id}/{slug}");
+    add_route!(router, "/r/{subreddit}/comments/{id}");
+    add_route!(router, "/r/{subreddit}/s/{id}");
+    add_route!(router, "/{id}");
     router
 });
 

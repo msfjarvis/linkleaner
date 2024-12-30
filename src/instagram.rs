@@ -1,6 +1,7 @@
 use crate::{
     AsyncError,
     bot_ext::BotExt,
+    router_ext::add_route,
     url::{get_preview_url, get_urls_from_message, scrub_urls},
 };
 use matchit::Router;
@@ -11,10 +12,10 @@ use url::Host;
 pub const DOMAINS: [&str; 2] = ["instagram.com", "www.instagram.com"];
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
-    router.insert("/p/{id}/", ()).unwrap();
-    router.insert("/reel/{id}/", ()).unwrap();
-    router.insert("/tv/{id}/", ()).unwrap();
-    router.insert("/{username}/reel/{id}/", ()).unwrap();
+    add_route!(router, "/p/{id}");
+    add_route!(router, "/reel/{id}");
+    add_route!(router, "/tv/{id}");
+    add_route!(router, "/{username}/reel/{id}");
     router
 });
 

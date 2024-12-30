@@ -8,6 +8,7 @@ mod instagram;
 mod logging;
 mod medium;
 mod reddit;
+mod router_ext;
 mod twitter;
 mod url;
 mod youtube;

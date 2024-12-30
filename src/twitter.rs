@@ -44,15 +44,16 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 
 #[cfg(test)]
 mod test {
-    const URLS: [&str; 4] = [
-        "https://mobile.twitter.com/Jack/status/20",
-        "https://twitter.com/Jack/status/20",
-        "https://mobile.x.com/Jack/status/20",
-        "https://x.com/Jack/status/20",
-    ];
-
     #[test]
     fn test_url_matcher() {
-        crate::url::verify_url_matcher(&URLS, &super::URL_MATCHER);
+        crate::url::verify_url_matcher(
+            &[
+                "https://mobile.twitter.com/Jack/status/20",
+                "https://twitter.com/Jack/status/20",
+                "https://mobile.x.com/Jack/status/20",
+                "https://x.com/Jack/status/20",
+            ],
+            &super::URL_MATCHER,
+        );
     }
 }

@@ -33,16 +33,17 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
 
 #[cfg(test)]
 mod test {
-    const URLS: [&str; 5] = [
-        "https://www.youtube.com/shorts/SqjNixegPKk",
-        "https://www.youtube.com/shorts/SqjNixegPKk?feature=share",
-        "https://youtube.com/shorts/SqjNixegPKk",
-        "https://youtube.com/shorts/JY55-UBtlf8?feature=share",
-        "https://youtube.com/shorts/afHFjnPy_vk?feature=share",
-    ];
-
     #[test]
     fn test_url_matcher() {
-        crate::url::verify_url_matcher(&URLS, &super::URL_MATCHER);
+        crate::url::verify_url_matcher(
+            &[
+                "https://www.youtube.com/shorts/SqjNixegPKk",
+                "https://www.youtube.com/shorts/SqjNixegPKk?feature=share",
+                "https://youtube.com/shorts/SqjNixegPKk",
+                "https://youtube.com/shorts/JY55-UBtlf8?feature=share",
+                "https://youtube.com/shorts/afHFjnPy_vk?feature=share",
+            ],
+            &super::URL_MATCHER,
+        );
     }
 }

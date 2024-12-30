@@ -74,7 +74,13 @@ pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
 #[cfg(test)]
 pub fn verify_url_matcher(urls: &[&str], router: &matchit::Router<()>) {
     use url::Url;
-    urls.iter()
+    // Build up a list of the URLs and their trailing slash versions to ensure the macro
+    // we use to add routes to the router works as expected.
+    let mut all_urls = vec![];
+    all_urls.extend(urls.iter().map(|url| (*url).to_string()));
+    all_urls.extend(urls.iter().map(|url| format!("{url}/")));
+    all_urls
+        .iter()
         .flat_map(|url| Url::parse(url))
         .map(|url| url.path().to_string())
         .for_each(|path| {

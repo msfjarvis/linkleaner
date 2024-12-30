@@ -47,11 +47,11 @@ mod test {
     fn test_url_matcher() {
         crate::url::verify_url_matcher(
             &[
-                "https://www.instagram.com/p/CgJESh6hxsS/",
-                "https://instagram.com/p/CgJESh6hxsS/",
-                "https://www.instagram.com/reel/CgHIG0Ih3XF/",
-                "https://www.instagram.com/tv/CgHIG0Ih3XF/",
-                "https://www.instagram.com/zuck/reel/C9AbmIYp3Js/",
+                "https://www.instagram.com/p/CgJESh6hxsS",
+                "https://instagram.com/p/CgJESh6hxsS",
+                "https://www.instagram.com/reel/CgHIG0Ih3XF",
+                "https://www.instagram.com/tv/CgHIG0Ih3XF",
+                "https://www.instagram.com/zuck/reel/C9AbmIYp3Js",
             ],
             &super::URL_MATCHER,
         );

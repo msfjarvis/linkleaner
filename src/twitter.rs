@@ -14,6 +14,7 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
     add_route!(router, "/{user}/status/{tweet_id}");
     add_route!(router, "/{user}/status/{tweet_id}/photo/{num}");
+    add_route!(router, "/i/status/{tweet_id}");
     router
 });
 
@@ -54,6 +55,7 @@ mod test {
                 "https://mobile.x.com/Jack/status/20",
                 "https://x.com/Jack/status/20",
                 "https://x.com/realonx1/status/1879076905925980535/photo/1",
+                "https://x.com/i/status/1878964730242687241",
             ],
             &super::URL_MATCHER,
         );

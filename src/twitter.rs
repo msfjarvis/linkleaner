@@ -13,6 +13,7 @@ pub const DOMAINS: [&str; 4] = ["twitter.com", "mobile.twitter.com", "x.com", "m
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
     add_route!(router, "/{user}/status/{tweet_id}");
+    add_route!(router, "/{user}/status/{tweet_id}/photo/{num}");
     router
 });
 
@@ -52,6 +53,7 @@ mod test {
                 "https://twitter.com/Jack/status/20",
                 "https://mobile.x.com/Jack/status/20",
                 "https://x.com/Jack/status/20",
+                "https://x.com/realonx1/status/1879076905925980535/photo/1",
             ],
             &super::URL_MATCHER,
         );

@@ -16,6 +16,10 @@
   inputs.fenix.url = "github:nix-community/fenix";
   inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
 
+  inputs.nix2container.url = "github:nlewo/nix2container";
+  inputs.nix2container.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nix2container.inputs.flake-utils.follows = "flake-utils";
+
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.flake-utils.inputs.systems.follows = "systems";
 
@@ -30,6 +34,7 @@
       devshell,
       fenix,
       flake-utils,
+      nix2container,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -39,6 +44,7 @@
           inherit system;
           overlays = [ devshell.overlays.default ];
         };
+        nix2containerPkgs = nix2container.packages.${system};
 
         rustNightly = (import fenix { inherit pkgs; }).fromToolchainFile {
           file = ./rust-toolchain.toml;
@@ -101,22 +107,15 @@
         # Expose the flyctl and skopeo packages for use in CI
         packages = { inherit (pkgs) flyctl skopeo; };
         packages.default = linkleaner;
-        packages.container = pkgs.dockerTools.buildImage {
+        packages.container = nix2containerPkgs.nix2container.buildImage {
           name = "registry.fly.io/linkleaner";
           tag = "latest";
-          created = "now";
-          copyToRoot = pkgs.buildEnv {
-            name = "linkleaner";
-            paths = [ linkleaner ];
-            pathsToLink = [ "/bin" ];
-          };
-          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+          config.entrypoint = [ "${linkleaner}/bin/linkleaner" ];
         };
-        packages.ghContainer = pkgs.dockerTools.buildLayeredImage {
+        packages.ghContainer = nix2containerPkgs.nix2container.buildImage {
           name = "ghcr.io/msfjarvis/linkleaner";
           tag = "latest";
-          created = "now";
-          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+          config.entrypoint = [ "${linkleaner}/bin/linkleaner" ];
         };
 
         apps.default = flake-utils.lib.mkApp { drv = linkleaner; };

@@ -38,25 +38,12 @@ jobs:
         purge-created: 0
         purge-primary-key: never
 
-    - name: Build container image
-      shell: bash
-      run: |
-        nix build .#container
-
-    - name: Deploy to fly.io
-      shell: bash
-      env:
-        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-      run: |
-        # We manually publish the image to avoid having to rewrite the tag
-        nix run .#skopeo -- \
-          --insecure-policy \
-          copy \
-          docker-archive:./result \
-          docker://registry.fly.io/linkleaner:latest \
-          --dest-creds x:"$FLY_API_TOKEN" \
-          --format v2s2
-        nix run .#flyctl deploy
+    - name: Log in to Fly.io Container Registry
+      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+      with:
+        registry: registry.fly.io
+        username: x
+        password: ${{ secrets.FLY_API_TOKEN }}
 
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
@@ -65,16 +52,15 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Deploy to fly.io
+      shell: bash
+      env:
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      run: |
+        nix run .#container.copyToRegistry
+        nix run .#flyctl deploy
+
     - name: Build and publish image to GitHub Container Registry
       shell: bash
       run: |
-        # Get image details
-        IMAGE_NAME="$(nix eval --raw .#packages.x86_64-linux.ghContainer.imageName)"
-        IMAGE_TAG="$(nix eval --raw .#packages.x86_64-linux.ghContainer.imageTag)"
-
-        # Build and load the image
-        nix build .#ghContainer
-        docker load < ./result
-
-        # Push image to ghcr.io
-        docker push "${IMAGE_NAME}":"${IMAGE_TAG}"
+        nix run .#ghContainer.copyToRegistry

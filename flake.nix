@@ -140,7 +140,6 @@
             flyctl
             nil
             rustNightly
-            skopeo
             stdenv.cc
           ];
         };

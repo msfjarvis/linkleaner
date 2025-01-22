@@ -49,89 +49,87 @@ async fn run() {
 
     let bot = Bot::from_env();
 
-    let handler = Update::filter_message().branch(
-        dptree::entry()
-            .filter_command::<Command>()
-            .endpoint(commands::handler),
-    );
-    let handler = handler.branch(
-        dptree::filter(|msg: Message| {
-            if should_match(&msg, &twitter::DOMAINS)
-                && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                && let Some(chat_id) = msg.chat_id()
-            {
-                return map.entry(chat_id).or_insert(FixerState::default()).twitter;
-            }
-            false
-        })
-        .endpoint(twitter::handler),
-    );
-    let handler = handler.branch(
-        dptree::filter(|msg: Message| {
-            if should_match(&msg, &instagram::DOMAINS)
-                && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                && let Some(chat_id) = msg.chat_id()
-            {
-                return map
-                    .entry(chat_id)
-                    .or_insert(FixerState::default())
-                    .instagram;
-            }
-            false
-        })
-        .endpoint(instagram::handler),
-    );
-    let handler = handler.branch(
-        dptree::filter(|msg: Message| {
-            if should_match(&msg, &youtube::DOMAINS)
-                && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                && let Some(chat_id) = msg.chat_id()
-            {
-                return map.entry(chat_id).or_insert(FixerState::default()).youtube;
-            }
-            false
-        })
-        .endpoint(youtube::handler),
-    );
-    let handler = handler.branch(
-        dptree::filter(|msg: Message| {
-            if should_match(&msg, &medium::DOMAINS)
-                && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                && let Some(chat_id) = msg.chat_id()
-            {
-                return map.entry(chat_id).or_insert(FixerState::default()).medium;
-            }
-            false
-        })
-        .endpoint(medium::handler),
-    );
-
-    let handler = handler.branch(
-        dptree::filter(|msg| {
-            if should_match(&msg, &reddit::DOMAINS)
-                && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                && let Some(chat_id) = msg.chat_id()
-            {
-                return map.entry(chat_id).or_insert(FixerState::default()).reddit;
-            }
-            false
-        })
-        .endpoint(reddit::handler),
-    );
-
-    let handler = handler.branch(
-        dptree::filter(|msg| {
-            let urls = get_urls_from_message(&msg);
-            if urls.is_empty() {
+    let handler = Update::filter_message()
+        .branch(
+            dptree::entry()
+                .filter_command::<Command>()
+                .endpoint(commands::handler),
+        )
+        .branch(
+            dptree::filter(|msg: Message| {
+                if should_match(&msg, &twitter::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map.entry(chat_id).or_insert(FixerState::default()).twitter;
+                }
                 false
-            } else {
-                urls.iter().any(deamp::is_amp)
-            }
-        })
-        .endpoint(deamp::handler),
-    );
-
-    let handler = handler.branch(dptree::filter(dice::is_die_roll).endpoint(dice::handler));
+            })
+            .endpoint(twitter::handler),
+        )
+        .branch(
+            dptree::filter(|msg: Message| {
+                if should_match(&msg, &instagram::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map
+                        .entry(chat_id)
+                        .or_insert(FixerState::default())
+                        .instagram;
+                }
+                false
+            })
+            .endpoint(instagram::handler),
+        )
+        .branch(
+            dptree::filter(|msg: Message| {
+                if should_match(&msg, &youtube::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map.entry(chat_id).or_insert(FixerState::default()).youtube;
+                }
+                false
+            })
+            .endpoint(youtube::handler),
+        )
+        .branch(
+            dptree::filter(|msg: Message| {
+                if should_match(&msg, &medium::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map.entry(chat_id).or_insert(FixerState::default()).medium;
+                }
+                false
+            })
+            .endpoint(medium::handler),
+        )
+        .branch(
+            dptree::filter(|msg| {
+                if should_match(&msg, &reddit::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map.entry(chat_id).or_insert(FixerState::default()).reddit;
+                }
+                false
+            })
+            .endpoint(reddit::handler),
+        )
+        .branch(
+            dptree::filter(|msg| {
+                let urls = get_urls_from_message(&msg);
+                if urls.is_empty() {
+                    false
+                } else {
+                    urls.iter().any(deamp::is_amp)
+                }
+            })
+            .endpoint(deamp::handler),
+        )
+        .branch(dptree::filter(dice::is_die_roll).endpoint(dice::handler));
 
     let error_handler = Arc::new(TeloxideLogger::default());
     let listener = Polling::builder(bot.clone()).drop_pending_updates().build();

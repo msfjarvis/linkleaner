@@ -1,12 +1,12 @@
 use std::sync::LazyLock;
 use teloxide::{
-    Bot, RequestError,
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{
         ChatAction, InlineKeyboardButton, InlineKeyboardMarkup, LinkPreviewOptions, Message,
         ParseMode, ReplyParameters, UserId,
     },
+    Bot, RequestError,
 };
 use url::Url;
 

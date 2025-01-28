@@ -1,12 +1,12 @@
 use crate::{
-    AsyncError,
     bot_ext::BotExt,
     router_ext::add_route,
     url::{get_preview_url, get_urls_from_message, scrub_urls},
+    AsyncError,
 };
 use matchit::Router;
 use std::sync::LazyLock;
-use teloxide::{Bot, types::Message, utils::html::link};
+use teloxide::{types::Message, utils::html::link, Bot};
 use url::Host;
 
 pub const DOMAINS: [&str; 2] = ["instagram.com", "www.instagram.com"];

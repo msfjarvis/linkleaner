@@ -1,7 +1,7 @@
-use crate::{AsyncError, bot_ext::BotExt, url::scrub_urls};
+use crate::{bot_ext::BotExt, url::scrub_urls, AsyncError};
 use regex::Regex;
 use std::sync::LazyLock;
-use teloxide::{Bot, types::Message, utils::html::link};
+use teloxide::{types::Message, utils::html::link, Bot};
 
 #[allow(dead_code)] // This is used in the tests
 const HOST_MATCH_GROUP: &str = "host";
@@ -40,7 +40,7 @@ fn build_url(caps: &regex::Captures) -> String {
 
 #[cfg(test)]
 mod test {
-    use super::{HOST_MATCH_GROUP, MATCH_REGEX, PATH_MATCH_GROUP, USER_MATCH_GROUP, build_url};
+    use super::{build_url, HOST_MATCH_GROUP, MATCH_REGEX, PATH_MATCH_GROUP, USER_MATCH_GROUP};
 
     const URLS: [&str; 3] = [
         "https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5",

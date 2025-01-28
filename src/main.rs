@@ -26,12 +26,12 @@ use std::{
     sync::{Arc, LazyLock, Mutex},
 };
 use teloxide::{
-    Bot,
-    dispatching::{HandlerExt, UpdateFilterExt, dialogue::GetChatId},
+    dispatching::{dialogue::GetChatId, HandlerExt, UpdateFilterExt},
     dptree,
     prelude::Dispatcher,
     types::{ChatId, Message, Update},
     update_listeners::Polling,
+    Bot,
 };
 
 pub(crate) type AsyncError = Box<dyn Error + Send + Sync + 'static>;

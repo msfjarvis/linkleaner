@@ -2,16 +2,16 @@ use futures::future::BoxFuture;
 use std::fmt::Debug;
 use std::sync::Arc;
 use teloxide::error_handlers::ErrorHandler;
-use tracing::Level;
 use tracing::dispatcher::SetGlobalDefaultError;
 use tracing::subscriber::set_global_default;
+use tracing::Level;
 use tracing_subscriber::filter::Targets;
 use tracing_subscriber::registry;
 
 #[cfg(not(feature = "journald"))]
 fn configure_tracing(filter: Targets) -> Result<(), SetGlobalDefaultError> {
     use tracing_subscriber::layer::SubscriberExt;
-    use tracing_subscriber::{Layer, fmt};
+    use tracing_subscriber::{fmt, Layer};
 
     let registry = registry();
     #[cfg(feature = "console")]

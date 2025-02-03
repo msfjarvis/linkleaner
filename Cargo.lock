@@ -1814,7 +1814,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.13.0"
-source = "git+https://github.com/teloxide/teloxide#e6c0e2cb7f1ff44742bb9a8606cb936b55852d4d"
+source = "git+https://github.com/teloxide/teloxide#8688ad02ccfac8cbee6aa98cae8160dedfb3f703"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1839,7 +1839,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.10.1"
-source = "git+https://github.com/teloxide/teloxide#e6c0e2cb7f1ff44742bb9a8606cb936b55852d4d"
+source = "git+https://github.com/teloxide/teloxide#8688ad02ccfac8cbee6aa98cae8160dedfb3f703"
 dependencies = [
  "bitflags 1.3.2",
  "bytes",

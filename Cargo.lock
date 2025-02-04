@@ -212,9 +212,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "bytes"
-version = "1.9.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "325918d6fe32f23b19878fe4b34794ae41fc19ddbe53b10571a4874d44ffd39b"
+checksum = "f61dac84819c6588b558454b194026eb1f09c293b9036ae9b159e74e73ab6cf9"
 
 [[package]]
 name = "cc"
@@ -1185,18 +1185,18 @@ checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
 
 [[package]]
 name = "pin-project"
-version = "1.1.8"
+version = "1.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e2ec53ad785f4d35dac0adea7f7dc6f1bb277ad84a680c7afefeae05d1f5916"
+checksum = "dfe2e71e1471fe07709406bf725f710b02927c9c54b2b5b2ec0e8087d97c327d"
 dependencies = [
  "pin-project-internal",
 ]
 
 [[package]]
 name = "pin-project-internal"
-version = "1.1.8"
+version = "1.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d56a66c0c55993aa927429d0f8a0abfd74f084e4d9c192cffed01e418d83eefb"
+checksum = "f6e859e6e5bd50440ab63c47e3ebabc90f26251f7c73c3d3e837b74a1cc3fa67"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1372,7 +1372,7 @@ checksum = "3779b94aeb87e8bd4e834cee3650289ee9e0d5677f976ecdb6d219e5f4f6cd94"
 dependencies = [
  "rand_chacha 0.9.0",
  "rand_core 0.9.0",
- "zerocopy 0.8.14",
+ "zerocopy 0.8.15",
 ]
 
 [[package]]
@@ -1411,7 +1411,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b08f3c9802962f7e1b25113931d94f43ed9725bebc59db9d0c3e9a23b67e15ff"
 dependencies = [
  "getrandom 0.3.1",
- "zerocopy 0.8.14",
+ "zerocopy 0.8.15",
 ]
 
 [[package]]
@@ -1814,7 +1814,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.13.0"
-source = "git+https://github.com/teloxide/teloxide#8688ad02ccfac8cbee6aa98cae8160dedfb3f703"
+source = "git+https://github.com/teloxide/teloxide#ebb8878749acbc29869f0605d0642cfc94e496ec"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1839,7 +1839,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.10.1"
-source = "git+https://github.com/teloxide/teloxide#8688ad02ccfac8cbee6aa98cae8160dedfb3f703"
+source = "git+https://github.com/teloxide/teloxide#ebb8878749acbc29869f0605d0642cfc94e496ec"
 dependencies = [
  "bitflags 1.3.2",
  "bytes",
@@ -2582,11 +2582,11 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.14"
+version = "0.8.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a367f292d93d4eab890745e75a778da40909cab4d6ff8173693812f79c4a2468"
+checksum = "a1e101d4bc320b6f9abb68846837b70e25e380ca2f467ab494bf29fcc435fcc3"
 dependencies = [
- "zerocopy-derive 0.8.14",
+ "zerocopy-derive 0.8.15",
 ]
 
 [[package]]
@@ -2602,9 +2602,9 @@ dependencies = [
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.14"
+version = "0.8.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3931cb58c62c13adec22e38686b559c86a30565e16ad6e8510a337cedc611e1"
+checksum = "03a73df1008145cd135b3c780d275c57c3e6ba8324a41bd5e0008fe167c3bc7c"
 dependencies = [
  "proc-macro2",
  "quote",

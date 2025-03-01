@@ -10,7 +10,7 @@ Telegram bot to replace social media links with their improved preview variants.
 | [Reddit](https://reddit.com) | [FxReddit](https://github.com/MinnDevelopment/fxreddit) |
 | [TikTok](https://tiktok.com) | [fxTikTok](https://github.com/okdargy/fxtiktok) |
 | [Twitter](https://twitter.com) / [X](https://x.com) | [TweetFix](https://github.com/FixTweet/FixTweet) |
-| [YouTube Shorts](https://www.youtube.com/shorts) | Rewrite URL to normal YouTube player
+| [YouTube Shorts](https://www.youtube.com/shorts) | Rewrite URL to normal YouTube player |
 
 ### Running
 

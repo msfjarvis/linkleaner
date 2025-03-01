@@ -4,6 +4,7 @@ pub(crate) struct FixerState {
     pub(crate) instagram: bool,
     pub(crate) medium: bool,
     pub(crate) reddit: bool,
+    pub(crate) tiktok: bool,
     pub(crate) twitter: bool,
     pub(crate) youtube: bool,
 }
@@ -14,6 +15,7 @@ impl Default for FixerState {
             instagram: true,
             medium: true,
             reddit: true,
+            tiktok: true,
             twitter: true,
             youtube: true,
         }
@@ -27,6 +29,10 @@ impl FixerState {
 
     pub(crate) fn medium(&mut self, value: bool) {
         self.medium = value;
+    }
+
+    pub(crate) fn tiktok(&mut self, value: bool) {
+        self.tiktok = value;
     }
 
     pub(crate) fn twitter(&mut self, value: bool) {

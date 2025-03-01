@@ -1,3 +1,4 @@
+#![allow(clippy::too_many_lines)]
 #![feature(let_chains)]
 mod bot_ext;
 mod commands;
@@ -9,6 +10,7 @@ mod logging;
 mod medium;
 mod reddit;
 mod router_ext;
+mod tiktok;
 mod twitter;
 mod url;
 mod youtube;
@@ -117,6 +119,18 @@ async fn run() {
                 false
             })
             .endpoint(reddit::handler),
+        )
+        .branch(
+            dptree::filter(|msg| {
+                if should_match(&msg, &tiktok::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map.entry(chat_id).or_insert(FixerState::default()).tiktok;
+                }
+                false
+            })
+            .endpoint(tiktok::handler),
         )
         .branch(
             dptree::filter(|msg| {

@@ -44,6 +44,8 @@ pub(crate) enum Command {
     Start,
     #[command(description = "generate a twitchtheater link for the given streamers")]
     Ttv { names: String },
+    #[command(description = "toggle TikTok link replacement")]
+    TikTok { filter_state: FilterState },
     #[command(description = "toggle Twitter link replacement")]
     Twitter { filter_state: FilterState },
     #[command(description = "toggle YouTube link replacement")]
@@ -132,6 +134,17 @@ pub(crate) async fn handler(
                 "Reddit",
                 |state| state.reddit,
                 FixerState::reddit,
+            )
+            .await?;
+        }
+        Command::TikTok { filter_state } => {
+            flip_filter_state(
+                &bot,
+                &message,
+                filter_state,
+                "TikTok",
+                |state| state.tiktok,
+                FixerState::tiktok,
             )
             .await?;
         }

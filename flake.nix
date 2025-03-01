@@ -138,6 +138,7 @@
             cargo-release
             fenix.packages.${system}.rust-analyzer
             flyctl
+            git-cliff
             nil
             rustNightly
             stdenv.cc

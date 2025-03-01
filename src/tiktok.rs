@@ -9,10 +9,14 @@ use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
 use url::Host;
 
-pub const DOMAINS: [&str; 2] = ["tiktok.com", "www.tiktok.com"];
+pub const DOMAINS: [&str; 3] = ["tiktok.com", "www.tiktok.com", "vm.tiktok.com"];
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
-    add_route!(router, "/@{username}/video/{video_id}");
+    add_route!(router, "/{video_id}");
+    add_route!(router, "/t/{video_id}");
+    add_route!(router, "/{username}/video/{video_id}");
+    add_route!(router, "/{username}/photo/{video_id}");
+    add_route!(router, "/{username}/live");
     router
 });
 
@@ -43,7 +47,10 @@ mod test {
     #[test]
     fn test_url_matcher() {
         crate::url::verify_url_matcher(
-            &["https://www.tiktok.com/@houshoumarine_hololivejp/video/7472637264254864657"],
+            &[
+                "https://www.tiktok.com/@houshoumarine_hololivejp/video/7472637264254864657",
+                "https://vm.tiktok.com/ZNdJ1eWcb",
+            ],
             &super::URL_MATCHER,
         );
     }

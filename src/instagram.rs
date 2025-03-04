@@ -1,13 +1,7 @@
-use crate::{
-    bot_ext::BotExt,
-    router_ext::add_route,
-    url::{get_preview_url, get_urls_from_message, scrub_urls},
-    AsyncError,
-};
+use crate::{bot_ext::BotExt, router_ext::add_route, AsyncError};
 use matchit::Router;
 use std::sync::LazyLock;
-use teloxide::{types::Message, utils::html::link, Bot};
-use url::Host;
+use teloxide::{types::Message, Bot};
 
 pub const DOMAINS: [&str; 2] = ["instagram.com", "www.instagram.com"];
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
@@ -20,24 +14,8 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    let urls = get_urls_from_message(&message);
-    if !bot.is_self_message(&message)
-        && let Some(text) = scrub_urls(&message)
-        && let Some(ref user) = message.from
-        && let Some(url) = urls.first()
-        && let Some(host) = url.host()
-        && let Host::Domain(domain) = host
-        && let Ok(_) = URL_MATCHER.at(url.path())
-    {
-        let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-        bot.send_preview(
-            &message,
-            &text,
-            |msg| get_preview_url(msg, domain, "ddinstagram.com"),
-            |_| None,
-        )
+    bot.perform_replacement(&message, &URL_MATCHER, "ddinstagram.com", |_| None)
         .await?;
-    }
     Ok(())
 }
 

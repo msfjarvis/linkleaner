@@ -187,7 +187,7 @@ pub(crate) async fn handler(
                 bot.reply(&message, &error_message).await?;
             }
         },
-    };
+    }
     Ok(())
 }
 

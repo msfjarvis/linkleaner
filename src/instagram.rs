@@ -37,7 +37,7 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
             |_| None,
         )
         .await?;
-    };
+    }
     Ok(())
 }
 

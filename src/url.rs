@@ -9,7 +9,7 @@ pub(crate) fn get_urls_from_message(msg: &Message) -> Vec<Url> {
     {
         if entities[0].kind == MessageEntityKind::BotCommand {
             return Vec::new();
-        };
+        }
         let url_entities: Vec<_> = entities
             .iter()
             .filter(|entity| entity.kind == MessageEntityKind::Url)
@@ -48,7 +48,7 @@ pub(crate) fn get_preview_url(msg: &Message, from: &str, to: &str) -> Option<Str
 fn check_matches_domain(url: &Url, domains: &[&str]) -> bool {
     if let Some(host) = url.host_str() {
         let host = host.trim_start_matches("www.");
-        return domains.iter().any(|domain| host == *domain);
+        return domains.contains(&host);
     }
     false
 }

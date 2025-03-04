@@ -46,7 +46,7 @@ async fn run() {
     if let Err(e) = logging::init() {
         eprintln!("{e}");
         return;
-    };
+    }
     dotenv().ok();
 
     let bot = Bot::from_env();

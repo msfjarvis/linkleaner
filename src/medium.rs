@@ -1,4 +1,4 @@
-use crate::{bot_ext::BotExt, url::scrub_urls, AsyncError};
+use crate::{bot_ext::BotExt, get_urls_from_message, url::scrub_urls, AsyncError};
 use regex::Regex;
 use std::sync::LazyLock;
 use teloxide::{types::Message, utils::html::link, Bot};
@@ -14,7 +14,7 @@ static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    if let Some(text) = scrub_urls(&message)
+    if let Some(text) = scrub_urls(&message, &get_urls_from_message(&message))
         && let Some(ref user) = message.from
         && let Some(caps) = MATCH_REGEX.captures(&text)
         && let Some(full_url) = caps.get(0)

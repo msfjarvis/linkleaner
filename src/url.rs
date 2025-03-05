@@ -39,10 +39,8 @@ pub(crate) fn has_matching_urls(msg: &Message, domains: &[&str]) -> bool {
         .any(|url| check_matches_domain(url, domains))
 }
 
-pub(crate) fn get_preview_url(msg: &Message, from: &str, to: &str) -> Option<String> {
-    get_urls_from_message(msg)
-        .first()
-        .map(|url| String::from(url.clone()).replace(from, to))
+pub(crate) fn get_preview_url(url: &Url, from: &str, to: &str) -> String {
+    url.as_str().replace(from, to)
 }
 
 fn check_matches_domain(url: &Url, domains: &[&str]) -> bool {
@@ -53,9 +51,8 @@ fn check_matches_domain(url: &Url, domains: &[&str]) -> bool {
     false
 }
 
-pub(crate) fn scrub_urls(msg: &Message) -> Option<String> {
+pub(crate) fn scrub_urls(msg: &Message, urls: &Vec<Url>) -> Option<String> {
     if let Some(text) = msg.text() {
-        let urls = get_urls_from_message(msg);
         let mut final_text = text.to_owned();
         for url in urls {
             if let Some(query_str) = url.query() {

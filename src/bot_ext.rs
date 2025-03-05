@@ -108,7 +108,7 @@ impl BotExt for Bot {
     ) -> Result<(), AsyncError> {
         let urls = get_urls_from_message(message);
         if !self.is_self_message(message)
-            && let Some(text) = scrub_urls(message)
+            && let Some(text) = scrub_urls(message, &urls)
             && let Some(ref user) = message.from
             && let Some(url) = urls.first()
             && let Some(host) = url.host()
@@ -124,7 +124,7 @@ impl BotExt for Bot {
             };
             let preview_options = LinkPreviewOptions {
                 is_disabled: false,
-                url: get_preview_url(message, domain, preview_domain),
+                url: Some(get_preview_url(url, domain, preview_domain)),
                 prefer_small_media: false,
                 prefer_large_media: true,
                 show_above_text: false,

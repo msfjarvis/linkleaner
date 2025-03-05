@@ -38,13 +38,6 @@ pub(crate) trait BotExt {
         message: &Message,
         text: &str,
     ) -> Result<Message, RequestError>;
-    async fn send_preview<'a>(
-        &self,
-        message: &'a Message,
-        text: &str,
-        get_preview_url: impl Fn(&'a Message) -> Option<String>,
-        get_button_data: impl Fn(&'a Message) -> Option<(&'a str, Url)>,
-    ) -> Result<Message, RequestError>;
     async fn perform_replacement(
         &self,
         message: &Message,
@@ -95,53 +88,6 @@ impl BotExt for Bot {
         self.try_reply_silent(message, text).await
     }
 
-    async fn send_preview<'a>(
-        &self,
-        message: &'a Message,
-        text: &str,
-        get_preview_url: impl Fn(&'a Message) -> Option<String>,
-        get_button_data: impl Fn(&'a Message) -> Option<(&'a str, Url)>,
-    ) -> Result<Message, RequestError> {
-        let reply_button = match get_button_data(message) {
-            Some((label, url)) => Some(InlineKeyboardMarkup::new(vec![vec![
-                InlineKeyboardButton::url(label, url),
-            ]])),
-            _ => None,
-        };
-        let preview_options = LinkPreviewOptions {
-            is_disabled: false,
-            url: get_preview_url(message),
-            prefer_small_media: false,
-            prefer_large_media: true,
-            show_above_text: false,
-        };
-        let _del = self.delete_message(message.chat.id, message.id).await;
-        if let Some(reply) = message.reply_to_message() {
-            let send_message = self
-                .send_message(message.chat.id, text)
-                .reply_parameters(ReplyParameters::new(reply.id))
-                .link_preview_options(preview_options)
-                .parse_mode(ParseMode::Html);
-            let send_message = if let Some(reply_button) = reply_button {
-                send_message.reply_markup(reply_button)
-            } else {
-                send_message
-            };
-            send_message.await
-        } else {
-            let send_message = self
-                .send_message(message.chat.id, text)
-                .parse_mode(ParseMode::Html)
-                .link_preview_options(preview_options);
-            let send_message = if let Some(reply_button) = reply_button {
-                send_message.reply_markup(reply_button)
-            } else {
-                send_message
-            };
-            send_message.await
-        }
-    }
-
     fn is_self_message(&self, message: &Message) -> bool {
         if let Some(forwarder) = message.forward_from_user() {
             forwarder.id == *BOT_ID
@@ -170,12 +116,42 @@ impl BotExt for Bot {
             && let Ok(_) = url_matcher.at(url.path())
         {
             let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-            self.send_preview(
-                message,
-                &text,
-                |msg| get_preview_url(msg, domain, preview_domain),
-                |_| get_button_data(url),
-            )
+            let reply_button = match get_button_data(url) {
+                Some((label, url)) => Some(InlineKeyboardMarkup::new(vec![vec![
+                    InlineKeyboardButton::url(label, url),
+                ]])),
+                _ => None,
+            };
+            let preview_options = LinkPreviewOptions {
+                is_disabled: false,
+                url: get_preview_url(message, domain, preview_domain),
+                prefer_small_media: false,
+                prefer_large_media: true,
+                show_above_text: false,
+            };
+            let _del = self.delete_message(message.chat.id, message.id).await;
+            if let Some(reply) = message.reply_to_message() {
+                let send_message = self
+                    .send_message(message.chat.id, text)
+                    .reply_parameters(ReplyParameters::new(reply.id))
+                    .link_preview_options(preview_options)
+                    .parse_mode(ParseMode::Html);
+                if let Some(reply_button) = reply_button {
+                    send_message.reply_markup(reply_button)
+                } else {
+                    send_message
+                }
+            } else {
+                let send_message = self
+                    .send_message(message.chat.id, text)
+                    .parse_mode(ParseMode::Html)
+                    .link_preview_options(preview_options);
+                if let Some(reply_button) = reply_button {
+                    send_message.reply_markup(reply_button)
+                } else {
+                    send_message
+                }
+            }
             .await?;
         }
         Ok(())

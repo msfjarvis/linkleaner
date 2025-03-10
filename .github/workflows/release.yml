@@ -79,6 +79,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.POST_RELEASE_GH_TOKEN }}
         CHANGELOG: ${{ steps.changelog_reader.outputs.changes }}
+        GH_TOKEN: ${{ github.token }}
       run: |
         NOTES_FILE="$(mktemp)"
         printf "%s\n" "${CHANGELOG}" > "${NOTES_FILE}"

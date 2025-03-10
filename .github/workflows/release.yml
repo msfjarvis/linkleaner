@@ -30,7 +30,7 @@ jobs:
           trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
 
     - name: Restore and cache Nix store
-      uses: nix-community/cache-nix-action@dab0514428ae3988852b7787a6d86a6fc571cc9d # v6.0.0
+      uses: nix-community/cache-nix-action@895604057708c4b2133c43510e6d40a8b294d4ac # v6.1.0
       with:
         primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
         restore-prefixes-first-match: nix-${{ runner.os }}-

@@ -2,11 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [2.7.2] - 2025-03-10
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update rust crate serde_json to v1.0.140
+- Upgrade to Rust nightly-2025-03-04
+- *(deps)* Update rust crate tokio to v1.44.0
+- *(deps)* Update serde monorepo to v1.0.219
+- *(rust)* Upgrade to 2024 edition
+
+### 🚜 Refactor
+
+- Commonize URL replacement logic
+- Inline `BotExt#send_preview`
+- Reduce calls to `get_urls_from_message`
 
 ### ⚙️ Miscellaneous Tasks
 
 - *(nix)* Add `git-cliff` to devshell
+- Beef up README
+- *(ci)* Automatically create GitHub releases
 
 ## [2.7.1] - 2025-03-01
 

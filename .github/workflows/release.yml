@@ -18,6 +18,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      with:
+        fetch-depth: 0
 
     - name: Install Nix
       uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
@@ -64,3 +66,23 @@ jobs:
       shell: bash
       run: |
         nix run .#ghContainer.copyToRegistry
+
+    - name: Get changelog entry
+      id: changelog_reader
+      uses: mindsers/changelog-reader-action@32aa5b4c155d76c94e4ec883a223c947b2f02656 # v2.2.3
+      with:
+        version: ${{ env.VERSION }}
+        path: ./CHANGELOG.md
+
+    - name: Create GitHub release
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.POST_RELEASE_GH_TOKEN }}
+        CHANGELOG: ${{ steps.changelog_reader.outputs.changes }}
+      run: |
+        NOTES_FILE="$(mktemp)"
+        printf "%s\n" "${CHANGELOG}" > "${NOTES_FILE}"
+
+        VERSION="$(git tag -l | tail -n1)"
+
+        gh release create "${VERSION}" --notes-file "${NOTES_FILE}" --title "${VERSION}"

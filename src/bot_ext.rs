@@ -1,11 +1,11 @@
 use crate::{
-    get_urls_from_message,
+    AsyncError, get_urls_from_message,
     url::{get_preview_url, scrub_urls},
-    AsyncError,
 };
 use matchit::Router;
 use std::sync::LazyLock;
 use teloxide::{
+    Bot, RequestError,
     payloads::SendMessageSetters,
     prelude::Requester,
     types::{
@@ -13,7 +13,6 @@ use teloxide::{
         ParseMode, ReplyParameters, UserId,
     },
     utils::html::link,
-    Bot, RequestError,
 };
 use url::{Host, Url};
 

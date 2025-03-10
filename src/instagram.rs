@@ -1,7 +1,7 @@
-use crate::{bot_ext::BotExt, router_ext::add_route, AsyncError};
+use crate::{AsyncError, bot_ext::BotExt, router_ext::add_route};
 use matchit::Router;
 use std::sync::LazyLock;
-use teloxide::{types::Message, Bot};
+use teloxide::{Bot, types::Message};
 
 pub const DOMAINS: [&str; 2] = ["instagram.com", "www.instagram.com"];
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {

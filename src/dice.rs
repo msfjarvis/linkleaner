@@ -1,7 +1,7 @@
-use crate::{bot_ext::BotExt, AsyncError};
+use crate::{AsyncError, bot_ext::BotExt};
 use regex::Regex;
 use std::sync::LazyLock;
-use teloxide::{types::Message, Bot};
+use teloxide::{Bot, types::Message};
 
 static MATCH_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^/(\d+)d(\d*)").unwrap());
 

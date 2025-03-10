@@ -1,9 +1,9 @@
 mod model;
 
-use crate::{bot_ext::BotExt, url::get_urls_from_message, AsyncError};
+use crate::{AsyncError, bot_ext::BotExt, url::get_urls_from_message};
 use model::AMPResponse;
 use std::str::FromStr;
-use teloxide::{types::Message, utils::html::link, Bot};
+use teloxide::{Bot, types::Message, utils::html::link};
 use tracing::debug;
 use url::Url;
 

@@ -1,7 +1,7 @@
-use crate::{bot_ext::BotExt, router_ext::add_route, url::get_urls_from_message, AsyncError};
+use crate::{AsyncError, bot_ext::BotExt, router_ext::add_route, url::get_urls_from_message};
 use matchit::Router;
 use std::sync::LazyLock;
-use teloxide::{types::Message, utils::html::link, Bot};
+use teloxide::{Bot, types::Message, utils::html::link};
 use url::Host;
 
 pub const DOMAINS: [&str; 2] = ["youtube.com", "www.youtube.com"];

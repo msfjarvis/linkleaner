@@ -104,15 +104,10 @@
             ;
         };
 
-        # Expose the flyctl and skopeo packages for use in CI
-        packages = { inherit (pkgs) flyctl skopeo; };
+        # Expose the flyctl package for use in CI
+        packages = { inherit (pkgs) flyctl; };
         packages.default = linkleaner;
         packages.container = nix2containerPkgs.nix2container.buildImage {
-          name = "registry.fly.io/linkleaner";
-          tag = "latest";
-          config.entrypoint = [ "${linkleaner}/bin/linkleaner" ];
-        };
-        packages.ghContainer = nix2containerPkgs.nix2container.buildImage {
           name = "ghcr.io/msfjarvis/linkleaner";
           tag = "latest";
           config.entrypoint = [ "${linkleaner}/bin/linkleaner" ];

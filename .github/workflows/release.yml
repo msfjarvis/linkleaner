@@ -40,13 +40,6 @@ jobs:
         purge-created: 0
         purge-primary-key: never
 
-    - name: Log in to Fly.io Container Registry
-      uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
-      with:
-        registry: registry.fly.io
-        username: x
-        password: ${{ secrets.FLY_API_TOKEN }}
-
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
       with:
@@ -54,18 +47,17 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Build and publish image to GitHub Container Registry
+      shell: bash
+      run: |
+        nix run .#container.copyToRegistry
+
     - name: Deploy to fly.io
       shell: bash
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |
-        nix run .#container.copyToRegistry
         nix run .#flyctl deploy
-
-    - name: Build and publish image to GitHub Container Registry
-      shell: bash
-      run: |
-        nix run .#ghContainer.copyToRegistry
 
     - name: Get changelog entry
       id: changelog_reader

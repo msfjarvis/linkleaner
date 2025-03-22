@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.3] - 2025-03-22
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update rust crate reqwest to v0.12.13 (#63)
+- *(deps)* Update rust crate reqwest to v0.12.14
+- *(deps)* Update rust crate tokio to v1.44.1
+- *(deps)* Update rust crate reqwest to v0.12.15
+
+### 🚜 Refactor
+
+- *(build)* Only deploy images to ghcr.io
+
+### ⚙️ Miscellaneous Tasks
+
+- *(ci)* Add missing `GH_TOKEN`
+
 ## [2.7.2] - 2025-03-10
 
 ### 🐛 Bug Fixes

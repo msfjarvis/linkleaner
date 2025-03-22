@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.4] - 2025-03-22
+
+### 🐛 Bug Fixes
+
+- *(ci)* Allow release workflow to create releases
+
 ## [2.7.3] - 2025-03-22
 
 ### 🐛 Bug Fixes

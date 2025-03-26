@@ -1331,9 +1331,9 @@ dependencies = [
 
 [[package]]
 name = "quinn-udp"
-version = "0.5.10"
+version = "0.5.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e46f3055866785f6b92bc6164b76be02ca8f2eb4b002c0354b28cf4c119e5944"
+checksum = "541d0f57c6ec747a90738a52741d3221f7960e8ac2f0ff4b1a63680e033b4ab5"
 dependencies = [
  "cfg_aliases",
  "libc",
@@ -1586,9 +1586,9 @@ dependencies = [
 
 [[package]]
 name = "rustls-webpki"
-version = "0.103.0"
+version = "0.103.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0aa4eeac2588ffff23e9d7a7e9b3f971c5fb5b7ebc9452745e0c232c64f83b2f"
+checksum = "fef8b8769aaccf73098557a87cd1816b4f9c7c16811c9c77142aa695c16f2c03"
 dependencies = [
  "ring",
  "rustls-pki-types",
@@ -1800,7 +1800,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.13.0"
-source = "git+https://github.com/teloxide/teloxide#53a69e8423e3d5903192500d10a413bf22d1abc7"
+source = "git+https://github.com/teloxide/teloxide#4b8793ab52b1bf22afbb1d2c3fe15670e6f6363c"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1825,7 +1825,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.10.1"
-source = "git+https://github.com/teloxide/teloxide#53a69e8423e3d5903192500d10a413bf22d1abc7"
+source = "git+https://github.com/teloxide/teloxide#4b8793ab52b1bf22afbb1d2c3fe15670e6f6363c"
 dependencies = [
  "bitflags",
  "bytes",
@@ -1855,7 +1855,7 @@ dependencies = [
 [[package]]
 name = "teloxide-macros"
 version = "0.8.0"
-source = "git+https://github.com/teloxide/teloxide#53a69e8423e3d5903192500d10a413bf22d1abc7"
+source = "git+https://github.com/teloxide/teloxide#4b8793ab52b1bf22afbb1d2c3fe15670e6f6363c"
 dependencies = [
  "heck",
  "proc-macro2",

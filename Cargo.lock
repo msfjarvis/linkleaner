@@ -1728,9 +1728,9 @@ checksum = "7fcf8323ef1faaee30a44a340193b1ac6814fd9b7b4e88e9d4519a3e4abe1cfd"
 
 [[package]]
 name = "socket2"
-version = "0.5.8"
+version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c970269d99b64e60ec3bd6ad27270092a5394c4e309314b18ae3fe575695fbe8"
+checksum = "4f5fd57c80058a56cf5c777ab8a126398ece8e442983605d280a44ce79d0edef"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
@@ -1799,8 +1799,8 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 
 [[package]]
 name = "teloxide"
-version = "0.14.0"
-source = "git+https://github.com/teloxide/teloxide#9d66046bebf30835251721e8a878f5e4d814aa60"
+version = "0.14.1"
+source = "git+https://github.com/teloxide/teloxide#08694d0c8cc0b11837cf03873a4948717a4c8e4a"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1824,9 +1824,8 @@ dependencies = [
 
 [[package]]
 name = "teloxide-core"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b38b050f6f047f5fcc21a2603d5e20633c731ca71ca2096028b8a6680edee031"
+version = "0.11.1"
+source = "git+https://github.com/teloxide/teloxide#08694d0c8cc0b11837cf03873a4948717a4c8e4a"
 dependencies = [
  "bitflags",
  "bytes",

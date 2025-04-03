@@ -1291,6 +1291,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "psm"
+version = "0.1.25"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f58e5423e24c18cc840e1c98370b3993c6649cd1678b4d24318bcf0a083cbe88"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "quinn"
 version = "0.11.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1744,6 +1753,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
+name = "stacker"
+version = "0.1.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "601f9201feb9b09c00266478bf459952b9ef9a6b94edb2f21eba14ab681a60a9"
+dependencies = [
+ "cc",
+ "cfg-if",
+ "libc",
+ "psm",
+ "windows-sys 0.59.0",
+]
+
+[[package]]
 name = "strsim"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1801,7 +1823,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.14.1"
-source = "git+https://github.com/teloxide/teloxide#e1c8fef11548a4c4e60d01a32d7f52cd8daba2ab"
+source = "git+https://github.com/teloxide/teloxide#f48e47953f480439833d12722d0b60e49478ec64"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1826,7 +1848,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.11.1"
-source = "git+https://github.com/teloxide/teloxide#e1c8fef11548a4c4e60d01a32d7f52cd8daba2ab"
+source = "git+https://github.com/teloxide/teloxide#f48e47953f480439833d12722d0b60e49478ec64"
 dependencies = [
  "bitflags",
  "bytes",
@@ -1844,6 +1866,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
+ "stacker",
  "take_mut",
  "takecell",
  "thiserror",

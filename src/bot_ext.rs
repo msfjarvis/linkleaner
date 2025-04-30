@@ -24,7 +24,29 @@ static BOT_ID: LazyLock<UserId> = LazyLock::new(|| {
     UserId(id)
 });
 
-#[autotrait::autotrait]
+pub(crate) trait BotExt {
+    async fn reply(&self, message: &Message, text: &str) -> Result<Message, RequestError>;
+    async fn try_reply(&self, message: &Message, text: &str) -> Result<Message, RequestError>;
+    async fn try_reply_silent(
+        &self,
+        message: &Message,
+        text: &str,
+    ) -> Result<Message, RequestError>;
+    async fn replace_chat_message(
+        &self,
+        message: &Message,
+        text: &str,
+    ) -> Result<Message, RequestError>;
+    async fn perform_replacement(
+        &self,
+        message: &Message,
+        url_matcher: &Router<()>,
+        preview_domain: &str,
+        get_button_data: impl Fn(&Url) -> Option<(&str, Url)>,
+    ) -> Result<(), AsyncError>;
+    fn is_self_message(&self, message: &Message) -> bool;
+}
+
 impl BotExt for Bot {
     async fn reply(&self, message: &Message, text: &str) -> Result<Message, RequestError> {
         self.send_message(message.chat.id, text)

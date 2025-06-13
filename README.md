@@ -5,7 +5,7 @@ Telegram bot to replace social media links with their improved preview variants.
 | Link type | Fix mechanism |
 |-----------|---------------|
 | [Accelerated Mobile Pages (AMP)](https://amp.dev) | [AmputatorBot](https://www.amputatorbot.com/) |
-| [Instagram](https://instagram.com) | [InstaFix](https://github.com/Wikidepia/InstaFix) |
+| [Instagram](https://instagram.com) | [kkinstagram](https://kkinstagram.com/) |
 | [Medium](https://medium.com) | [LibMedium](https://git.batsense.net/realaravinth/libmedium) |
 | [Reddit](https://reddit.com) | [FxReddit](https://github.com/MinnDevelopment/fxreddit) |
 | [TikTok](https://tiktok.com) | [fxTikTok](https://github.com/okdargy/fxtiktok) |

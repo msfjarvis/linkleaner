@@ -18,7 +18,6 @@
 
   inputs.nix2container.url = "github:nlewo/nix2container";
   inputs.nix2container.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nix2container.inputs.flake-utils.follows = "flake-utils";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.flake-utils.inputs.systems.follows = "systems";

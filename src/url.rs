@@ -100,7 +100,7 @@ mod test {
 
     #[test]
     fn ignores_substring_match() {
-        let url = "https://www.ddinstagram.com";
+        let url = "https://www.kkinstagram.com";
         let domains = ["instagram.com"];
         let url = Url::parse(url).unwrap();
         assert!(!check_matches_domain(&url, &domains));

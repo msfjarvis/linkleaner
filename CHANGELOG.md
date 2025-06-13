@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.8.0] - 2025-06-13
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update rust crate tokio to v1.44.2
+- *(deps)* Update rust crate rand to v0.9.1
+- *(deps)* Update rust crate tokio to v1.45.0
+- *(deps)* Update rust crate tokio to v1.45.1
+- *(deps)* Update rust crate reqwest to v0.12.16
+- *(deps)* Update rust crate reqwest to v0.12.18
+- *(deps)* Update rust crate reqwest to v0.12.19
+- Drop removed input override
+- Remove nil from packages
+
+### 🚜 Refactor
+
+- Use `autotrait`
+- *(instagram)* Use kkinstagram.com
+
+### ⚙️ Miscellaneous Tasks
+
+- *(nix)* Use lix-project fork of flake-compat
+
 ## [2.7.4] - 2025-03-22
 
 ### 🐛 Bug Fixes

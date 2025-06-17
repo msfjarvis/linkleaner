@@ -1592,9 +1592,9 @@ checksum = "357703d41365b4b27c590e3ed91eabb1b663f07c4c084095e60cbed4362dff0d"
 
 [[package]]
 name = "rustls"
-version = "0.23.27"
+version = "0.23.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "730944ca083c1c233a75c09f199e973ca499344a2b7ba9e755c457e86fb4a321"
+checksum = "7160e3e10bf4535308537f3c4e1641468cd0e485175d6163087c0393c7d46643"
 dependencies = [
  "once_cell",
  "ring",
@@ -1853,7 +1853,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.15.0"
-source = "git+https://github.com/teloxide/teloxide#c1e9e855035bdedfd6b51064db702a0a32ef6296"
+source = "git+https://github.com/teloxide/teloxide#5c375d0f87b54b874b7e0b119b7412f47d50e9af"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1878,7 +1878,7 @@ dependencies = [
 [[package]]
 name = "teloxide-core"
 version = "0.11.2"
-source = "git+https://github.com/teloxide/teloxide#c1e9e855035bdedfd6b51064db702a0a32ef6296"
+source = "git+https://github.com/teloxide/teloxide#5c375d0f87b54b874b7e0b119b7412f47d50e9af"
 dependencies = [
  "bitflags",
  "bytes",
@@ -1909,7 +1909,7 @@ dependencies = [
 [[package]]
 name = "teloxide-macros"
 version = "0.9.0"
-source = "git+https://github.com/teloxide/teloxide#c1e9e855035bdedfd6b51064db702a0a32ef6296"
+source = "git+https://github.com/teloxide/teloxide#5c375d0f87b54b874b7e0b119b7412f47d50e9af"
 dependencies = [
  "heck",
  "proc-macro2",

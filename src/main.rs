@@ -1,5 +1,4 @@
 #![allow(clippy::too_many_lines)]
-#![feature(let_chains)]
 mod bot_ext;
 mod commands;
 mod deamp;

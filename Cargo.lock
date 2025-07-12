@@ -1876,8 +1876,8 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 
 [[package]]
 name = "teloxide"
-version = "0.16.0"
-source = "git+https://github.com/teloxide/teloxide#5389dd90195d2e1e505b3a6042edc843c5bfd9a2"
+version = "0.17.0"
+source = "git+https://github.com/teloxide/teloxide#d912647f82ed3ce10cbfe7d1aead81a43ae8da41"
 dependencies = [
  "aquamarine",
  "bytes",
@@ -1901,8 +1901,9 @@ dependencies = [
 
 [[package]]
 name = "teloxide-core"
-version = "0.12.0"
-source = "git+https://github.com/teloxide/teloxide#5389dd90195d2e1e505b3a6042edc843c5bfd9a2"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f7a34ca8e971fa892e633858c07547fe138ef4a02e4a4eaa1d35e517d6e0bc4"
 dependencies = [
  "bitflags",
  "bytes",
@@ -1933,7 +1934,8 @@ dependencies = [
 [[package]]
 name = "teloxide-macros"
 version = "0.10.0"
-source = "git+https://github.com/teloxide/teloxide#5389dd90195d2e1e505b3a6042edc843c5bfd9a2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "300fadcaf0c182f19b5ca10bf23a45dc9a48925f00c704405fd90ee2c03942f9"
 dependencies = [
  "heck",
  "proc-macro2",

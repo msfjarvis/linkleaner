@@ -1877,7 +1877,7 @@ checksum = "20f34339676cdcab560c9a82300c4c2581f68b9369aedf0fae86f2ff9565ff3e"
 [[package]]
 name = "teloxide"
 version = "0.17.0"
-source = "git+https://github.com/teloxide/teloxide#d912647f82ed3ce10cbfe7d1aead81a43ae8da41"
+source = "git+https://github.com/teloxide/teloxide#aba8235e2c0235e11c5a77f7cc245b1c34877f01"
 dependencies = [
  "aquamarine",
  "bytes",

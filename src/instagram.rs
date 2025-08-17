@@ -14,7 +14,7 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    bot.perform_replacement(&message, &URL_MATCHER, "kkinstagram.com", |_| None)
+    bot.perform_replacement(&message, &URL_MATCHER, "instagramez.com", |_| None)
         .await?;
     Ok(())
 }

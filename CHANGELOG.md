@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.8.1] - 2025-08-18
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update rust crate reqwest to v0.12.20
+- *(rust)* Upgrade to Rust 1.88.0
+- *(deps)* Update rust crate reqwest to v0.12.21
+- *(deps)* Update rust crate reqwest to v0.12.22
+- *(deps)* Update rust crate tokio to v1.46.0
+- *(deps)* Update rust crate tokio to v1.46.1
+- *(ci)* Set token permissions
+- *(deps)* Update rust crate serde_json to v1.0.141
+- *(deps)* Update rust crate rand to v0.9.2
+- *(deps)* Update rust crate tokio to v1.47.0
+- *(deps)* Update rust crate serde_json to v1.0.142
+- *(deps)* Update rust crate tokio to v1.47.1
+- *(deps)* Update rust crate reqwest to v0.12.23
+
+### 🚜 Refactor
+
+- *(instagram)* Use instagramez.com
+
 ## [2.8.0] - 2025-06-13
 
 ### 🐛 Bug Fixes

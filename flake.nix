@@ -54,7 +54,7 @@
         commonArgs = {
           src = craneLib.cleanCargoSource ./.;
           buildInputs = [ ];
-          nativeBuildInputs = [ ];
+          nativeBuildInputs = [ pkgs.darwin.libiconv ];
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
@@ -115,6 +115,10 @@
         apps.default = flake-utils.lib.mkApp { drv = linkleaner; };
 
         devShells.default = pkgs.devshell.mkShell {
+          imports = [
+            "${devshell}/extra/language/c.nix"
+            "${devshell}/extra/language/rust.nix"
+          ];
           bash = {
             interactive = "";
           };
@@ -136,6 +140,9 @@
             rustNightly
             stdenv.cc
           ];
+
+          language.c.libraries = commonArgs.nativeBuildInputs;
+          language.rust.enableDefaultToolchain = false;
         };
       }
     );

@@ -9,6 +9,7 @@ mod logging;
 mod medium;
 mod reddit;
 mod router_ext;
+mod threads;
 mod tiktok;
 mod twitter;
 mod url;
@@ -130,6 +131,18 @@ async fn run() {
                 false
             })
             .endpoint(tiktok::handler),
+        )
+        .branch(
+            dptree::filter(|msg| {
+                if should_match(&msg, &threads::DOMAINS)
+                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
+                    && let Some(chat_id) = msg.chat_id()
+                {
+                    return map.entry(chat_id).or_insert(FixerState::default()).threads;
+                }
+                false
+            })
+            .endpoint(threads::handler),
         )
         .branch(
             dptree::filter(|msg| {

@@ -7,6 +7,7 @@ pub(crate) struct FixerState {
     pub(crate) tiktok: bool,
     pub(crate) twitter: bool,
     pub(crate) youtube: bool,
+    pub(crate) threads: bool,
 }
 
 impl Default for FixerState {
@@ -18,6 +19,7 @@ impl Default for FixerState {
             tiktok: true,
             twitter: true,
             youtube: true,
+            threads: true,
         }
     }
 }
@@ -45,5 +47,9 @@ impl FixerState {
 
     pub(crate) fn reddit(&mut self, value: bool) {
         self.reddit = value;
+    }
+
+    pub(crate) fn threads(&mut self, value: bool) {
+        self.threads = value;
     }
 }

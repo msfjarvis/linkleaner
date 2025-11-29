@@ -56,6 +56,8 @@ pub(crate) enum Command {
         aliases = ["roll", "d"]
     )]
     Dice { size: String },
+    #[command(description = "toggle Threads link replacement")]
+    Threads { filter_state: FilterState },
 }
 
 async fn check_authorized(bot: &Bot, message: &Message) -> Result<bool, AsyncError> {
@@ -187,6 +189,17 @@ pub(crate) async fn handler(
                 bot.reply(&message, &error_message).await?;
             }
         },
+        Command::Threads { filter_state } => {
+            flip_filter_state(
+                &bot,
+                &message,
+                filter_state,
+                "Threads",
+                |state| state.threads,
+                FixerState::threads,
+            )
+            .await?;
+        }
     }
     Ok(())
 }

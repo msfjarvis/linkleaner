@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.9.0] - 2025-11-29
+
+### 🚀 Features
+
+- Add fixer for threads
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update rust crate serde_json to v1.0.143
+- *(deps)* Update rust crate url to v2.5.6
+- *(deps)* Update rust crate url to v2.5.7
+- *(deps)* Update rust crate regex to v1.11.2
+- *(deps)* Update rust crate tracing-subscriber to v0.3.20
+- *(deps)* Update rust crate serde_json to v1.0.144
+- *(build)* Upgrade to Rust 1.89.0
+- *(deps)* Update rust crate serde_json to v1.0.145
+- *(deps)* Update serde monorepo to v1.0.223
+- *(deps)* Update serde monorepo to v1.0.225
+- *(deps)* Update serde monorepo to v1.0.226
+- *(deps)* Update rust crate regex to v1.11.3
+- *(deps)* Update rust crate matchit to 0.9.0
+- *(deps)* Update rust crate console-subscriber to 0.5.0
+- Upgrade to Rust 1.91.1
+- Update Instagram matchers and domain
+- Update Tiktok matcher
+- Updated Reddit matchers and domain
+- *(nix)* Add iconv dependency for darwin
+
 ## [2.8.1] - 2025-08-18
 
 ### 🐛 Bug Fixes

@@ -8,9 +8,10 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
     add_route!(router, "/{video_id}");
     add_route!(router, "/t/{video_id}");
-    add_route!(router, "/{username}/video/{video_id}");
-    add_route!(router, "/{username}/photo/{video_id}");
-    add_route!(router, "/{username}/live");
+    add_route!(router, "/embed/{video_id}");
+    add_route!(router, "/@{username}/video/{video_id}");
+    add_route!(router, "/@{username}/photo/{video_id}");
+    add_route!(router, "/@{username}/live");
     router
 });
 

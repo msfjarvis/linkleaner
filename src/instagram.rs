@@ -8,13 +8,19 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
     add_route!(router, "/p/{id}");
     add_route!(router, "/reel/{id}");
+    add_route!(router, "/reels/{id}");
     add_route!(router, "/tv/{id}");
+    add_route!(router, "/{username}/p/{id}");
     add_route!(router, "/{username}/reel/{id}");
+    add_route!(router, "/{username}/reels/{id}");
+    add_route!(router, "/share/p/{id}");
+    add_route!(router, "/share/reel/{id}");
+    add_route!(router, "/share/reels/{id}");
     router
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    bot.perform_replacement(&message, &URL_MATCHER, "instagramez.com", |_| None)
+    bot.perform_replacement(&message, &URL_MATCHER, "fxstagram.com", |_| None)
         .await?;
     Ok(())
 }

@@ -5,10 +5,27 @@ use teloxide::{Bot, types::Message};
 
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
     let mut router = Router::new();
-    add_route!(router, "/r/{subreddit}/comments/{id}/{slug}/{comment}");
-    add_route!(router, "/r/{subreddit}/comments/{id}/{slug}");
-    add_route!(router, "/r/{subreddit}/comments/{id}");
-    add_route!(router, "/r/{subreddit}/s/{id}");
+    add_route!(router, "/r/{username}/comments/{id}/{slug}/{comment}");
+    add_route!(router, "/r/{username}/comments/{id}/{slug}");
+    add_route!(router, "/r/{username}/comments/{id}");
+    add_route!(router, "/r/{username}/s/{id}/{slug}/{comment}");
+    add_route!(router, "/r/{username}/s/{id}/{slug}");
+    add_route!(router, "/r/{username}/s/{id}");
+
+    add_route!(router, "/u/{username}/comments/{id}/{slug}/{comment}");
+    add_route!(router, "/u/{username}/comments/{id}/{slug}");
+    add_route!(router, "/u/{username}/comments/{id}");
+    add_route!(router, "/u/{username}/s/{id}/{slug}/{comment}");
+    add_route!(router, "/u/{username}/s/{id}/{slug}");
+    add_route!(router, "/u/{username}/s/{id}");
+
+    add_route!(router, "/user/{username}/comments/{id}/{slug}/{comment}");
+    add_route!(router, "/user/{username}/comments/{id}/{slug}");
+    add_route!(router, "/user/{username}/comments/{id}");
+    add_route!(router, "/user/{username}/s/{id}/{slug}/{comment}");
+    add_route!(router, "/user/{username}/s/{id}/{slug}");
+    add_route!(router, "/user/{username}/s/{id}");
+
     add_route!(router, "/{id}");
     router
 });
@@ -16,7 +33,7 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
 pub const DOMAINS: [&str; 3] = ["reddit.com", "redd.it", "www.reddit.com"];
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    bot.perform_replacement(&message, &URL_MATCHER, "rxddit.com", |_| None)
+    bot.perform_replacement(&message, &URL_MATCHER, "vxreddit.com", |_| None)
         .await?;
     Ok(())
 }

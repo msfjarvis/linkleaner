@@ -102,7 +102,7 @@ jobs:
           --insecure-policy \
           copy \
           docker-archive:./containers/container-x86_64-linux/result \
-          docker://registry.fly.io/linkleaner:latest-amd64 \
+          docker://registry.fly.io/zeppelinker:latest-amd64 \
           --dest-creds x:"$FLY_API_TOKEN"
 
         # Push aarch64 image
@@ -110,15 +110,15 @@ jobs:
           --insecure-policy \
           copy \
           docker-archive:./containers/container-aarch64-linux/result \
-          docker://registry.fly.io/linkleaner:latest-arm64 \
+          docker://registry.fly.io/zeppelinker:latest-arm64 \
           --dest-creds x:"$FLY_API_TOKEN"
 
         # Create and push a multi-arch manifest list combining both arch images
         docker login registry.fly.io --username x --password-stdin <<< "$FLY_API_TOKEN"
-        docker manifest create registry.fly.io/linkleaner:latest \
-          registry.fly.io/linkleaner:latest-amd64 \
-          registry.fly.io/linkleaner:latest-arm64
-        docker manifest push registry.fly.io/linkleaner:latest
+        docker manifest create registry.fly.io/zeppelinker:latest \
+          registry.fly.io/zeppelinker:latest-amd64 \
+          registry.fly.io/zeppelinker:latest-arm64
+        docker manifest push registry.fly.io/zeppelinker:latest
 
         # Deploy using flyctl (picks the right arch from the :latest manifest)
         nix run .#flyctl deploy
@@ -134,7 +134,7 @@ jobs:
           --insecure-policy \
           copy \
           docker-archive:./containers/gh-container-x86_64-linux/result \
-          docker://ghcr.io/msfjarvis/linkleaner:latest-amd64 \
+          docker://ghcr.io/msfjarvis/zeppelinker:latest-amd64 \
           --dest-creds "$GITHUB_ACTOR":"$GITHUB_TOKEN"
 
         # Push aarch64 image
@@ -142,15 +142,15 @@ jobs:
           --insecure-policy \
           copy \
           docker-archive:./containers/gh-container-aarch64-linux/result \
-          docker://ghcr.io/msfjarvis/linkleaner:latest-arm64 \
+          docker://ghcr.io/msfjarvis/zeppelinker:latest-arm64 \
           --dest-creds "$GITHUB_ACTOR":"$GITHUB_TOKEN"
 
         # Create and push a multi-arch manifest list combining both arch images
         docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin <<< "$GITHUB_TOKEN"
-        docker manifest create ghcr.io/msfjarvis/linkleaner:latest \
-          ghcr.io/msfjarvis/linkleaner:latest-amd64 \
-          ghcr.io/msfjarvis/linkleaner:latest-arm64
-        docker manifest push ghcr.io/msfjarvis/linkleaner:latest
+        docker manifest create ghcr.io/msfjarvis/zeppelinker:latest \
+          ghcr.io/msfjarvis/zeppelinker:latest-amd64 \
+          ghcr.io/msfjarvis/zeppelinker:latest-arm64
+        docker manifest push ghcr.io/msfjarvis/zeppelinker:latest
 
     - name: Get changelog entry
       id: changelog_reader

@@ -4,7 +4,7 @@ use std::sync::LazyLock;
 use teloxide::{Bot, types::Message, utils::html::link};
 
 static PROVIDER: LazyLock<String> = LazyLock::new(|| {
-    std::env::var("LINKLEANER_MEDIUM_PROVIDER").unwrap_or_else(|_| "md.vern.cc".to_string())
+    std::env::var("zeppelinker_MEDIUM_PROVIDER").unwrap_or_else(|_| "md.vern.cc".to_string())
 });
 
 #[allow(dead_code)] // This is used in the tests

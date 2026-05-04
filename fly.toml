@@ -1,7 +1,7 @@
-app = "linkleaner"
+app = "zeppelinker"
 primary_region = "ams"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 
 [build]
-image = "registry.fly.io/linkleaner:latest"
+image = "registry.fly.io/zeppelinker:latest"

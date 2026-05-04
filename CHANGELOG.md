@@ -302,7 +302,7 @@ All notable changes to this project will be documented in this file.
 ### 🐛 Bug Fixes
 
 - *(flakes)* Expose `skopeo` from Nixpkgs
-- *(ci)* Run Skopeo from linkleaner flake
+- *(ci)* Run Skopeo from zeppelinker flake
 - Allow checking fixer status without admin rights
 - *(deps)* Update rust crate tokio to v1.41.1
 - Prevent bot from fixing its own messages
@@ -888,7 +888,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🚜 Refactor
 
-- `SendLinkleanerMessage` -> `TryReplyMessage`
+- `SendzeppelinkerMessage` -> `TryReplyMessage`
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -1083,7 +1083,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🚀 Features
 
-- Rename to linkleaner
+- Rename to zeppelinker
 - *(ci)* Enable writing back to Cachix
 
 ### 🐛 Bug Fixes
@@ -1093,7 +1093,7 @@ All notable changes to this project will be documented in this file.
 
 ### ⚙️ Miscellaneous Tasks
 
-- *(nix)* Remove `linkleaner-doc` target
+- *(nix)* Remove `zeppelinker-doc` target
 - *(nix)* Bump flake inputs
 
 ## [0.20.2] - 2022-11-24

@@ -4,7 +4,7 @@ use std::sync::LazyLock;
 use teloxide::{Bot, types::Message};
 
 static PROVIDER: LazyLock<String> = LazyLock::new(|| {
-    std::env::var("LINKLEANER_INSTAGRAM_PROVIDER").unwrap_or_else(|_| "kkclip.com".to_string())
+    std::env::var("zeppelinker_INSTAGRAM_PROVIDER").unwrap_or_else(|_| "kkclip.com".to_string())
 });
 
 pub const DOMAINS: [&str; 2] = ["instagram.com", "www.instagram.com"];

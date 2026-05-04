@@ -4,7 +4,7 @@ use std::sync::LazyLock;
 use teloxide::{Bot, types::Message};
 
 static PROVIDER: LazyLock<String> = LazyLock::new(|| {
-    std::env::var("LINKLEANER_THREADS_PROVIDER").unwrap_or_else(|_| "fixthreads.net".to_string())
+    std::env::var("zeppelinker_THREADS_PROVIDER").unwrap_or_else(|_| "fixthreads.net".to_string())
 });
 
 pub const DOMAINS: [&str; 2] = ["threads.net", "threads.com"];

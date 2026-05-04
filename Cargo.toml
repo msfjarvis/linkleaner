@@ -1,13 +1,13 @@
 [package]
-name = "linkleaner"
+name = "zeppelinker"
 version = "2.10.1"
 authors = ["Harsh Shandilya <me@msfjarvis.dev>"]
 edition = "2024"
 license = "MIT/Apache-2.0"
 description = "Telegram bot that replaces social media links to enhance their previews"
 keywords = ["telegram", "bot"]
-repository = "https://github.com/msfjarvis/linkleaner"
-homepage = "https://github.com/msfjarvis/linkleaner"
+repository = "https://github.com/msfjarvis/zeppelinker"
+homepage = "https://github.com/msfjarvis/zeppelinker"
 readme = "README.md"
 include = ["src/**/*", "LICENSE-*", "README.md"]
 publish = false

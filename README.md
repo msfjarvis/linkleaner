@@ -1,4 +1,4 @@
-# linkleaner [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+# zeppelinker [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 Telegram bot to replace social media links with their improved preview variants. The mapping of supported link types to what services are used to "fix" these links is given below.
 
@@ -25,7 +25,7 @@ version of Rust nightly the project is tested with.
 
 ### fly.io (recommended)
 
-My personal copy of linkleaner is hosted on [fly.io](https://fly.io) and the release workflow is designed to facilitate that.
+My personal copy of zeppelinker is hosted on [fly.io](https://fly.io) and the release workflow is designed to facilitate that.
 
 To get set up, refer to the environment variables defined in the `.env.sample` file and set them on fly.io itself with the real values.
 
@@ -35,6 +35,6 @@ sync with upstream releases, or push your own Docker image.
 
 ### Docker
 
-The release CI pushes the `ghcr.io/msfjarvis/linkleaner:latest` image to GitHub Container Registry
+The release CI pushes the `ghcr.io/msfjarvis/zeppelinker:latest` image to GitHub Container Registry
 which can be pulled periodically for the latest code. You can run this image directly with
 the environment variables from `.env.sample` since it has a configured entrypoint.

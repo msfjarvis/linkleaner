@@ -4,7 +4,7 @@ use std::sync::LazyLock;
 use teloxide::{Bot, types::Message};
 
 static PROVIDER: LazyLock<String> = LazyLock::new(|| {
-    std::env::var("LINKLEANER_REDDIT_PROVIDER").unwrap_or_else(|_| "vxreddit.com".to_string())
+    std::env::var("zeppelinker_REDDIT_PROVIDER").unwrap_or_else(|_| "vxreddit.com".to_string())
 });
 
 static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {

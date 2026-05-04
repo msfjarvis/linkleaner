@@ -1,5 +1,5 @@
 {
-  description = "linkleaner";
+  description = "zeppelinker";
 
   inputs.nixpkgs.url = "github:msfjarvis/nixpkgs/nixpkgs-unstable";
 
@@ -53,34 +53,34 @@
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         };
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
-        linkleaner-fmt = craneLib.cargoFmt (
+        zeppelinker-fmt = craneLib.cargoFmt (
           commonArgs
           // {
             inherit cargoArtifacts;
           }
         );
-        linkleaner-clippy = craneLib.cargoClippy (
+        zeppelinker-clippy = craneLib.cargoClippy (
           commonArgs
           // {
             inherit cargoArtifacts;
           }
         );
-        linkleaner = craneLib.buildPackage (
+        zeppelinker = craneLib.buildPackage (
           commonArgs
           // {
             inherit cargoArtifacts;
             doCheck = false;
           }
         );
-        linkleaner-nextest = craneLib.cargoNextest (
+        zeppelinker-nextest = craneLib.cargoNextest (
           commonArgs
           // {
-            cargoArtifacts = linkleaner;
+            cargoArtifacts = zeppelinker;
             partitions = 1;
             partitionType = "count";
           }
         );
-        linkleaner-audit = craneLib.cargoAudit (
+        zeppelinker-audit = craneLib.cargoAudit (
           commonArgs
           // {
             inherit advisory-db cargoArtifacts;
@@ -90,36 +90,36 @@
       {
         checks = {
           inherit
-            linkleaner
-            linkleaner-audit
-            linkleaner-clippy
-            linkleaner-fmt
-            linkleaner-nextest
+            zeppelinker
+            zeppelinker-audit
+            zeppelinker-clippy
+            zeppelinker-fmt
+            zeppelinker-nextest
             ;
         };
 
         # Expose the flyctl and skopeo packages for use in CI
         packages = { inherit (pkgs) flyctl skopeo; };
-        packages.default = linkleaner;
+        packages.default = zeppelinker;
         packages.container = pkgs.dockerTools.buildImage {
-          name = "registry.fly.io/linkleaner";
+          name = "registry.fly.io/zeppelinker";
           tag = "latest";
           created = "now";
           copyToRoot = pkgs.buildEnv {
-            name = "linkleaner";
-            paths = [ linkleaner ];
+            name = "zeppelinker";
+            paths = [ zeppelinker ];
             pathsToLink = [ "/bin" ];
           };
-          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+          config.Cmd = [ "${zeppelinker}/bin/zeppelinker" ];
         };
         packages.ghContainer = pkgs.dockerTools.buildLayeredImage {
-          name = "ghcr.io/msfjarvis/linkleaner";
+          name = "ghcr.io/msfjarvis/zeppelinker";
           tag = "latest";
           created = "now";
-          config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+          config.Cmd = [ "${zeppelinker}/bin/zeppelinker" ];
         };
 
-        apps.default = flake-utils.lib.mkApp { drv = linkleaner; };
+        apps.default = flake-utils.lib.mkApp { drv = zeppelinker; };
 
         devShells.default = pkgs.devshell.mkShell {
           bash = {

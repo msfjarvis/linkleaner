@@ -9,6 +9,6 @@ permissions:
 
 jobs:
   update-flake-lock:
-    uses: msfjarvis/shared-workflows/.github/workflows/update-flake-lock.yml@9fcb820f947c9c68ebefde009b89187e31e7b664 # main
+    uses: msfjarvis/shared-workflows/.github/workflows/update-flake-lock.yml@020cc73fec071dd6b59e13b203d025738ba28f1c # main
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}

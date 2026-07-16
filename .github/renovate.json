@@ -5,5 +5,12 @@
     "helpers:pinGitHubActionDigests",
     "github>msfjarvis/shared-workflows//renovate/rust",
     "github>msfjarvis/shared-workflows//renovate/automerge"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["rust-toolchain"],
+      "matchDepNames": ["rust"],
+      "enabled": false
+    }
   ]
 }

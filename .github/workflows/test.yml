@@ -17,7 +17,7 @@ permissions:
 name: Check Rust code
 jobs:
   check:
-    uses: msfjarvis/shared-workflows/.github/workflows/test-flakes-project.yml@a1c12f76dd52f298b621a83c62096f1f5ddc22c9 # main
+    uses: msfjarvis/shared-workflows/.github/workflows/test-flakes-project.yml@3c04dd56e62ec976021601d9162e4b82d27a8944 # main
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       cachix-token: ${{ secrets.CACHIX_AUTH_TOKEN }}

@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.11.0] - 2026-09-16
+
+### 🐛 Bug Fixes
+
+- *(ci)* Prevent issues with undeterministic version calculation
+- Upgrade to Rust 1.95.0
+- Bump to Rust 1.96.0
+- *(rust)* Update to v1.96.1
+- *(rust)* Update to v1.97.0
+- *(rust)* Update to v1.97.1
+- *(rust)* Update to v1.97.1
+- *(rust)* Update to v1.98.0
+- *(ci)* Bump shared workflows pin again
+- *(ci)* Bump shared workflows pin again
+- Add nix-fast-build to the devShell
+- *(twitter)* Remove the action button
+
+### ⚙️ Miscellaneous Tasks
+
+- *(renovate)* Disable Rust updates
+
 ## [2.10.1] - 2026-04-22
 
 ### 🐛 Bug Fixes
@@ -273,8 +294,6 @@ All notable changes to this project will be documented in this file.
 - Apply Renovate config migration
 - Remove VSCode configuration
 - *(ci)* Remove Garnix cache
-- Reformat all files with nixfmt-rfc-style
-- Add reformat to git-blame-ignore-revs
 - Align test module names
 
 ## [2.5.0] - 2024-12-06

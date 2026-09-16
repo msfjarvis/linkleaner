@@ -111,12 +111,14 @@
             pathsToLink = [ "/bin" ];
           };
           config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+          config.Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
         };
         packages.ghContainer = pkgs.dockerTools.buildLayeredImage {
           name = "ghcr.io/msfjarvis/linkleaner";
           tag = "latest";
           created = "now";
           config.Cmd = [ "${linkleaner}/bin/linkleaner" ];
+          config.Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
         };
 
         apps.default = flake-utils.lib.mkApp { drv = linkleaner; };

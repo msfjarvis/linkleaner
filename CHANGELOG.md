@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.11.1] - 2026-09-16
+
+### 🐛 Bug Fixes
+
+- Set SSL_CERT_FILE in containers
+
 ## [2.11.0] - 2026-09-16
 
 ### 🐛 Bug Fixes

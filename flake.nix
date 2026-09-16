@@ -146,6 +146,7 @@
             fenix.packages.${system}.rust-analyzer
             flyctl
             git-cliff
+            nix-fast-build
             rustNightly
             skopeo
             stdenv.cc

@@ -1,5 +1,7 @@
 use crate::{
-    AsyncError, get_urls_from_message,
+    AsyncError,
+    callbacks::DELETE_CALLBACK_PREFIX,
+    get_urls_from_message,
     url::{get_preview_url_with_suffix, scrub_urls},
 };
 use matchit::Router;
@@ -85,7 +87,20 @@ impl BotExt for Bot {
         text: &str,
     ) -> Result<Message, RequestError> {
         let _del = self.delete_message(message.chat.id, message.id).await;
-        self.try_reply_silent(message, text).await
+        let request = self
+            .send_message(message.chat.id, text)
+            .parse_mode(ParseMode::Html);
+        let request = if let Some(reply) = message.reply_to_message() {
+            request.reply_parameters(ReplyParameters::new(reply.id))
+        } else {
+            request
+        };
+        if let Some(user) = &message.from {
+            request.reply_markup(replacement_keyboard(user.id, None))
+        } else {
+            request
+        }
+        .await
     }
 
     fn is_self_message(&self, message: &Message) -> bool {
@@ -117,12 +132,7 @@ impl BotExt for Bot {
             && let Ok(_) = url_matcher.at(url.path())
         {
             let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
-            let reply_button = match get_button_data(url) {
-                Some((label, url)) => Some(InlineKeyboardMarkup::new(vec![vec![
-                    InlineKeyboardButton::url(label, url),
-                ]])),
-                _ => None,
-            };
+            let reply_markup = replacement_keyboard(user.id, get_button_data(url));
             let preview_options = LinkPreviewOptions {
                 is_disabled: false,
                 url: Some(get_preview_url_with_suffix(
@@ -142,24 +152,31 @@ impl BotExt for Bot {
                     .reply_parameters(ReplyParameters::new(reply.id))
                     .link_preview_options(preview_options)
                     .parse_mode(ParseMode::Html);
-                if let Some(reply_button) = reply_button {
-                    send_message.reply_markup(reply_button)
-                } else {
-                    send_message
-                }
+                send_message.reply_markup(reply_markup)
             } else {
                 let send_message = self
                     .send_message(message.chat.id, text)
                     .parse_mode(ParseMode::Html)
                     .link_preview_options(preview_options);
-                if let Some(reply_button) = reply_button {
-                    send_message.reply_markup(reply_button)
-                } else {
-                    send_message
-                }
+                send_message.reply_markup(reply_markup)
             }
             .await?;
         }
         Ok(())
     }
+}
+
+fn replacement_keyboard(
+    owner_id: UserId,
+    link_button: Option<(&str, Url)>,
+) -> InlineKeyboardMarkup {
+    let mut rows = Vec::with_capacity(2);
+    if let Some((label, url)) = link_button {
+        rows.push(vec![InlineKeyboardButton::url(label, url)]);
+    }
+    rows.push(vec![InlineKeyboardButton::callback(
+        "Delete",
+        format!("{DELETE_CALLBACK_PREFIX}{}", owner_id.0),
+    )]);
+    InlineKeyboardMarkup::new(rows)
 }

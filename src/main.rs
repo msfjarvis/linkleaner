@@ -1,5 +1,6 @@
 #![allow(clippy::too_many_lines)]
 mod bot_ext;
+mod callbacks;
 mod commands;
 mod deamp;
 mod dice;
@@ -51,7 +52,7 @@ async fn run() {
 
     let bot = Bot::from_env();
 
-    let handler = Update::filter_message()
+    let message_handler = Update::filter_message()
         .branch(
             dptree::entry()
                 .filter_command::<Command>()
@@ -156,6 +157,9 @@ async fn run() {
             .endpoint(deamp::handler),
         )
         .branch(dptree::filter(dice::is_die_roll).endpoint(dice::handler));
+    let handler = dptree::entry()
+        .branch(message_handler)
+        .branch(Update::filter_callback_query().endpoint(callbacks::handler));
 
     let error_handler = Arc::new(TeloxideLogger::default());
     let listener = Polling::builder(bot.clone()).drop_pending_updates().build();

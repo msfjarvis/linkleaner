@@ -152,11 +152,18 @@ jobs:
           ghcr.io/msfjarvis/linkleaner:latest-arm64
         docker manifest push ghcr.io/msfjarvis/linkleaner:latest
 
+    - name: Determine release version
+      id: version
+      shell: bash
+      run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
     - name: Get changelog entry
       id: changelog_reader
       uses: mindsers/changelog-reader-action@1faaf50aa09d5793d9a100819973df801febfb31 # v2.4.0
       with:
-        version: ${{ github.ref_name }}
+        # The action matches the version against the changelog heading
+        # verbatim, and git-cliff writes headings without the tag's `v` prefix.
+        version: ${{ steps.version.outputs.value }}
         path: ./CHANGELOG.md
 
     - name: Create GitHub release

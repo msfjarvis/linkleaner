@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.12.0] - 2026-09-19
+
+### 🚀 Features
+
+- Add an inline delete button to replacements
+
+### 🐛 Bug Fixes
+
+- Improve delete button label
+- *(ci)* Strip v prefix before changelog-reader-action lookup
+
 ## [2.11.1] - 2026-09-16
 
 ### 🐛 Bug Fixes

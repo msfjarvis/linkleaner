@@ -175,7 +175,7 @@ fn replacement_keyboard(
         rows.push(vec![InlineKeyboardButton::url(label, url)]);
     }
     rows.push(vec![InlineKeyboardButton::callback(
-        "Delete",
+        "Delete (sender-only)",
         format!("{DELETE_CALLBACK_PREFIX}{}", owner_id.0),
     )]);
     InlineKeyboardMarkup::new(rows)

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.13.0] - 2026-09-21
+
+### 🚀 Features
+
+- Rotate Twitter preview providers
+
+### 🐛 Bug Fixes
+
+- Delete legacy Nix shim and move to Nixpkgs tarball
+
 ## [2.12.0] - 2026-09-19
 
 ### 🚀 Features

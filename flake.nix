@@ -145,7 +145,7 @@
             bacon
             cargo-nextest
             cargo-release
-            fenix.packages.${system}.rust-analyzer
+            rust-analyzer
             flyctl
             git-cliff
             nix-fast-build

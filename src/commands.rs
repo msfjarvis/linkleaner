@@ -34,8 +34,6 @@ pub(crate) enum Command {
     Help,
     #[command(description = "Pong?")]
     Ping,
-    #[command(description = "toggle Instagram link replacement")]
-    Instagram { filter_state: FilterState },
     #[command(description = "toggle Medium link replacement")]
     Medium { filter_state: FilterState },
     #[command(description = "toggle Reddit link replacement")]
@@ -105,17 +103,6 @@ pub(crate) async fn handler(
         }
         Command::Ping => {
             bot.reply(&message, "Pong").await?;
-        }
-        Command::Instagram { filter_state } => {
-            flip_filter_state(
-                &bot,
-                &message,
-                filter_state,
-                "Instagram",
-                |state| state.instagram,
-                FixerState::instagram,
-            )
-            .await?;
         }
         Command::Medium { filter_state } => {
             flip_filter_state(

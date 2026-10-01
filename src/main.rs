@@ -5,7 +5,6 @@ mod commands;
 mod deamp;
 mod dice;
 mod fixer;
-mod instagram;
 mod logging;
 mod medium;
 mod reddit;
@@ -69,21 +68,6 @@ async fn run() {
                 false
             })
             .endpoint(twitter::handler),
-        )
-        .branch(
-            dptree::filter(|msg: Message| {
-                if should_match(&msg, &instagram::DOMAINS)
-                    && let Ok(ref mut map) = FIXER_STATE.try_lock()
-                    && let Some(chat_id) = msg.chat_id()
-                {
-                    return map
-                        .entry(chat_id)
-                        .or_insert(FixerState::default())
-                        .instagram;
-                }
-                false
-            })
-            .endpoint(instagram::handler),
         )
         .branch(
             dptree::filter(|msg: Message| {

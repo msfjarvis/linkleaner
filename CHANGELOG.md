@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-10-27
+
+### 🐛 Bug Fixes
+
+- *(instagram)* Change default provider
+
 ## [3.0.0] - 2026-10-01
 
 ### 🚀 Features

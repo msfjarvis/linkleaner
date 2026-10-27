@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [3.1.0] - 2026-10-27
 
+### 🚀 Features
+
+- Restore instagram fixer
+
 ### 🐛 Bug Fixes
 
 - *(instagram)* Change default provider

@@ -1,6 +1,7 @@
 #[allow(clippy::struct_excessive_bools)] // Does not apply
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct FixerState {
+    pub(crate) instagram: bool,
     pub(crate) medium: bool,
     pub(crate) reddit: bool,
     pub(crate) tiktok: bool,
@@ -12,6 +13,7 @@ pub(crate) struct FixerState {
 impl Default for FixerState {
     fn default() -> Self {
         Self {
+            instagram: true,
             medium: true,
             reddit: true,
             tiktok: true,
@@ -23,6 +25,10 @@ impl Default for FixerState {
 }
 
 impl FixerState {
+    pub(crate) fn instagram(&mut self, value: bool) {
+        self.instagram = value;
+    }
+
     pub(crate) fn medium(&mut self, value: bool) {
         self.medium = value;
     }

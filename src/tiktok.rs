@@ -20,7 +20,7 @@ static URL_MATCHER: LazyLock<Router<()>> = LazyLock::new(|| {
 });
 
 pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
-    bot.perform_replacement(&message, &URL_MATCHER, &PROVIDER, None, |_| None)
+    bot.perform_replacement(&message, &URL_MATCHER, &PROVIDER, None, false, |_| None)
         .await?;
     Ok(())
 }

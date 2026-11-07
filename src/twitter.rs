@@ -47,8 +47,10 @@ pub async fn handler(bot: Bot, message: Message) -> Result<(), AsyncError> {
     let provider = PROVIDERS
         .choose(&mut rand::rng())
         .expect("provider pool must contain a fallback provider");
-    bot.perform_replacement(&message, &URL_MATCHER, provider, Some("/en"), |_| None)
-        .await?;
+    bot.perform_replacement(&message, &URL_MATCHER, provider, Some("/en"), false, |_| {
+        None
+    })
+    .await?;
     Ok(())
 }
 

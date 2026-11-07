@@ -45,6 +45,7 @@ pub(crate) trait BotExt {
         url_matcher: &Router<()>,
         preview_domain: &str,
         preview_path_suffix: Option<&str>,
+        just_delete: bool,
         get_button_data: impl Fn(&Url) -> Option<(&str, Url)>,
     ) -> Result<(), AsyncError>;
     fn is_self_message(&self, message: &Message) -> bool;
@@ -120,6 +121,7 @@ impl BotExt for Bot {
         url_matcher: &Router<()>,
         preview_domain: &str,
         preview_path_suffix: Option<&str>,
+        just_delete: bool,
         get_button_data: impl Fn(&Url) -> Option<(&str, Url)>,
     ) -> Result<(), AsyncError> {
         let urls = get_urls_from_message(message);
@@ -131,6 +133,10 @@ impl BotExt for Bot {
             && let Host::Domain(domain) = host
             && let Ok(_) = url_matcher.at(url.path())
         {
+            let _del = self.delete_message(message.chat.id, message.id).await;
+            if just_delete {
+                return Ok(());
+            }
             let text = format!("{}: {}", link(user.url().as_str(), &user.full_name()), text);
             let reply_markup = replacement_keyboard(user.id, get_button_data(url));
             let preview_options = LinkPreviewOptions {
@@ -145,7 +151,6 @@ impl BotExt for Bot {
                 prefer_large_media: true,
                 show_above_text: false,
             };
-            let _del = self.delete_message(message.chat.id, message.id).await;
             if let Some(reply) = message.reply_to_message() {
                 let send_message = self
                     .send_message(message.chat.id, text)

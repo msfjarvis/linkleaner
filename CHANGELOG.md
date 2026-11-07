@@ -2,11 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.1.0] - 2026-10-27
+## [3.2.0] - 2026-11-07
 
 ### 🚀 Features
 
-- Restore instagram fixer
+- Add per-chat Instagram deletion probability
+
+### 🐛 Bug Fixes
+
+- *(rust)* Update to v1.99.1
+
+### ⚙️ Miscellaneous Tasks
+
+- Update 3.1.0 changelog
+
+## [3.1.0] - 2026-10-27
 
 ### 🐛 Bug Fixes
 

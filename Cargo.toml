@@ -7,7 +7,6 @@ license = "MIT/Apache-2.0"
 description = "Telegram bot that replaces social media links to enhance their previews"
 keywords = ["telegram", "bot"]
 repository = "https://github.com/msfjarvis/linkleaner"
-homepage = "https://github.com/msfjarvis/linkleaner"
 readme = "README.md"
 include = ["src/**/*", "LICENSE-*", "README.md"]
 publish = false

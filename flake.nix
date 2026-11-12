@@ -42,7 +42,7 @@
 
         rustNightly = (import fenix { inherit pkgs; }).fromToolchainFile {
           file = ./rust-toolchain.toml;
-          sha256 = "sha256-+xUr6Al1wZSqX8aEsq7DpuFOK4Ve/i+qTl+K5uWQ9GM=";
+          sha256 = "sha256-MFHoWVcPZKjFrLnQnodCXbUsfZcofGfo9tV9fTTvklg=";
         };
 
         craneLib = (crane.mkLib pkgs).overrideToolchain rustNightly;
@@ -50,7 +50,8 @@
           src = craneLib.cleanCargoSource ./.;
           buildInputs = [ ];
           nativeBuildInputs = pkgs.lib.optionals pkgs.stdenv.isDarwin [ pkgs.libiconv ];
-          cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+          # deny warnings removed due to https://github.com/teloxide/teloxide/issues/1485
+          cargoClippyExtraArgs = "--all-targets"; # -- --deny warnings
         };
         cargoArtifacts = craneLib.buildDepsOnly commonArgs;
         linkleaner-fmt = craneLib.cargoFmt (

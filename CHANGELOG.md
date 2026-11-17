@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.1] - 2026-11-17
+
+### 🐛 Bug Fixes
+
+- Upgrade to Rust 1.100.0
+- Support X video links
+
 ## [3.2.0] - 2026-11-07
 
 ### 🚀 Features
